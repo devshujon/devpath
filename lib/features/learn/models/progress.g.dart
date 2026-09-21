@@ -2,6 +2,10 @@
 
 part of 'progress.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class ProgressAdapter extends TypeAdapter<Progress> {
   @override
   final int typeId = 1;

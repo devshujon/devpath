@@ -2,6 +2,10 @@
 
 part of 'project.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class ProjectAdapter extends TypeAdapter<Project> {
   @override
   final int typeId = 2;

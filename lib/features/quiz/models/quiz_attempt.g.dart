@@ -2,6 +2,10 @@
 
 part of 'quiz_attempt.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class QuizAttemptAdapter extends TypeAdapter<QuizAttempt> {
   @override
   final int typeId = 4;

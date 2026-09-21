@@ -5,7 +5,7 @@ import 'lesson_block.dart';
 /// This is intentionally SEPARATE from the `Lesson` model in
 /// features/learning/models/lesson.dart. `Lesson` (and its const
 /// catalog) supplies metadata + quiz and is never touched; this is
-/// loaded lazily from assets/curriculum/<track>/<id>.json and merged
+/// loaded lazily from `assets/curriculum/<track>/<id>.json` and merged
 /// in at the screen level only when a file exists. Lessons without a
 /// JSON file simply have no LessonContent and fall back to the
 /// existing simple layout.

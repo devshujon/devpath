@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart' show FlutterError, rootBundle;
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../../learning/models/lesson.dart';
 import '../models/lesson_content.dart';
@@ -9,8 +9,8 @@ import 'curriculum_cache.dart';
 
 /// Loads rich lesson content from bundled JSON assets, offline.
 ///
-/// Path convention: assets/curriculum/<track-key>/<lessonId>.json
-/// (e.g. assets/curriculum/html/h1_heading.json).
+/// Path convention: `assets/curriculum/<track-key>/<lessonId>.json`
+/// (e.g. `assets/curriculum/html/h1_heading.json`).
 ///
 /// Returns null when a lesson has no JSON file yet — callers fall back
 /// to the existing simple lesson layout. Parsed results (and misses, as

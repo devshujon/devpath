@@ -9,7 +9,6 @@ import '../providers/projects_list_provider.dart';
 import '../services/html_import_service.dart';
 import '../services/project_storage.dart';
 import '../widgets/project_card.dart';
-import 'playground_screen.dart' show PlaygroundArguments;
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key});
@@ -135,16 +134,18 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     if (result == null) return; // user cancelled
 
     if (!context.mounted) return;
-    Navigator.pushNamed(
-      context,
-      AppRoutes.playground,
-      arguments: PlaygroundArguments(
-        starterCode: {'html': result.html, 'css': '', 'js': ''},
-      ),
-    ).then((_) {
-      if (!context.mounted) return;
-      unawaited(context.read<ProjectsListProvider>().load(force: true));
-    });
+    unawaited(
+      Navigator.pushNamed(
+        context,
+        AppRoutes.playground,
+        arguments: PlaygroundArguments(
+          starterCode: {'html': result.html, 'css': '', 'js': ''},
+        ),
+      ).then((_) {
+        if (!context.mounted) return;
+        unawaited(context.read<ProjectsListProvider>().load(force: true));
+      }),
+    );
   }
 
   Future<void> _openProject(BuildContext context, UserProject project) async {

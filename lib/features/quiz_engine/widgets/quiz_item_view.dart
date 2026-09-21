@@ -42,18 +42,18 @@ class _QuizItemViewState extends State<QuizItemView> {
   Widget build(BuildContext context) {
     final item = widget.item;
     return switch (item) {
-      McqItem i => _single(i.options, i.correctIndex),
-      OutputPredictionItem i => Column(
+      final McqItem i => _single(i.options, i.correctIndex),
+      final OutputPredictionItem i => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [_code(i.code, i.lang), const SizedBox(height: 12), _single(i.options, i.correctIndex)],
         ),
-      FindBugItem i => Column(
+      final FindBugItem i => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [_code(i.code, i.lang), const SizedBox(height: 12), _single(i.options, i.correctIndex)],
         ),
-      MultiSelectItem i => _multi(i.options, i.correctIndices),
-      FillBlankItem i => _text(hint: i.hint),
-      CompleteCodeItem i => Column(
+      final MultiSelectItem i => _multi(i.options, i.correctIndices),
+      final FillBlankItem i => _text(hint: i.hint),
+      final CompleteCodeItem i => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [_code(i.stub, i.lang), const SizedBox(height: 12), _text(hint: 'Type the missing part')],
         ),

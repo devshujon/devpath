@@ -2,6 +2,10 @@
 
 part of 'lesson.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class LessonAdapter extends TypeAdapter<Lesson> {
   @override
   final int typeId = 0;

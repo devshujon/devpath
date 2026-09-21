@@ -18,13 +18,13 @@ class QuizGrader {
   const QuizGrader._();
 
   static bool isCorrect(QuizItem item, QuizAnswer answer) => switch (item) {
-        McqItem i => answer.selectedIndex == i.correctIndex,
-        OutputPredictionItem i => answer.selectedIndex == i.correctIndex,
-        FindBugItem i => answer.selectedIndex == i.correctIndex,
-        MultiSelectItem i =>
+        final McqItem i => answer.selectedIndex == i.correctIndex,
+        final OutputPredictionItem i => answer.selectedIndex == i.correctIndex,
+        final FindBugItem i => answer.selectedIndex == i.correctIndex,
+        final MultiSelectItem i =>
           answer.selectedSet.isNotEmpty && setEquals(answer.selectedSet, i.correctIndices),
-        FillBlankItem i => _matches(answer.text, i.acceptedAnswers),
-        CompleteCodeItem i => _matches(answer.text, i.acceptedAnswers),
+        final FillBlankItem i => _matches(answer.text, i.acceptedAnswers),
+        final CompleteCodeItem i => _matches(answer.text, i.acceptedAnswers),
       };
 
   static String _normalize(String s) =>

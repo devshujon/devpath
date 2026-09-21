@@ -2,6 +2,10 @@
 
 part of 'unlock_timer.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class UnlockTimerAdapter extends TypeAdapter<UnlockTimer> {
   @override
   final int typeId = 5;

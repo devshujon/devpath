@@ -31,6 +31,14 @@ class LearningProgressProvider extends ChangeNotifier {
   bool _loaded = false;
   bool _saving = false;
 
+  LearningProgressProvider();
+
+  /// Test-only constructor. Does not touch SharedPreferences.
+  @visibleForTesting
+  LearningProgressProvider.test(LearningProgressData data)
+      : _data = data,
+        _loaded = true;
+
   bool get loaded => _loaded;
 
   // ── Read accessors ──
@@ -130,12 +138,6 @@ class LearningProgressProvider extends ChangeNotifier {
       completedIds: completedLessons,
     );
   }
-
-  /// Test-only constructor. Does not touch SharedPreferences.
-  @visibleForTesting
-  LearningProgressProvider.test(LearningProgressData data)
-      : _data = data,
-        _loaded = true;
 
   double overallProgress() {
     final total = LessonsCatalog.all.length;

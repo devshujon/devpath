@@ -6,7 +6,7 @@ import '../models/quiz_item.dart';
 
 /// Loads an advanced [QuizSet] for a lesson from bundled assets, offline.
 ///
-/// Path convention: assets/quizzes/advanced/<lessonId>.json
+/// Path convention: `assets/quizzes/advanced/<lessonId>.json`
 /// Returns null when a lesson has no advanced quiz yet — callers simply
 /// don't show the advanced-practice entry point. Results (and misses, as
 /// null) are cached so a set parses at most once per session.

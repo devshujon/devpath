@@ -56,10 +56,12 @@ class _FigureHtmlViewState extends State<FigureHtmlView>
             },
             onWebResourceError: (_) {
               _timeout?.cancel();
-              if (mounted) setState(() {
-                _loading = false;
-                _failed = true;
-              });
+              if (mounted) {
+                setState(() {
+                  _loading = false;
+                  _failed = true;
+                });
+              }
             },
             onNavigationRequest: (_) => NavigationDecision.prevent,
           ),
