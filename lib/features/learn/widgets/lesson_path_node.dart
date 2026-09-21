@@ -38,7 +38,30 @@ class _LessonPathNodeState extends State<LessonPathNode>
     _pulse = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
-    )..repeat(reverse: true);
+    );
+    _syncPulse();
+  }
+
+  @override
+  void didUpdateWidget(covariant LessonPathNode oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncPulse();
+  }
+
+  LessonVisualState get _visual => resolveLessonVisualState(
+        isCompleted: widget.lesson.isCompleted,
+        isLocked: widget.lesson.isLocked,
+        isCurrent: widget.isCurrent,
+      );
+
+  void _syncPulse() {
+    if (_visual == LessonVisualState.current) {
+      if (!_pulse.isAnimating) _pulse.repeat(reverse: true);
+    } else {
+      _pulse
+        ..stop()
+        ..value = 0;
+    }
   }
 
   @override
@@ -52,11 +75,7 @@ class _LessonPathNodeState extends State<LessonPathNode>
     final lesson = widget.lesson;
     final accent = lesson.track.color;
     final size = widget.size;
-    final visual = resolveLessonVisualState(
-      isCompleted: lesson.isCompleted,
-      isLocked: lesson.isLocked,
-      isCurrent: widget.isCurrent,
-    );
+    final visual = _visual;
     final isLocked = visual == LessonVisualState.locked;
     final isCompleted = visual == LessonVisualState.completed;
 

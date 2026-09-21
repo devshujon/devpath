@@ -151,6 +151,62 @@ void main() {
     });
   });
 
+  group('nextLessonIdAfter', () {
+    const ids = ['h1_heading', 'b01_html', 'b02_css'];
+
+    test('returns the next unlocked incomplete lesson', () {
+      expect(
+        nextLessonIdAfter(
+          afterId: 'h1_heading',
+          catalogIds: ids,
+          completedIds: {'h1_heading'},
+          isLocked: (id) => id == 'b02_css',
+        ),
+        'b01_html',
+      );
+    });
+
+    test('skips completed and locked lessons, then catch-up from the start', () {
+      expect(
+        nextLessonIdAfter(
+          afterId: 'b02_css',
+          catalogIds: ids,
+          completedIds: {'b02_css'},
+          isLocked: (_) => false,
+        ),
+        'h1_heading',
+      );
+    });
+
+    test('returns null when every lesson is complete', () {
+      expect(
+        nextLessonIdAfter(
+          afterId: 'h1_heading',
+          catalogIds: ids,
+          completedIds: ids.toSet(),
+          isLocked: (_) => false,
+        ),
+        isNull,
+      );
+    });
+  });
+
+  group('shouldPopAfterCompletionOverlay', () {
+    test('does not pop when the user already navigated away', () {
+      expect(
+        shouldPopAfterCompletionOverlay(navigatedAway: true),
+        isFalse,
+      );
+    });
+
+    test('pops when the overlay simply closed', () {
+      expect(
+        shouldPopAfterCompletionOverlay(navigatedAway: false),
+        isTrue,
+      );
+    });
+  });
+
   group('difficultyCompletionRatio', () {
     test('empty list is 0', () {
       expect(

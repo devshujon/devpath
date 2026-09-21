@@ -1,20 +1,19 @@
-import '../models/lesson_content.dart';
+import '../models/curriculum_load_result.dart';
 
-/// In-memory cache of parsed [LessonContent], keyed by lesson id.
+/// In-memory cache of [CurriculumLoadResult], keyed by lesson id.
 ///
-/// Misses are cached as `null` so a lesson with no JSON file is only
-/// looked up on the asset bundle once per session. The cache holds only
-/// content for lessons the user has actually opened, so memory stays
-/// flat regardless of how large the curriculum grows.
+/// Missing and failed results are cached so a lesson is only looked up
+/// on the asset bundle once per session. The cache holds only lessons
+/// the user has actually opened.
 class CurriculumCache {
-  final Map<String, LessonContent?> _entries = {};
+  final Map<String, CurriculumLoadResult> _entries = {};
 
   bool contains(String lessonId) => _entries.containsKey(lessonId);
 
-  LessonContent? get(String lessonId) => _entries[lessonId];
+  CurriculumLoadResult? get(String lessonId) => _entries[lessonId];
 
-  void put(String lessonId, LessonContent? content) =>
-      _entries[lessonId] = content;
+  void put(String lessonId, CurriculumLoadResult result) =>
+      _entries[lessonId] = result;
 
   void clear() => _entries.clear();
 }

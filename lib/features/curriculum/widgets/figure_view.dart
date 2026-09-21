@@ -7,6 +7,13 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../theme/lesson_type.dart';
 
+/// Allow the initial offline document; block http(s) navigations.
+bool allowFigureNavigation(String url) {
+  final u = url.trim().toLowerCase();
+  if (u.isEmpty) return false;
+  return u.startsWith('data:') || u.startsWith('about:');
+}
+
 /// Renders a `figure` block's HTML `spec` inside a bounded, display-only
 /// WebView. Gesture recognizers are empty so the parent ListView keeps
 /// scrolling over the figure (the diagram is static).
@@ -63,7 +70,9 @@ class _FigureHtmlViewState extends State<FigureHtmlView>
                 });
               }
             },
-            onNavigationRequest: (_) => NavigationDecision.prevent,
+            onNavigationRequest: (request) => allowFigureNavigation(request.url)
+                ? NavigationDecision.navigate
+                : NavigationDecision.prevent,
           ),
         )
         ..loadHtmlString(_wrap(widget.spec));

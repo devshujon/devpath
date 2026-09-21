@@ -256,7 +256,11 @@ class _XpAwardOverlayState extends State<XpAwardOverlay>
                           Expanded(
                             child: FilledButton(
                               onPressed: widget.onNextLesson,
-                              child: const Text('Next lesson'),
+                              child: const Text(
+                                'Next lesson',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                         ],

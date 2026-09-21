@@ -82,9 +82,6 @@ class LessonTile extends StatelessWidget {
                         lesson.title,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
-                              decoration: completed
-                                  ? TextDecoration.lineThrough
-                                  : null,
                             ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -97,42 +94,20 @@ class LessonTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 6),
-                      Row(
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Icon(
-                            Icons.schedule,
-                            size: 11,
-                            color: isDark
-                                ? const Color(0xFF8A929D)
-                                : const Color(0xFF5D6670),
+                          _MetaPair(
+                            icon: Icons.schedule,
+                            label: '${lesson.estimatedMinutes} min',
+                            isDark: isDark,
                           ),
-                          const SizedBox(width: 3),
-                          Text(
-                            '${lesson.estimatedMinutes} min',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isDark
-                                  ? const Color(0xFF8A929D)
-                                  : const Color(0xFF5D6670),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Icon(
-                            Icons.star_outline,
-                            size: 11,
-                            color: isDark
-                                ? const Color(0xFF8A929D)
-                                : const Color(0xFF5D6670),
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            '+${lesson.xpReward} XP',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isDark
-                                  ? const Color(0xFF8A929D)
-                                  : const Color(0xFF5D6670),
-                            ),
+                          _MetaPair(
+                            icon: Icons.star_outline,
+                            label: '+${lesson.xpReward} XP',
+                            isDark: isDark,
                           ),
                         ],
                       ),
@@ -147,6 +122,31 @@ class LessonTile extends StatelessWidget {
         ),
       ),
       ),
+    );
+  }
+}
+
+class _MetaPair extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isDark;
+
+  const _MetaPair({
+    required this.icon,
+    required this.label,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDark ? const Color(0xFF8A929D) : const Color(0xFF5D6670);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 11, color: color),
+        const SizedBox(width: 3),
+        Text(label, style: TextStyle(fontSize: 11, color: color)),
+      ],
     );
   }
 }

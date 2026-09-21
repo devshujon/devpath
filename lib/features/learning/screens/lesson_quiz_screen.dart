@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
 import '../data/lessons_catalog.dart';
+import '../logic/lesson_progression.dart';
 import '../models/lesson.dart';
 import '../providers/learning_progress_provider.dart';
 import '../widgets/xp_award_overlay.dart';
@@ -113,6 +114,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     // On level-up the bar resets to 0..newProgress visually.
     final animateFrom = result.levelUp ? 0.0 : oldProgress;
 
+    var navigatedAway = false;
     await XpAwardOverlay.show(
       context,
       result: result,
@@ -121,8 +123,8 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       onNextLesson: result.nextLesson == null
           ? null
           : () {
+              navigatedAway = true;
               Navigator.of(context).pop(); // dismiss overlay
-              // Replace current quiz with next lesson detail
               Navigator.of(context).pushReplacementNamed(
                 AppRoutes.lessonDetail,
                 arguments:
@@ -133,8 +135,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
     if (!mounted) return;
     setState(() => _finishing = false);
-    // After overlay dismissed, return to previous screen (lesson detail
-    // which will now render as completed).
+    if (!shouldPopAfterCompletionOverlay(navigatedAway: navigatedAway)) return;
     if (context.mounted) await Navigator.maybePop(context);
   }
 }
@@ -164,7 +165,11 @@ class _QuestionView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(lesson.title),
+        title: Text(
+          lesson.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
           child: LinearProgressIndicator(
@@ -179,31 +184,40 @@ class _QuestionView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Question ${index + 1} of $total',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                q.question,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      height: 1.3,
-                    ),
-              ),
-              const SizedBox(height: 24),
-              ...List.generate(q.options.length, (i) {
-                final isSelected = selected == i;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _OptionTile(
-                    text: q.options[i],
-                    selected: isSelected,
-                    onTap: () => onSelect(i),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Question ${index + 1} of $total',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        q.question,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              height: 1.3,
+                            ),
+                      ),
+                      const SizedBox(height: 24),
+                      ...List.generate(q.options.length, (i) {
+                        final isSelected = selected == i;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _OptionTile(
+                            text: q.options[i],
+                            selected: isSelected,
+                            onTap: () => onSelect(i),
+                          ),
+                        );
+                      }),
+                    ],
                   ),
-                );
-              }),
-              const Spacer(),
+                ),
+              ),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   if (onPrev != null)
@@ -321,7 +335,13 @@ class _ResultView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(lesson.title)),
+      appBar: AppBar(
+        title: Text(
+          lesson.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

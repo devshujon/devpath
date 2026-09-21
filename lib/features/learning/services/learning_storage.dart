@@ -60,17 +60,37 @@ class LearningProgressData {
 
   factory LearningProgressData.fromJson(Map<String, dynamic> j) {
     return LearningProgressData(
-      completedLessons:
-          Set<String>.from(j['completedLessons'] as List? ?? []),
-      currentXP: j['currentXP'] as int? ?? 0,
-      streakDays: j['streakDays'] as int? ?? 0,
-      longestStreak: j['longestStreak'] as int? ?? 0,
-      totalMinutesLearned: j['totalMinutesLearned'] as int? ?? 0,
-      lastActiveDate: j['lastActiveDate'] != null
-          ? DateTime.parse(j['lastActiveDate'] as String)
-          : null,
-      earnedBadges: Set<String>.from(j['earnedBadges'] as List? ?? []),
+      completedLessons: _stringSet(j['completedLessons']),
+      currentXP: _asInt(j['currentXP']),
+      streakDays: _asInt(j['streakDays']),
+      longestStreak: _asInt(j['longestStreak']),
+      totalMinutesLearned: _asInt(j['totalMinutesLearned']),
+      lastActiveDate: _asDate(j['lastActiveDate']),
+      earnedBadges: _stringSet(j['earnedBadges']),
     );
+  }
+
+  static int _asInt(Object? v, [int fallback = 0]) {
+    if (v is int) return v;
+    if (v is num) return v.toInt();
+    if (v is String) return int.tryParse(v) ?? fallback;
+    return fallback;
+  }
+
+  static DateTime? _asDate(Object? v) {
+    if (v is! String || v.isEmpty) return null;
+    return DateTime.tryParse(v);
+  }
+
+  static Set<String> _stringSet(Object? v) {
+    if (v is! List) return {};
+    return {
+      for (final e in v)
+        if (e is String && e.isNotEmpty)
+          e
+        else if (e != null && '$e'.isNotEmpty)
+          '$e',
+    };
   }
 }
 

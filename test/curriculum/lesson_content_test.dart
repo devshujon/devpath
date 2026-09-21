@@ -59,7 +59,7 @@ void main() {
       expect(content.projectPrompt, isNull);
     });
 
-    test('unknown blocks become UnknownBlock and are skipped in coreBlocks', () {
+    test('unknown blocks are dropped and siblings still parse', () {
       final content = LessonContent.fromJson({
         'id': 'x',
         'content': [
@@ -68,10 +68,39 @@ void main() {
           {'type': 'deepDive', 'title': 'Extra', 'children': []},
         ],
       });
-      expect(content.content[1], isA<UnknownBlock>());
-      expect((content.content[1] as UnknownBlock).type, 'brandNewFutureBlock');
+      expect(content.content.whereType<UnknownBlock>(), isEmpty);
+      expect(content.content.first, isA<ProseBlock>());
       expect(content.coreBlocks, hasLength(1));
       expect(content.deepDiveBlocks, hasLength(1));
+    });
+
+    test('a throwing block is isolated as unknown and does not fail the lesson', () {
+      final block = LessonBlock.fromJson({
+        'type': 'heading',
+        'text': 'Safe',
+        'level': 'not-a-number-but-coerced',
+      });
+      expect(block, isA<HeadingBlock>());
+      expect((block as HeadingBlock).level, 2);
+    });
+
+    test('numeric strings coerce on heading level and figure height', () {
+      final heading = LessonBlock.fromJson({
+        'type': 'heading',
+        'text': 'Level three',
+        'level': '3',
+      });
+      expect(heading, isA<HeadingBlock>());
+      expect((heading as HeadingBlock).level, 3);
+
+      final figure = LessonBlock.fromJson({
+        'type': 'figure',
+        'kind': 'ascii',
+        'spec': '-->',
+        'height': '160',
+      });
+      expect(figure, isA<FigureBlock>());
+      expect((figure as FigureBlock).height, 160);
     });
 
     test('malformed payload returns null from parse helper', () {

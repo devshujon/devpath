@@ -30,6 +30,7 @@ class LearningProgressProvider extends ChangeNotifier {
   LearningProgressData _data = LearningProgressData.empty;
   bool _loaded = false;
   bool _saving = false;
+  bool _persistQueued = false;
 
   LearningProgressProvider();
 
@@ -82,10 +83,19 @@ class LearningProgressProvider extends ChangeNotifier {
   }
 
   Future<void> _persist({bool notify = true}) async {
-    if (_saving) return;
+    // Coalesce in-flight writes. A hard skip dropped completions; two
+    // overlapping saves could also persist a stale snapshot last.
+    if (_saving) {
+      _persistQueued = true;
+      return;
+    }
     _saving = true;
     try {
-      await LearningStorage.instance.save(_data);
+      do {
+        _persistQueued = false;
+        final snapshot = _data;
+        await LearningStorage.instance.save(snapshot);
+      } while (_persistQueued);
     } finally {
       _saving = false;
     }
@@ -152,6 +162,21 @@ class LearningProgressProvider extends ChangeNotifier {
       if (!decorated.isLocked && !decorated.isCompleted) return decorated;
     }
     return null; // user finished everything
+  }
+
+  /// Next unlocked incomplete lesson after [lessonId], or the global
+  /// recommended lesson if the rest of the path is done.
+  String? nextUnlockedIdAfter(String lessonId) {
+    return nextLessonIdAfter(
+      afterId: lessonId,
+      catalogIds: LessonsCatalog.all.map((l) => l.id).toList(),
+      completedIds: completedLessons,
+      isLocked: (id) {
+        final lesson = LessonsCatalog.byId(id);
+        if (lesson == null) return true;
+        return _isLocked(lesson);
+      },
+    );
   }
 
   // ── Streak ──

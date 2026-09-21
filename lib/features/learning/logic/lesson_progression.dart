@@ -53,6 +53,32 @@ bool computeLessonLocked({
   return !completedIds.contains(sameDifficultyIds[idx - 1]);
 }
 
+/// After a completion overlay closes, pop the current route only when
+/// the user did not already navigate to the next item.
+bool shouldPopAfterCompletionOverlay({required bool navigatedAway}) =>
+    !navigatedAway;
+
+/// First unlocked, incomplete lesson after [afterId] in [catalogIds].
+/// Falls back to the first unlocked incomplete in the list (catch-up).
+String? nextLessonIdAfter({
+  required String afterId,
+  required List<String> catalogIds,
+  required Set<String> completedIds,
+  required bool Function(String id) isLocked,
+}) {
+  final start = catalogIds.indexOf(afterId);
+  if (start >= 0) {
+    for (var i = start + 1; i < catalogIds.length; i++) {
+      final id = catalogIds[i];
+      if (!completedIds.contains(id) && !isLocked(id)) return id;
+    }
+  }
+  for (final id in catalogIds) {
+    if (!completedIds.contains(id) && !isLocked(id)) return id;
+  }
+  return null;
+}
+
 /// Ratio of completed lessons in [ids] (0..1). Empty list → 0.
 double difficultyCompletionRatio({
   required List<String> ids,

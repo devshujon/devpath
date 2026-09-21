@@ -56,6 +56,18 @@ sealed class LessonBlock {
   const LessonBlock();
 
   factory LessonBlock.fromJson(Map<String, dynamic> j) {
+    try {
+      return LessonBlock._parse(j);
+    } catch (e) {
+      final type = _str(j['type'], 'malformed');
+      if (kDebugMode) {
+        debugPrint('Curriculum: dropping malformed block "$type": $e');
+      }
+      return UnknownBlock(type: type);
+    }
+  }
+
+  factory LessonBlock._parse(Map<String, dynamic> j) {
     switch (j['type'] as String? ?? '') {
       case 'summary':
         return SummaryBlock(md: _str(j['md']));
@@ -359,7 +371,11 @@ class UnknownBlock extends LessonBlock {
 // ── tiny null-safe JSON coercers ──
 String _str(Object? v, [String fallback = '']) => v is String ? v : fallback;
 String? _strOrNull(Object? v) => v is String && v.isNotEmpty ? v : null;
-int _int(Object? v, int fallback) => v is num ? v.toInt() : fallback;
+int _int(Object? v, int fallback) {
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v) ?? fallback;
+  return fallback;
+}
 List<String> _strList(Object? v) =>
     v is List ? v.whereType<String>().toList() : const [];
 List<Map<String, dynamic>> _objList(Object? v) => v is List

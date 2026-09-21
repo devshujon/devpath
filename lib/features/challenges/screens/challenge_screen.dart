@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../editor/widgets/code_editor_pane.dart';
 import '../../editor/widgets/preview_pane.dart';
+import '../../learning/logic/lesson_progression.dart';
 import '../../learning/providers/learning_progress_provider.dart';
 import '../data/challenges_catalog.dart';
 import '../models/challenge.dart';
@@ -172,8 +173,10 @@ class _ChallengeView extends StatelessWidget {
             },
     );
 
-    if (navigatedAway || !context.mounted) return;
-    // After sheet dismissed, return to previous screen.
+    if (!shouldPopAfterCompletionOverlay(navigatedAway: navigatedAway) ||
+        !context.mounted) {
+      return;
+    }
     await Navigator.of(context).maybePop();
   }
 

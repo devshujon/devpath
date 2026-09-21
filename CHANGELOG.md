@@ -6,6 +6,13 @@
 - Lesson path nodes no longer draw a **completed** lesson as locked after a new first lesson (`h1_heading`) is inserted.
 - Unlock precedence is now deterministic: **completed > current/unlocked > locked**.
 - Completed lessons stay tappable on the path and the roadmap.
+- Figure WebViews allow the initial offline `data:` / `about:` document and still block http(s).
+- Missing curriculum JSON no longer shows a parse-failure banner; only invalid files do.
+- Progress JSON coerces messy field types so one bad value cannot wipe XP or completions.
+- Overlapping progress saves coalesce to the latest snapshot instead of dropping or racing.
+- Quiz / challenge "Next" actions no longer pop the freshly pushed screen.
+- Quiz questions scroll on 360–430dp phones instead of overflowing.
+- Path nodes only animate the current lesson (no per-node pulse rebuilds).
 
 ### Mobile UX
 - Lesson detail is redesigned for 360–430dp Android phones (wrap chips, responsive type, 16–20dp inset).

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../../learning/models/lesson.dart';
+import '../models/curriculum_load_result.dart';
 import '../models/lesson_content.dart';
 import 'curriculum_cache.dart';
 
@@ -12,11 +13,9 @@ import 'curriculum_cache.dart';
 /// Path convention: `assets/curriculum/<track-key>/<lessonId>.json`
 /// (e.g. `assets/curriculum/html/h1_heading.json`).
 ///
-/// Returns null when a lesson has no JSON file yet — callers fall back
-/// to the existing simple lesson layout. Parsed results (and misses, as
-/// null) are stored in a [CurriculumCache], so a lesson parses at most
-/// once per session. Only the opened lesson is ever loaded, so this
-/// scales to hundreds of lessons. No network is ever touched.
+/// [loadResult] distinguishes a missing file (expected fallback) from
+/// a parse failure (show a banner, still fall back). Results are cached
+/// so a lesson parses at most once per session.
 class CurriculumLoader {
   CurriculumLoader._();
   static final CurriculumLoader instance = CurriculumLoader._();
@@ -27,13 +26,21 @@ class CurriculumLoader {
   CurriculumCache get cache => _cache;
 
   Future<LessonContent?> load(Lesson lesson) async {
-    if (_cache.contains(lesson.id)) return _cache.get(lesson.id);
+    return (await loadResult(lesson)).content;
+  }
+
+  Future<CurriculumLoadResult> loadResult(Lesson lesson) async {
+    final cached = _cache.get(lesson.id);
+    if (cached != null) return cached;
 
     final path = 'assets/curriculum/${lesson.track.key}/${lesson.id}.json';
     try {
       final raw = await rootBundle.loadString(path);
-      final result = decodeAndParse(raw);
-      if (result == null && kDebugMode) {
+      final parsed = decodeAndParse(raw);
+      final result = parsed == null
+          ? const CurriculumLoadResult.failed()
+          : CurriculumLoadResult.loaded(parsed);
+      if (parsed == null && kDebugMode) {
         debugPrint('Curriculum: $path parsed empty or invalid — using fallback');
       }
       _cache.put(lesson.id, result);
@@ -42,14 +49,16 @@ class CurriculumLoader {
       if (kDebugMode) {
         debugPrint('Curriculum: asset missing for ${lesson.id} ($path): $e');
       }
-      _cache.put(lesson.id, null);
-      return null;
+      const result = CurriculumLoadResult.missing();
+      _cache.put(lesson.id, result);
+      return result;
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Curriculum: failed to parse ${lesson.id}: $e');
       }
-      _cache.put(lesson.id, null);
-      return null;
+      const result = CurriculumLoadResult.failed();
+      _cache.put(lesson.id, result);
+      return result;
     }
   }
 

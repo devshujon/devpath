@@ -59,4 +59,41 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.textContaining('H1'), findsWidgets);
   });
+
+  testWidgets('completed lesson continue CTA does not overflow at 360dp', (tester) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final learning = LearningProgressProvider.test(
+      const LearningProgressData(completedLessons: {'h1_heading'}, currentXP: 50),
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<LearningProgressProvider>.value(
+        value: learning,
+        child: MaterialApp(
+          home: Builder(
+            builder: (context) {
+              return Navigator(
+                onGenerateRoute: (_) => MaterialPageRoute(
+                  settings: const RouteSettings(
+                    arguments: LessonDetailArguments(lessonId: 'h1_heading'),
+                  ),
+                  builder: (_) => const LessonDetailScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(tester.takeException(), isNull);
+    expect(find.text('Lesson complete'), findsOneWidget);
+    expect(find.textContaining('Continue to'), findsOneWidget);
+  });
 }

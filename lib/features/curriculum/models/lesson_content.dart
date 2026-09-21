@@ -50,6 +50,7 @@ class LessonContent {
         ? rawBlocks
             .whereType<Map>()
             .map((e) => LessonBlock.fromJson(e.cast<String, dynamic>()))
+            .where((b) => b is! UnknownBlock)
             .toList()
         : <LessonBlock>[];
 

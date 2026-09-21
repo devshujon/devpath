@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
+import '../../curriculum/models/curriculum_load_result.dart';
 import '../../curriculum/models/lesson_block.dart';
-import '../../curriculum/models/lesson_content.dart';
 import '../../curriculum/services/curriculum_loader.dart';
 import '../../curriculum/theme/lesson_type.dart';
 import '../../curriculum/widgets/block_renderer.dart';
@@ -30,13 +30,27 @@ class LessonDetailScreen extends StatefulWidget {
 }
 
 class _LessonDetailScreenState extends State<LessonDetailScreen> {
-  Future<LessonContent?>? _contentFuture;
   String? _loadedId;
+  CurriculumLoadResult? _result;
+  bool _loading = true;
+  Future<QuizSet?>? _quizFuture;
 
   void _ensureLoad(Lesson lesson) {
-    if (_loadedId == lesson.id && _contentFuture != null) return;
+    if (_loadedId == lesson.id) return;
     _loadedId = lesson.id;
-    _contentFuture = CurriculumLoader.instance.load(lesson);
+    _quizFuture = QuizSetLoader.instance.load(lesson.id);
+    _loading = true;
+    _result = null;
+    _load(lesson);
+  }
+
+  Future<void> _load(Lesson lesson) async {
+    final result = await CurriculumLoader.instance.loadResult(lesson);
+    if (!mounted || _loadedId != lesson.id) return;
+    setState(() {
+      _loading = false;
+      _result = result;
+    });
   }
 
   @override
@@ -48,10 +62,17 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     final raw = LessonsCatalog.byId(args.lessonId);
     if (raw == null) return _MissingLesson(id: args.lessonId);
 
-    final progress = context.watch<LearningProgressProvider>();
-    final lesson = progress.lessonWithProgress(raw);
-    _ensureLoad(lesson);
+    _ensureLoad(raw);
 
+    final isCompleted = context.select<LearningProgressProvider, bool>(
+      (p) => p.completedLessons.contains(raw.id),
+    );
+    final nextId = context.select<LearningProgressProvider, String?>(
+      (p) => p.nextUnlockedIdAfter(raw.id),
+    );
+    final lesson = raw.copyWith(isCompleted: isCompleted, isLocked: false);
+    final next = nextId == null ? null : LessonsCatalog.byId(nextId);
+    final content = _result?.content;
     final accent = lesson.track.color;
     final pad = LessonType.horizontalPadding(context);
 
@@ -74,89 +95,74 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
           ),
         ],
       ),
-      body: FutureBuilder<LessonContent?>(
-        future: _contentFuture,
-        builder: (context, snap) {
-          final loading = snap.connectionState == ConnectionState.waiting;
-          final failed = snap.hasError;
-          final content = snap.data;
-          final richFailed = !loading &&
-              (failed || (content == null && snap.connectionState == ConnectionState.done));
-
-          return CustomScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.fromLTRB(pad, 8, pad, 8),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    _LessonHero(lesson: lesson, accent: accent),
-                    const SizedBox(height: 14),
-                    _MetaWrap(lesson: lesson),
-                    if (content?.objectives.isNotEmpty == true) ...[
-                      const SizedBox(height: 16),
-                      _Objectives(
-                        items: content!.objectives,
-                        accent: accent,
-                      ),
-                    ],
-                    const SizedBox(height: 18),
-                    if (loading) const LessonSkeleton(),
-                    if (!loading && content != null)
-                      BlockRenderer(
-                        content: content,
-                        accent: accent,
-                        onTryCode: (code, lang) => _openPlaygroundWith(
-                          context,
-                          lesson,
-                          _slotFor(lang, code),
-                        ),
-                        onOpenStarter: (starter) =>
-                            _openPlaygroundWith(context, lesson, starter),
-                      ),
-                    if (!loading && content == null) ...[
-                      if (richFailed)
-                        const _LoadFallbackBanner(),
-                      _SimpleAbout(lesson: lesson),
-                      const SizedBox(height: 16),
-                      ExerciseBlockView(
-                        ExerciseBlock(
-                          prompt:
-                              'Practice this lesson in the playground. Use the starter code, tap Run, then come back for the quiz.',
-                          starterCode: lesson.starterCode,
-                          checks: const [],
-                        ),
-                        accent,
-                        onStart: (starter) =>
-                            _openPlaygroundWith(context, lesson, starter),
-                      ),
-                      const SizedBox(height: 16),
-                      QuickRecapView(
-                        items: [
-                          lesson.description,
-                          'Practice in the playground, then take the quiz to earn XP.',
-                        ],
-                        accent: accent,
-                      ),
-                    ],
-                    const SizedBox(height: 22),
-                    _EndOfLesson(
-                      lesson: lesson,
-                      next: progress.recommendedNextLesson,
-                      onQuiz: () => _openQuiz(context, lesson),
-                      onPlayground: () => _openPlayground(context, lesson),
-                      onNext: progress.recommendedNextLesson == null
-                          ? null
-                          : () => _openLesson(context, progress.recommendedNextLesson!),
+      body: CustomScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(pad, 8, pad, 8),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _LessonHero(lesson: lesson, accent: accent),
+                const SizedBox(height: 14),
+                _MetaWrap(lesson: lesson),
+                if (content?.objectives.isNotEmpty == true) ...[
+                  const SizedBox(height: 16),
+                  _Objectives(items: content!.objectives, accent: accent),
+                ],
+                const SizedBox(height: 18),
+                if (_loading) const LessonSkeleton(),
+                if (!_loading && content != null)
+                  BlockRenderer(
+                    key: ValueKey<String>('blocks-${lesson.id}'),
+                    content: content,
+                    accent: accent,
+                    onTryCode: (code, lang) => _openPlaygroundWith(
+                      context,
+                      lesson,
+                      _slotFor(lang, code),
                     ),
-                    _AdvancedPracticeStep(lesson: lesson),
-                    SizedBox(height: MediaQuery.paddingOf(context).bottom + 24),
-                  ]),
+                    onOpenStarter: (starter) =>
+                        _openPlaygroundWith(context, lesson, starter),
+                  ),
+                if (!_loading && content == null) ...[
+                  if (_result?.showFailureBanner == true)
+                    const _LoadFallbackBanner(),
+                  _SimpleAbout(lesson: lesson),
+                  const SizedBox(height: 16),
+                  ExerciseBlockView(
+                    ExerciseBlock(
+                      prompt:
+                          'Practice this lesson in the playground. Use the starter code, tap Run, then come back for the quiz.',
+                      starterCode: lesson.starterCode,
+                      checks: const [],
+                    ),
+                    accent,
+                    onStart: (starter) =>
+                        _openPlaygroundWith(context, lesson, starter),
+                  ),
+                  const SizedBox(height: 16),
+                  QuickRecapView(
+                    items: [
+                      lesson.description,
+                      'Practice in the playground, then take the quiz to earn XP.',
+                    ],
+                    accent: accent,
+                  ),
+                ],
+                const SizedBox(height: 22),
+                _EndOfLesson(
+                  lesson: lesson,
+                  next: next,
+                  onQuiz: () => _openQuiz(context, lesson),
+                  onPlayground: () => _openPlayground(context, lesson),
+                  onNext: next == null ? null : () => _openLesson(context, next),
                 ),
-              ),
-            ],
-          );
-        },
+                _AdvancedPracticeStep(future: _quizFuture, lesson: lesson),
+                SizedBox(height: MediaQuery.paddingOf(context).bottom + 24),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -449,14 +455,18 @@ class _EndOfLesson extends StatelessWidget {
             if (onNext != null && next != null)
               SizedBox(
                 width: double.infinity,
-                child: FilledButton.icon(
+                child: FilledButton(
                   style: FilledButton.styleFrom(
                     backgroundColor: accent,
                     minimumSize: const Size.fromHeight(kLessonMinTap),
                   ),
                   onPressed: onNext,
-                  icon: const Icon(Icons.arrow_forward),
-                  label: Text('Continue to ${next!.title}'),
+                  child: Text(
+                    'Continue to ${next!.title}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             const SizedBox(height: 8),
@@ -519,12 +529,13 @@ class _EndOfLesson extends StatelessWidget {
 
 class _AdvancedPracticeStep extends StatelessWidget {
   final Lesson lesson;
-  const _AdvancedPracticeStep({required this.lesson});
+  final Future<QuizSet?>? future;
+  const _AdvancedPracticeStep({required this.lesson, required this.future});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuizSet?>(
-      future: QuizSetLoader.instance.load(lesson.id),
+      future: future,
       builder: (context, snap) {
         final set = snap.data;
         if (set == null) return const SizedBox.shrink();
