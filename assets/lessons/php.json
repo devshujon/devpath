@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "module": "PHP",
+  "lessons": [
+    {
+      "id": "php_b_01",
+      "module": "PHP",
+      "level": "beginner",
+      "order": 1,
+      "title": "PHP basics and echo",
+      "summary": "Run PHP code on the server, render HTML to the browser.",
+      "explanation": "PHP is a server-side language — code runs on the server before the browser ever sees the page. The 'echo' statement outputs text. PHP code lives between <?php and ?> tags.",
+      "codeExample": "<?php\n$name = 'Alice';\necho 'Hello, ' . $name . '!';\n?>",
+      "keyPoints": [
+        "Variables in PHP start with $",
+        "Statements end with semicolons",
+        "Use . (dot) to concatenate strings"
+      ],
+      "starterFiles": {
+        "index.php": "<?php\n// store your name in a variable\n// echo a greeting\n?>"
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "title": "HTML Headings — Advanced Practice",
+  "items": [
+    {
+      "type": "mcq",
+      "id": "q1_mcq",
+      "difficulty": "beginner",
+      "prompt": "Which tag defines the most important heading on a page?",
+      "options": ["<h1>", "<h6>", "<head>", "<title>"],
+      "correctIndex": 0,
+      "explanation": {
+        "whyCorrect": "<h1> is the top-level heading — the single most important one on the page.",
+        "whyOthersWrong": [
+          "<h6> is the smallest heading, not the largest.",
+          "<head> holds metadata and is not visible on the page.",
+          "<title> sets the browser-tab text, not an on-page heading."
+        ],
+        "bestPractice": "Use exactly one <h1> per page to name its main topic."
+      }
+    },
+    {
+      "type": "multiSelect",
+      "id": "q2_multi",
+      "difficulty": "beginner",
+      "prompt": "Select ALL valid HTML heading tags.",
+      "options": ["<h1>", "<h3>", "<h7>", "<heading>"],
+      "correctIndices": [0, 1],
+      "explanation": {
+        "whyCorrect": "HTML defines six heading levels, h1 through h6, so <h1> and <h3> are both valid.",
+        "whyOthersWrong": [
+          "<h7> does not exist — headings stop at h6.",
+          "<heading> is not a real HTML tag."
+        ],
+        "bestPractice": "Don't skip levels: move h1 to h2 to h3 in order."
+      }
+    },
+    {
+      "type": "fillBlank",
+      "id": "q3_fill",
+      "difficulty": "beginner",
+      "prompt": "To create the largest heading, you use the ____ tag. Write just the tag name.",
+      "hint": "e.g. h2",
+      "acceptedAnswers": ["h1", "<h1>", "h1 tag"],
+      "explanation": {
+        "whyCorrect": "The <h1> tag creates the largest, most important heading.",
+        "bestPractice": "Reserve <h1> for the page's main title."
+      }
+    },
+    {
+      "type": "outputPrediction",
+      "id": "q4_output",
+      "difficulty": "beginner",
+      "lang": "html",
+      "code": "<h1>Hello</h1>",
+      "prompt": "By default, how will a browser display the text 'Hello' here?",
+      "options": [
+        "Large and bold",
+        "Small and faint",
+        "As a clickable link",
+        "Hidden from view"
+      ],
+      "correctIndex": 0,
+      "explanation": {
+        "whyCorrect": "Browsers render <h1> text large and bold by default.",
+        "whyOthersWrong": [
+          "Small and faint describes muted text or lower-level headings, not <h1>.",
+          "A clickable link requires an <a> tag.",
+          "<h1> content is visible, not hidden."
+        ],
+        "bestPractice": "Appearance is the job of CSS — choose a heading level for meaning, not size."
+      }
+    },
+    {
+      "type": "findBug",
+      "id": "q5_bug",
+      "difficulty": "intermediate",
+      "lang": "html",
+      "code": "<h1>Welcome<h1>",
+      "prompt": "This heading does not render correctly. What is the bug?",
+      "options": [
+        "The closing tag should be </h1>, not <h1>",
+        "<h1> must always have a class",
+        "Headings cannot contain text",
+        "Nothing is wrong"
+      ],
+      "correctIndex": 0,
+      "explanation": {
+        "whyCorrect": "Every element needs a closing tag; the second <h1> should be </h1> (with a slash).",
+        "whyOthersWrong": [
+          "A class is optional, never required.",
+          "Headings are designed to contain text.",
+          "The missing slash is a genuine bug — it leaves the heading unclosed."
+        ],
+        "bestPractice": "Always close your tags in pairs: <h1>...</h1>."
+      }
+    },
+    {
+      "type": "completeCode",
+      "id": "q6_complete",
+      "difficulty": "intermediate",
+      "lang": "html",
+      "stub": "<h1>About Us____",
+      "prompt": "Replace ____ with the closing tag that finishes this heading.",
+      "acceptedAnswers": ["</h1>"],
+      "explanation": {
+        "whyCorrect": "</h1> closes the heading that <h1> opened.",
+        "bestPractice": "Opening and closing tags always come in pairs."
+      }
+    }
+  ]
+}
