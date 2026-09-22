@@ -261,10 +261,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const RecentProjectsCard(),
             const SizedBox(height: 20),
 
-            // 8. Quick-launch playground
+            // 8. Quick-launch playground + code editor
             _QuickPlayground(
               onTap: () =>
                   Navigator.pushNamed(context, AppRoutes.playground),
+            ),
+            const SizedBox(height: 12),
+            _QuickCodeEditor(
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.codeEditor),
             ),
             const SizedBox(height: 16),
           ],
@@ -328,6 +333,69 @@ class _SectionLabel extends StatelessWidget {
         const Spacer(),
         if (trailing != null) trailing!,
       ],
+    );
+  }
+}
+
+class _QuickCodeEditor extends StatelessWidget {
+  final VoidCallback onTap;
+  const _QuickCodeEditor({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final secondary = Theme.of(context).colorScheme.secondary;
+    return Material(
+      color: isDark ? const Color(0xFF141820) : Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark
+                  ? const Color(0xFF262B35)
+                  : const Color(0xFFE4E7EE),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: secondary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.terminal, color: secondary, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Code Editor',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Import, edit, save, and preview files.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, size: 20),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

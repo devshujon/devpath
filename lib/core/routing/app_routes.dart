@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../features/code_editor/screens/code_editor_file_screen.dart';
+import '../../features/code_editor/screens/code_editor_home_screen.dart';
+import '../../features/code_editor/screens/code_editor_preview_screen.dart';
 import '../../features/certificates/screens/certificate_detail_screen.dart';
 import '../../features/certificates/screens/certificates_screen.dart';
 import '../../features/challenges/screens/challenge_screen.dart';
@@ -72,6 +75,11 @@ class AppRoutes {
   // Notifications
   static const notificationSettings = '/notification-settings';
 
+  // Mobile code editor (separate from Playground)
+  static const codeEditor        = '/code-editor';
+  static const codeEditorFile    = '/code-editor/file';
+  static const codeEditorPreview = '/code-editor/preview';
+
   static Map<String, WidgetBuilder> routes = {
     shell:                (_) => const MainShell(),
     learn:                (_) => const LearnScreen(),
@@ -94,5 +102,8 @@ class AppRoutes {
     certificates:         (_) => const CertificatesScreen(),
     certificateDetail:    (_) => const CertificateDetailScreen(),
     notificationSettings: (_) => const NotificationSettingsScreen(),
+    codeEditor:        (_) => const CodeEditorHomeScreen(),
+    codeEditorFile:    (_) => const CodeEditorFileScreen(),
+    codeEditorPreview: (_) => const CodeEditorPreviewScreen(),
   };
 }

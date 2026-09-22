@@ -17,11 +17,23 @@ class CodeEditorPane extends StatefulWidget {
   /// a generation counter.
   final Object resetKey;
 
+  /// Optional overrides for file-editor settings (defaults match Playground).
+  final double fontSize;
+  final bool wordWrap;
+  final bool showLineNumbers;
+
+  /// When true, use the dark editor surface even if the app theme is light.
+  final bool preferDarkSurface;
+
   const CodeEditorPane({
     super.key,
     required this.initialText,
     required this.onChanged,
     required this.resetKey,
+    this.fontSize = 13,
+    this.wordWrap = false,
+    this.showLineNumbers = true,
+    this.preferDarkSurface = false,
   });
 
   @override
@@ -61,7 +73,8 @@ class _CodeEditorPaneState extends State<CodeEditorPane> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark =
+        widget.preferDarkSurface || Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF7F8FA);
     final fg = isDark ? const Color(0xFFE6E6E6) : const Color(0xFF1A1A1A);
     final gutterBg = isDark ? const Color(0xFF252526) : const Color(0xFFEDEFF2);
@@ -79,13 +92,16 @@ class _CodeEditorPaneState extends State<CodeEditorPane> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LineNumbers(
-            controller: _controller,
-            background: gutterBg,
-            foreground: gutterFg,
-          ),
+          if (widget.showLineNumbers)
+            _LineNumbers(
+              controller: _controller,
+              background: gutterBg,
+              foreground: gutterFg,
+              fontSize: widget.fontSize,
+            ),
           Expanded(
             child: TextField(
+              key: ValueKey('wrap-${widget.wordWrap}'),
               controller: _controller,
               focusNode: _focusNode,
               maxLines: null,
@@ -100,7 +116,7 @@ class _CodeEditorPaneState extends State<CodeEditorPane> {
                 color: fg,
                 fontFamily: 'monospace',
                 fontFamilyFallback: const ['Menlo', 'Courier'],
-                fontSize: 13,
+                fontSize: widget.fontSize,
                 height: 1.5,
               ),
               cursorColor: Theme.of(context).colorScheme.primary,
@@ -123,11 +139,13 @@ class _LineNumbers extends StatefulWidget {
   final TextEditingController controller;
   final Color background;
   final Color foreground;
+  final double fontSize;
 
   const _LineNumbers({
     required this.controller,
     required this.background,
     required this.foreground,
+    this.fontSize = 13,
   });
 
   @override
@@ -187,7 +205,7 @@ class _LineNumbersState extends State<_LineNumbers> {
                 color: widget.foreground,
                 fontFamily: 'monospace',
                 fontFamilyFallback: const ['Menlo', 'Courier'],
-                fontSize: 12,
+                fontSize: widget.fontSize - 1,
                 height: 1.625,
               ),
             ),

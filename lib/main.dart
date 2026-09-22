@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'app.dart';
 import 'core/services/storage_service.dart';
+import 'features/code_editor/providers/code_editor_provider.dart';
 import 'features/certificates/providers/certificates_provider.dart';
 import 'features/challenges/providers/challenges_provider.dart';
 import 'features/challenges/providers/daily_challenge_provider.dart';
@@ -67,6 +68,10 @@ Future<void> main() async {
     learning: learning,
     daily: daily,
   );
+  final codeEditor = CodeEditorProvider();
+  // ignore: unawaited_futures
+  codeEditor.load();
+
   final notifications = NotificationsProvider(
     scheduler: scheduler,
     service: notificationService,
@@ -89,6 +94,7 @@ Future<void> main() async {
         ChangeNotifierProvider.value(value: certificates),
         ChangeNotifierProvider.value(value: rewards),
         ChangeNotifierProvider.value(value: notifications),
+        ChangeNotifierProvider.value(value: codeEditor),
       ],
       child: const DevPathApp(),
     ),
