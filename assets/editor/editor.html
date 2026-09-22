@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <title>DevPath Editor</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
+      font-family: 'JetBrains Mono', Menlo, monospace;
+      background: #1e1e1e; color: #e6e6e6;
+    }
+    #editor {
+      width: 100%; height: 100%;
+      background: #1e1e1e; color: #e6e6e6;
+      border: 0; outline: none; padding: 14px;
+      font-family: 'JetBrains Mono', Menlo, monospace;
+      font-size: 14px; line-height: 1.5;
+      resize: none; box-sizing: border-box;
+      tab-size: 2; -moz-tab-size: 2;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    PLACEHOLDER EDITOR. This is a textarea fallback so the WebView host has
+    something to render. For production: replace with bundled CodeMirror per
+    `devpath_editor.md`.
+
+    Bundle CodeMirror 5.65.x minified into assets/editor/ and reference here:
+      <script src="codemirror.min.js"></script>
+      <link rel="stylesheet" href="codemirror.min.css">
+
+    The JS bridge expects these messages via window.FlutterBridge.postMessage:
+      { type: 'ready' }
+      { type: 'change', fileId: <string>, content: <string> }
+
+    And accepts these calls from Dart (via evaluateJavaScript):
+      setCode(fileId, code, mode)
+      flushPending()
+      getCode()
+  -->
+
+  <textarea id="editor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+  <script>
+    (function() {
+      var ed = document.getElementById('editor');
+      var currentFileId = null;
+      var debounce = null;
+
+      function send(payload) {
+        try {
+          if (window.FlutterBridge) {
+            FlutterBridge.postMessage(JSON.stringify(payload));
+          }
+        } catch (e) {}
+      }
+
+      window.setCode = function(fileId, code, mode) {
+        currentFileId = fileId;
+        ed.value = code || '';
+      };
+
+      window.getCode = function() {
+        return ed.value;
+      };
+
+      window.flushPending = function() {
+        if (debounce) { clearTimeout(debounce); debounce = null; }
+        if (currentFileId != null) {
+          send({ type: 'change', fileId: currentFileId, content: ed.value });
+        }
+      };
+
+      ed.addEventListener('input', function() {
+        if (debounce) clearTimeout(debounce);
+        debounce = setTimeout(function() {
+          if (currentFileId != null) {
+            send({ type: 'change', fileId: currentFileId, content: ed.value });
+          }
+        }, 300);
+      });
+
+      // IME composition (CJK, Hindi, Arabic) — flush after composition ends
+      ed.addEventListener('compositionend', function() {
+        setTimeout(function() {
+          if (currentFileId != null) {
+            send({ type: 'change', fileId: currentFileId, content: ed.value });
+          }
+        }, 50);
+      });
+
+      send({ type: 'ready' });
+    })();
+  </script>
+</body>
+</html>
