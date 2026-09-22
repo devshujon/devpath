@@ -253,7 +253,7 @@
   "exercise": {
     "prompt": "**Try it now.** Create a page with:\n- one H1\n- two paragraphs\n- one image (a placeholder `src` is fine)\n\nKeep a clean outline. Then tap **Open Playground**.",
     "starterCode": {
-      "html": "<h1>My first page</h1>\n<p>Write a short introduction here.</p>\n<p>Add a second paragraph.</p>\n<img src=\"https://via.placeholder.com/240x120\" alt=\"A simple placeholder\">",
+      "html": "<h1>My first page</h1>\n<p>Write a short introduction here.</p>\n<p>Add a second paragraph.</p>\n<img src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Crect fill='%23dddddd' width='240' height='120'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23666666' font-size='14'%3EImage%3C/text%3E%3C/svg%3E\" alt=\"A simple placeholder\">",
       "css": "body { font-family: system-ui, sans-serif; padding: 20px; line-height: 1.5; }\nimg { max-width: 100%; height: auto; }",
       "js": ""
     },

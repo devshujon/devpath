@@ -110,4 +110,68 @@ void main() {
     expect(find.text('Lesson complete'), findsOneWidget);
     expect(find.textContaining('Continue to'), findsOneWidget);
   });
+
+  testWidgets('locked incomplete lesson cannot be opened for study', (tester) async {
+    final learning = LearningProgressProvider.test(LearningProgressData.empty);
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<LearningProgressProvider>.value(
+        value: learning,
+        child: MaterialApp(
+          home: Builder(
+            builder: (context) {
+              return Navigator(
+                onGenerateRoute: (_) => MaterialPageRoute(
+                  settings: const RouteSettings(
+                    arguments: LessonDetailArguments(lessonId: 'b01_html'),
+                  ),
+                  builder: (_) => const LessonDetailScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    expect(find.text('This lesson is locked'), findsOneWidget);
+    expect(find.text('Take Quiz'), findsNothing);
+  });
+
+  testWidgets('completed lesson stays open after a catalog insert', (tester) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final learning = LearningProgressProvider.test(
+      const LearningProgressData(completedLessons: {'b01_html'}, currentXP: 50),
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<LearningProgressProvider>.value(
+        value: learning,
+        child: MaterialApp(
+          home: Builder(
+            builder: (context) {
+              return Navigator(
+                onGenerateRoute: (_) => MaterialPageRoute(
+                  settings: const RouteSettings(
+                    arguments: LessonDetailArguments(lessonId: 'b01_html'),
+                  ),
+                  builder: (_) => const LessonDetailScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(find.text('This lesson is locked'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }

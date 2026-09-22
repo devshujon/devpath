@@ -150,9 +150,10 @@ class LearningProgressProvider extends ChangeNotifier {
   }
 
   double overallProgress() {
-    final total = LessonsCatalog.all.length;
-    if (total == 0) return 0;
-    return completedLessons.length / total;
+    return difficultyCompletionRatio(
+      ids: LessonsCatalog.all.map((l) => l.id).toList(),
+      completedIds: completedLessons,
+    );
   }
 
   /// First lesson in catalog order that is unlocked AND not yet completed.
@@ -248,6 +249,17 @@ class LearningProgressProvider extends ChangeNotifier {
 
     // Already done? Return a no-op result so the UI handles gracefully.
     if (completedLessons.contains(lessonId)) {
+      return CompletionResult(
+        xpEarned: 0,
+        levelUp: false,
+        newLevel: currentLevel,
+        newlyEarnedBadges: const [],
+        nextLesson: recommendedNextLesson,
+      );
+    }
+
+    // Locked incomplete lessons cannot be completed out of order.
+    if (_isLocked(lesson)) {
       return CompletionResult(
         xpEarned: 0,
         levelUp: false,

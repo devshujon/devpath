@@ -16,4 +16,11 @@ void main() {
       expect(allowFigureNavigation(''), isFalse);
     });
   });
+
+  test('figure HTML shell is offline-only', () {
+    final html = wrapFigureHtml('<p>Hi</p>', isDark: false);
+    expect(html.contains("default-src 'none'"), isTrue);
+    expect(html.contains("img-src data:"), isTrue);
+    expect(html.contains('<p>Hi</p>'), isTrue);
+  });
 }

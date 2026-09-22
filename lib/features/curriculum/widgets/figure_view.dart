@@ -14,6 +14,24 @@ bool allowFigureNavigation(String url) {
   return u.startsWith('data:') || u.startsWith('about:');
 }
 
+/// Offline HTML shell for a figure spec. Remote subresources are blocked
+/// by CSP so diagrams never depend on the network.
+String wrapFigureHtml(String spec, {required bool isDark}) {
+  final fg = isDark ? '#E6E6E6' : '#1A1A1A';
+  return '''
+<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline';">
+<style>
+  html,body{margin:0;padding:8px;background:transparent;color:$fg;
+    font-family:-apple-system,Roboto,'Segoe UI',sans-serif;font-size:14px;
+    -webkit-text-size-adjust:100%;overflow-x:auto;max-width:100%}
+  *{box-sizing:border-box;max-width:100%}
+  img,svg,canvas{max-width:100%;height:auto}
+</style></head><body>$spec</body></html>''';
+}
+
 /// Renders a `figure` block's HTML `spec` inside a bounded, display-only
 /// WebView. Gesture recognizers are empty so the parent ListView keeps
 /// scrolling over the figure (the diagram is static).
@@ -63,10 +81,12 @@ class _FigureHtmlViewState extends State<FigureHtmlView>
             },
             onWebResourceError: (_) {
               _timeout?.cancel();
+              // Do not blank a loaded figure because a blocked
+              // subresource failed. Only fail when we have no document.
               if (mounted) {
                 setState(() {
                   _loading = false;
-                  _failed = true;
+                  if (_controller == null) _failed = true;
                 });
               }
             },
@@ -75,7 +95,7 @@ class _FigureHtmlViewState extends State<FigureHtmlView>
                 : NavigationDecision.prevent,
           ),
         )
-        ..loadHtmlString(_wrap(widget.spec));
+        ..loadHtmlString(wrapFigureHtml(widget.spec, isDark: _isDark));
       _controller = controller;
     } catch (e) {
       if (kDebugMode) {
@@ -97,23 +117,9 @@ class _FigureHtmlViewState extends State<FigureHtmlView>
     });
   }
 
-  String _wrap(String spec) {
-    final isDark =
-        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-            Brightness.dark;
-    final fg = isDark ? '#E6E6E6' : '#1A1A1A';
-    return '''
-<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<style>
-  html,body{margin:0;padding:8px;background:transparent;color:$fg;
-    font-family:-apple-system,Roboto,'Segoe UI',sans-serif;font-size:14px;
-    -webkit-text-size-adjust:100%;overflow-x:auto;max-width:100%}
-  *{box-sizing:border-box;max-width:100%}
-  img,svg,canvas{max-width:100%;height:auto}
-</style></head><body>$spec</body></html>''';
-  }
+  bool get _isDark =>
+      WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+      Brightness.dark;
 
   @override
   void dispose() {

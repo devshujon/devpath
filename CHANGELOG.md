@@ -13,6 +13,10 @@
 - Quiz / challenge "Next" actions no longer pop the freshly pushed screen.
 - Quiz questions scroll on 360–430dp phones instead of overflowing.
 - Path nodes only animate the current lesson (no per-node pulse rebuilds).
+- Locked lessons cannot be completed out of order; completed lessons stay open.
+- Quiz completion returns to the previous screen (roadmap/dashboard), not a leftover lesson.
+- Figure HTML uses an offline CSP; H1 exercise starter no longer loads a remote image.
+- Syntax breakdown and ASCII figures no longer overflow or nest-scroll on 360–430dp.
 
 ### Mobile UX
 - Lesson detail is redesigned for 360–430dp Android phones (wrap chips, responsive type, 16–20dp inset).

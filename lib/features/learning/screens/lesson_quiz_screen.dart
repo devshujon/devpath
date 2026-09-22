@@ -61,6 +61,54 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         body: const Center(child: Text('Lesson not found.')),
       );
     }
+    final locked = context.select<LearningProgressProvider, bool>(
+      (p) => p.lessonWithProgress(lesson).isLocked,
+    );
+    if (locked) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            lesson.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.lock_outline, size: 48, color: Theme.of(context).disabledColor),
+                const SizedBox(height: 16),
+                Text(
+                  'This lesson is locked',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () => Navigator.maybePop(context),
+                  child: const Text('Back'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    if (lesson.quizQuestions.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            lesson.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        body: const Center(child: Text('No quiz questions for this lesson.')),
+      );
+    }
     if (_showResult) {
       return _ResultView(
         lesson: lesson,
@@ -68,6 +116,10 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         total: lesson.quizQuestions.length,
         passed: _passed,
         finishing: _finishing,
+        alreadyCompleted: context
+            .select<LearningProgressProvider, bool>(
+              (p) => p.completedLessons.contains(lesson.id),
+            ),
         onRetry: () {
           setState(() {
             _answers.clear();
@@ -125,6 +177,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
           : () {
               navigatedAway = true;
               Navigator.of(context).pop(); // dismiss overlay
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(); // dismiss quiz
+              }
               Navigator.of(context).pushReplacementNamed(
                 AppRoutes.lessonDetail,
                 arguments:
@@ -136,7 +191,11 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     if (!mounted) return;
     setState(() => _finishing = false);
     if (!shouldPopAfterCompletionOverlay(navigatedAway: navigatedAway)) return;
-    if (context.mounted) await Navigator.maybePop(context);
+    if (!context.mounted) return;
+    Navigator.of(context).popUntil((route) {
+      final name = route.settings.name;
+      return name != AppRoutes.lessonQuiz && name != AppRoutes.lessonDetail;
+    });
   }
 }
 
@@ -317,6 +376,7 @@ class _ResultView extends StatelessWidget {
   final int total;
   final bool passed;
   final bool finishing;
+  final bool alreadyCompleted;
   final VoidCallback onRetry;
   final VoidCallback onFinish;
   final VoidCallback onClose;
@@ -327,6 +387,7 @@ class _ResultView extends StatelessWidget {
     required this.total,
     required this.passed,
     required this.finishing,
+    required this.alreadyCompleted,
     required this.onRetry,
     required this.onFinish,
     required this.onClose,
@@ -383,7 +444,9 @@ class _ResultView extends StatelessWidget {
                       : const Icon(Icons.check, size: 18),
                   label: Text(finishing
                       ? 'Saving…'
-                      : 'Claim ${lesson.xpReward} XP'),
+                      : alreadyCompleted
+                          ? 'Continue'
+                          : 'Claim ${lesson.xpReward} XP'),
                 ),
                 const SizedBox(height: 10),
                 OutlinedButton(

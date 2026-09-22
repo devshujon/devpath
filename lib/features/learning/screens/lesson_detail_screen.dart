@@ -67,14 +67,31 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     final isCompleted = context.select<LearningProgressProvider, bool>(
       (p) => p.completedLessons.contains(raw.id),
     );
+    final isLocked = context.select<LearningProgressProvider, bool>(
+      (p) => p.lessonWithProgress(raw).isLocked,
+    );
     final nextId = context.select<LearningProgressProvider, String?>(
       (p) => p.nextUnlockedIdAfter(raw.id),
     );
-    final lesson = raw.copyWith(isCompleted: isCompleted, isLocked: false);
+    final lesson =
+        raw.copyWith(isCompleted: isCompleted, isLocked: isLocked);
     final next = nextId == null ? null : LessonsCatalog.byId(nextId);
     final content = _result?.content;
     final accent = lesson.track.color;
     final pad = LessonType.horizontalPadding(context);
+
+    if (isLocked && !isCompleted) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            lesson.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        body: const _LockedLesson(),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -558,6 +575,48 @@ class _AdvancedPracticeStep extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _LockedLesson extends StatelessWidget {
+  const _LockedLesson();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.lock_outline,
+              size: 48,
+              color: Theme.of(context).disabledColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'This lesson is locked',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Finish the previous lesson to unlock it. Lessons you already completed stay open.',
+              textAlign: TextAlign.center,
+              style: LessonType.secondaryStyle(context),
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              onPressed: () => Navigator.maybePop(context),
+              child: const Text('Back'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

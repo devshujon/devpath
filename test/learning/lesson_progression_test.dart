@@ -136,6 +136,31 @@ void main() {
       );
     });
 
+    test('unknown lesson ids are locked unless already completed', () {
+      expect(
+        computeLessonLocked(
+          lessonId: 'ghost_lesson',
+          difficulty: Difficulty.beginner,
+          sameDifficultyIds: beginnerIds,
+          completedIds: {},
+          beginnerProgress: 0,
+          intermediateProgress: 0,
+        ),
+        isTrue,
+      );
+      expect(
+        computeLessonLocked(
+          lessonId: 'ghost_lesson',
+          difficulty: Difficulty.beginner,
+          sameDifficultyIds: beginnerIds,
+          completedIds: {'ghost_lesson'},
+          beginnerProgress: 0,
+          intermediateProgress: 0,
+        ),
+        isFalse,
+      );
+    });
+
     test('completed intermediate is never locked by the 50% gate', () {
       expect(
         computeLessonLocked(

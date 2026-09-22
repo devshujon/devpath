@@ -49,7 +49,8 @@ bool computeLessonLocked({
   }
 
   final idx = sameDifficultyIds.indexOf(lessonId);
-  if (idx <= 0) return false;
+  if (idx < 0) return true;
+  if (idx == 0) return false;
   return !completedIds.contains(sameDifficultyIds[idx - 1]);
 }
 

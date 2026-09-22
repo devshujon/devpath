@@ -354,24 +354,17 @@ class FigureBlockView extends StatelessWidget {
     if (block.kind == FigureKind.ascii) {
       body = Container(
         width: double.infinity,
-        constraints: BoxConstraints(
-          minHeight: 80,
-          maxHeight: block.height.clamp(80, 240),
-        ),
+        constraints: const BoxConstraints(minHeight: 80),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: lessonCodeBg(context),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SingleChildScrollView(
-              child: SelectableText(
-                block.spec,
-                style: LessonType.codeStyle(context),
-              ),
-            ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SelectableText(
+            block.spec,
+            style: LessonType.codeStyle(context),
           ),
         ),
       );
@@ -803,31 +796,31 @@ class SyntaxBreakdownBlockView extends StatelessWidget {
                 for (final p in block.parts)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 8,
-                      runSpacing: 6,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: accent.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            p.fragment,
-                            style: LessonType.codeStyle(context).copyWith(
-                              color: accent,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.5,
+                        Flexible(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: accent.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              p.fragment,
+                              style: LessonType.codeStyle(context).copyWith(
+                                color: accent,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12.5,
+                              ),
                             ),
                           ),
                         ),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(minWidth: 160),
+                        const SizedBox(width: 8),
+                        Expanded(
                           child: Text(
                             p.label,
                             style: LessonType.secondaryStyle(context),

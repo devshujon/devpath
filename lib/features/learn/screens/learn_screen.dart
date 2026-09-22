@@ -71,11 +71,9 @@ class _LearnScreenState extends State<LearnScreen> {
         : all.where((l) => l.track == _filter).toList();
     if (lessons.isEmpty) return const [];
 
-    // "Current" = first non-completed, non-locked lesson on this filter.
-    // Drives the pulsing ring affordance on exactly one node.
-    final currentIndex = lessons.indexWhere(
-      (l) => !l.isCompleted && !l.isLocked,
-    );
+    // One global "current" lesson — the recommended next — so only one
+    // node pulses even when multiple difficulties are unlocked.
+    final currentId = progress.recommendedNextLesson?.id;
 
     final completedCount = lessons.where((l) => l.isCompleted).length;
 
@@ -86,7 +84,7 @@ class _LearnScreenState extends State<LearnScreen> {
         total: lessons.length,
       ),
       const SizedBox(height: 8),
-      ..._pathNodes(lessons, currentIndex),
+      ..._pathNodes(lessons, currentId),
       const SizedBox(height: 24),
     ];
   }
@@ -95,7 +93,7 @@ class _LearnScreenState extends State<LearnScreen> {
   /// sine wave so the path feels alive instead of stuck on the y-axis.
   /// Spacing between nodes is constant; horizontal sway is ±0.55 of
   /// the available width.
-  List<Widget> _pathNodes(List<Lesson> lessons, int currentIndex) {
+  List<Widget> _pathNodes(List<Lesson> lessons, String? currentId) {
     final out = <Widget>[];
     for (var i = 0; i < lessons.length; i++) {
       final lesson = lessons[i];
@@ -113,7 +111,7 @@ class _LearnScreenState extends State<LearnScreen> {
             padding: const EdgeInsets.symmetric(vertical: 2),
             child: LessonPathNode(
               lesson: lesson,
-              isCurrent: i == currentIndex,
+              isCurrent: lesson.id == currentId,
               onTap: () => LessonStartSheet.show(context, lesson),
             ),
           ),
