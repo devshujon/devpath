@@ -52,15 +52,11 @@ class FigureHtmlView extends StatefulWidget {
   State<FigureHtmlView> createState() => _FigureHtmlViewState();
 }
 
-class _FigureHtmlViewState extends State<FigureHtmlView>
-    with AutomaticKeepAliveClientMixin {
+class _FigureHtmlViewState extends State<FigureHtmlView> {
   WebViewController? _controller;
   bool _loading = true;
   bool _failed = false;
   Timer? _timeout;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -129,7 +125,6 @@ class _FigureHtmlViewState extends State<FigureHtmlView>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final maxH = MediaQuery.sizeOf(context).height;
     final height = widget.height.clamp(80.0, maxH < 700 ? 220.0 : 280.0);

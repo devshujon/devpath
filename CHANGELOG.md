@@ -17,6 +17,8 @@
 - Quiz completion returns to the previous screen (roadmap/dashboard), not a leftover lesson.
 - Figure HTML uses an offline CSP; H1 exercise starter no longer loads a remote image.
 - Syntax breakdown and ASCII figures no longer overflow or nest-scroll on 360–430dp.
+- Lesson detail pins Take Quiz / Open Playground below the scroll area so Android WebViews cannot steal taps.
+- Quiz screen reads route arguments in `didChangeDependencies` with visible errors when init fails.
 
 ### Mobile UX
 - Lesson detail is redesigned for 360–430dp Android phones (wrap chips, responsive type, 16–20dp inset).

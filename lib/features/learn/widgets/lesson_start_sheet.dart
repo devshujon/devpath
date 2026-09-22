@@ -152,11 +152,12 @@ class LessonStartSheet extends StatelessWidget {
   }
 
   void _open(BuildContext context) {
-    Navigator.of(context).pop(); // close sheet first
-    Navigator.pushNamed(
-      context,
+    final navigator = Navigator.of(context, rootNavigator: true);
+    final args = LessonDetailArguments(lessonId: lesson.id);
+    navigator.pop(); // close sheet first
+    navigator.pushNamed(
       AppRoutes.lessonDetail,
-      arguments: LessonDetailArguments(lessonId: lesson.id),
+      arguments: args,
     );
   }
 }

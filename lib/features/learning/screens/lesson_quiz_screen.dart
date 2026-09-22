@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,8 @@ class LessonQuizScreen extends StatefulWidget {
 
 class _LessonQuizScreenState extends State<LessonQuizScreen> {
   Lesson? _lesson;
+  String? _argsLessonId;
+  String? _initError;
   int _index = 0;
   final Map<int, int> _answers = {};
   bool _showResult = false;
@@ -25,12 +28,36 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
   static const double _passingThreshold = 0.7;
 
-  void _ensureLesson(BuildContext context) {
-    if (_lesson != null) return;
-    final args =
-        ModalRoute.of(context)?.settings.arguments as LessonDetailArguments?;
-    if (args == null) return;
-    _lesson = LessonsCatalog.byId(args.lessonId);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is! LessonDetailArguments) {
+      if (_initError == null && _lesson == null) {
+        setState(() => _initError = 'Quiz could not start (missing lesson).');
+      }
+      return;
+    }
+    if (_argsLessonId == args.lessonId && _lesson != null) return;
+    _argsLessonId = args.lessonId;
+    if (kDebugMode) {
+      debugPrint('LessonQuiz: initializing for ${args.lessonId}');
+    }
+    final loaded = LessonsCatalog.byId(args.lessonId);
+    if (loaded == null) {
+      setState(() {
+        _lesson = null;
+        _initError = 'Lesson not found: ${args.lessonId}';
+      });
+      return;
+    }
+    setState(() {
+      _lesson = loaded;
+      _initError = null;
+      _index = 0;
+      _answers.clear();
+      _showResult = false;
+    });
   }
 
   int get _correctCount {
@@ -53,12 +80,19 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _ensureLesson(context);
     final lesson = _lesson;
     if (lesson == null) {
       return Scaffold(
-        appBar: AppBar(),
-        body: const Center(child: Text('Lesson not found.')),
+        appBar: AppBar(title: const Text('Quiz')),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text(
+              _initError ?? 'Loading quiz…',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
       );
     }
     final locked = context.select<LearningProgressProvider, bool>(

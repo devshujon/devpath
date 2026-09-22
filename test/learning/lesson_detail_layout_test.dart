@@ -94,18 +94,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 80));
     expect(tester.takeException(), isNull);
     expect(find.text('Completed'), findsOneWidget);
-
-    final scrollable = find.descendant(
-      of: find.byType(CustomScrollView),
-      matching: find.byType(Scrollable),
-    );
-    for (var i = 0; i < 24; i++) {
-      final position = tester.state<ScrollableState>(scrollable).position;
-      position.jumpTo(position.maxScrollExtent);
-      await tester.pump();
-      if (find.text('Lesson complete').evaluate().isNotEmpty) break;
-    }
-
     expect(tester.takeException(), isNull);
     expect(find.text('Lesson complete'), findsOneWidget);
     expect(find.textContaining('Continue to'), findsOneWidget);

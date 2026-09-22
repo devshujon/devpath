@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,9 +32,22 @@ class LessonDetailScreen extends StatefulWidget {
 
 class _LessonDetailScreenState extends State<LessonDetailScreen> {
   String? _loadedId;
+  String? _routeLessonId;
   CurriculumLoadResult? _result;
   bool _loading = true;
   Future<QuizSet?>? _quizFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)?.settings.arguments as LessonDetailArguments?;
+    final lessonId = args?.lessonId;
+    if (lessonId == null || lessonId == _routeLessonId) return;
+    _routeLessonId = lessonId;
+    final raw = LessonsCatalog.byId(lessonId);
+    if (raw != null) _ensureLoad(raw);
+  }
 
   void _ensureLoad(Lesson lesson) {
     if (_loadedId == lesson.id) return;
@@ -61,8 +75,6 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
 
     final raw = LessonsCatalog.byId(args.lessonId);
     if (raw == null) return _MissingLesson(id: args.lessonId);
-
-    _ensureLoad(raw);
 
     final isCompleted = context.select<LearningProgressProvider, bool>(
       (p) => p.completedLessons.contains(raw.id),
@@ -112,71 +124,93 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(pad, 8, pad, 8),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _LessonHero(lesson: lesson, accent: accent),
-                const SizedBox(height: 14),
-                _MetaWrap(lesson: lesson),
-                if (content?.objectives.isNotEmpty == true) ...[
-                  const SizedBox(height: 16),
-                  _Objectives(items: content!.objectives, accent: accent),
-                ],
-                const SizedBox(height: 18),
-                if (_loading) const LessonSkeleton(),
-                if (!_loading && content != null)
-                  BlockRenderer(
-                    key: ValueKey<String>('blocks-${lesson.id}'),
-                    content: content,
-                    accent: accent,
-                    onTryCode: (code, lang) => _openPlaygroundWith(
-                      context,
-                      lesson,
-                      _slotFor(lang, code),
-                    ),
-                    onOpenStarter: (starter) =>
-                        _openPlaygroundWith(context, lesson, starter),
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(pad, 8, pad, 8),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      _LessonHero(lesson: lesson, accent: accent),
+                      const SizedBox(height: 14),
+                      _MetaWrap(lesson: lesson),
+                      if (content?.objectives.isNotEmpty == true) ...[
+                        const SizedBox(height: 16),
+                        _Objectives(items: content!.objectives, accent: accent),
+                      ],
+                      const SizedBox(height: 18),
+                      if (_loading) const LessonSkeleton(),
+                      if (!_loading && content != null)
+                        BlockRenderer(
+                          key: ValueKey<String>('blocks-${lesson.id}'),
+                          content: content,
+                          accent: accent,
+                          onTryCode: (code, lang) => _openPlaygroundWith(
+                            context,
+                            lesson,
+                            _slotFor(lang, code),
+                          ),
+                          onOpenStarter: (starter) =>
+                              _openPlaygroundWith(context, lesson, starter),
+                        ),
+                      if (!_loading && content == null) ...[
+                        if (_result?.showFailureBanner == true)
+                          const _LoadFallbackBanner(),
+                        _SimpleAbout(lesson: lesson),
+                        const SizedBox(height: 16),
+                        ExerciseBlockView(
+                          ExerciseBlock(
+                            prompt:
+                                'Practice this lesson in the playground. Use the starter code, tap Run, then come back for the quiz.',
+                            starterCode: lesson.starterCode,
+                            checks: const [],
+                          ),
+                          accent,
+                          onStart: (starter) =>
+                              _openPlaygroundWith(context, lesson, starter),
+                        ),
+                        const SizedBox(height: 16),
+                        QuickRecapView(
+                          items: [
+                            lesson.description,
+                            'Practice in the playground, then take the quiz to earn XP.',
+                          ],
+                          accent: accent,
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      _AdvancedPracticeStep(
+                        future: _quizFuture,
+                        lesson: lesson,
+                      ),
+                      const SizedBox(height: 8),
+                    ]),
                   ),
-                if (!_loading && content == null) ...[
-                  if (_result?.showFailureBanner == true)
-                    const _LoadFallbackBanner(),
-                  _SimpleAbout(lesson: lesson),
-                  const SizedBox(height: 16),
-                  ExerciseBlockView(
-                    ExerciseBlock(
-                      prompt:
-                          'Practice this lesson in the playground. Use the starter code, tap Run, then come back for the quiz.',
-                      starterCode: lesson.starterCode,
-                      checks: const [],
-                    ),
-                    accent,
-                    onStart: (starter) =>
-                        _openPlaygroundWith(context, lesson, starter),
-                  ),
-                  const SizedBox(height: 16),
-                  QuickRecapView(
-                    items: [
-                      lesson.description,
-                      'Practice in the playground, then take the quiz to earn XP.',
-                    ],
-                    accent: accent,
-                  ),
-                ],
-                const SizedBox(height: 22),
-                _EndOfLesson(
+                ),
+              ],
+            ),
+          ),
+          // Pinned above Android WebView platform views in the scroll
+          // area so Take Quiz / Open Playground always receive taps.
+          Material(
+            elevation: 6,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(pad, 8, pad, 8),
+                child: _EndOfLesson(
                   lesson: lesson,
                   next: next,
                   onQuiz: () => _openQuiz(context, lesson),
                   onPlayground: () => _openPlayground(context, lesson),
-                  onNext: next == null ? null : () => _openLesson(context, next),
+                  onNext:
+                      next == null ? null : () => _openLesson(context, next),
                 ),
-                _AdvancedPracticeStep(future: _quizFuture, lesson: lesson),
-                SizedBox(height: MediaQuery.paddingOf(context).bottom + 24),
-              ]),
+              ),
             ),
           ),
         ],
@@ -215,12 +249,42 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     return {'html': '', 'css': '', 'js': '', slot: code};
   }
 
-  void _openQuiz(BuildContext context, Lesson lesson) {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.lessonQuiz,
-      arguments: LessonDetailArguments(lessonId: lesson.id),
-    );
+  Future<void> _openQuiz(BuildContext context, Lesson lesson) async {
+    if (kDebugMode) {
+      debugPrint(
+        'LessonDetail: Take Quiz tapped for ${lesson.id} '
+        '(${lesson.quizQuestions.length} questions)',
+      );
+    }
+    if (lesson.quizQuestions.isEmpty) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('This lesson has no quiz yet. Try again later.'),
+        ),
+      );
+      return;
+    }
+
+    final args = LessonDetailArguments(lessonId: lesson.id);
+    final navigator = Navigator.of(context, rootNavigator: true);
+    try {
+      await navigator.pushNamed<void>(
+        AppRoutes.lessonQuiz,
+        arguments: args,
+      );
+      if (kDebugMode) {
+        debugPrint('LessonDetail: returned from quiz for ${lesson.id}');
+      }
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('LessonDetail: quiz navigation failed: $e\n$st');
+      }
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not open the quiz: $e')),
+      );
+    }
   }
 
   void _openLesson(BuildContext context, Lesson lesson) {
