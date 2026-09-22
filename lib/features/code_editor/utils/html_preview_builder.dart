@@ -6,11 +6,20 @@ class HtmlPreviewBuilder {
   static String build({
     required String htmlSource,
     required Map<String, String> workspaceFilesByLowerName,
+    Set<String> ambiguousBasenames = const {},
   }) {
     var html = htmlSource;
 
-    html = _inlineStylesheets(html, workspaceFilesByLowerName);
-    html = _inlineScripts(html, workspaceFilesByLowerName);
+    html = _inlineStylesheets(
+      html,
+      workspaceFilesByLowerName,
+      ambiguousBasenames,
+    );
+    html = _inlineScripts(
+      html,
+      workspaceFilesByLowerName,
+      ambiguousBasenames,
+    );
 
     if (!_looksLikeFullDocument(html)) {
       html = '''<!DOCTYPE html>
@@ -33,9 +42,15 @@ $html
     return lower.contains('<html') && lower.contains('<body');
   }
 
+  static String _ambigComment(Set<String> ambiguous, String key) {
+    if (!ambiguous.contains(key)) return '';
+    return '<!-- workspace: multiple files named $key; using most recently updated -->\n';
+  }
+
   static String _inlineStylesheets(
     String html,
     Map<String, String> files,
+    Set<String> ambiguous,
   ) {
     final linkRe = RegExp(
       r'''<link[^>]+rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>''',
@@ -49,11 +64,15 @@ $html
       if (css == null) {
         return '<!-- missing local CSS: $href -->';
       }
-      return '<style data-inlined-from="$key">\n$css\n</style>';
+      return '${_ambigComment(ambiguous, key)}<style data-inlined-from="$key">\n$css\n</style>';
     });
   }
 
-  static String _inlineScripts(String html, Map<String, String> files) {
+  static String _inlineScripts(
+    String html,
+    Map<String, String> files,
+    Set<String> ambiguous,
+  ) {
     final scriptRe = RegExp(
       r'''<script[^>]+src=["']([^"']+)["'][^>]*>\s*</script>''',
       caseSensitive: false,
@@ -67,7 +86,7 @@ $html
         return '<!-- missing local JS: $src -->';
       }
       final safe = js.replaceAll('</script>', r'<\/script>');
-      return '<script data-inlined-from="$key">\n$safe\n</script>';
+      return '${_ambigComment(ambiguous, key)}<script data-inlined-from="$key">\n$safe\n</script>';
     });
   }
 

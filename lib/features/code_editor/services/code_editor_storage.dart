@@ -121,18 +121,6 @@ class CodeEditorStorage {
     return true;
   }
 
-  Future<Map<String, String>> allBodiesByBaseName() async {
-    final index = await loadIndex();
-    final out = <String, String>{};
-    for (final f in index) {
-      final body = await readContent(f.id);
-      if (body != null) {
-        out[f.displayName.toLowerCase()] = body;
-      }
-    }
-    return out;
-  }
-
   Future<File> _bodyFile(String fileId) async {
     final dir = await _rootDir();
     return File(p.join(dir.path, '$fileId.txt'));

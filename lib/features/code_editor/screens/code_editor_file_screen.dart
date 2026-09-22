@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
-import '../../editor/widgets/code_editor_pane.dart';
+import '../../editor/widgets/codemirror_editor_pane.dart';
 import '../models/editor_file_type.dart';
+import '../models/workspace_file.dart';
 import '../providers/code_editor_provider.dart';
 import '../widgets/editor_settings_sheet.dart';
 import '../widgets/unsaved_changes_dialog.dart';
@@ -21,6 +22,9 @@ class CodeEditorFileScreen extends StatefulWidget {
 }
 
 class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
+  final GlobalKey<CodemirrorEditorPaneState> _editorKey =
+      GlobalKey<CodemirrorEditorPaneState>();
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -32,12 +36,22 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
     if (match.isEmpty) return;
     if (editor.openFile?.id != args.fileId) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        editor.openWorkspaceFile(match.first);
+        if (mounted) editor.openWorkspaceFile(match.first);
       });
     }
   }
 
+  Future<void> _syncFromEditor() async {
+    final state = _editorKey.currentState;
+    if (state == null) return;
+    final text = await state.flushAndGetCode();
+    if (!mounted) return;
+    context.read<CodeEditorProvider>().applyEditorBuffer(text);
+  }
+
   Future<bool> _onWillPop() async {
+    await _syncFromEditor();
+    if (!mounted) return false;
     final editor = context.read<CodeEditorProvider>();
     if (!editor.isDirty) return true;
     final action = await showUnsavedChangesDialog(context);
@@ -64,40 +78,45 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
           Navigator.of(context).pop();
         }
       },
-      child: Consumer<CodeEditorProvider>(
-        builder: (context, editor, _) {
-          final file = editor.openFile;
+      child: Selector<CodeEditorProvider, WorkspaceFile?>(
+        selector: (_, p) => p.openFile,
+        builder: (context, file, _) {
           if (file == null) {
             return Scaffold(
               appBar: AppBar(title: const Text('Editor')),
               body: const Center(child: Text('File not found')),
             );
           }
-          final settings = editor.settings;
-          final canPreview = file.kind.supportsHtmlPreview;
-
           return Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      file.displayName,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (editor.isDirty) ...[
-                    const SizedBox(width: 6),
-                    Tooltip(
-                      message: 'Unsaved changes',
-                      child: Icon(
-                        Icons.circle,
-                        size: 10,
-                        color: Theme.of(context).colorScheme.primary,
+              title: Selector<CodeEditorProvider, bool>(
+                selector: (_, p) => p.isDirty,
+                builder: (context, dirty, _) {
+                  return Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          file.displayName,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
-                    ),
-                  ],
-                ],
+                      if (dirty) ...[
+                        const SizedBox(width: 6),
+                        Tooltip(
+                          message: 'Unsaved changes',
+                          child: Icon(
+                            Icons.circle,
+                            size: 10,
+                            semanticLabel: 'Unsaved changes',
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                },
               ),
               actions: [
                 PopupMenuButton<String>(
@@ -132,15 +151,10 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: CodeEditorPane(
-                    key: ValueKey('${file.id}-${file.updatedAt.millisecondsSinceEpoch}'),
-                    resetKey: '${file.id}-${file.updatedAt.millisecondsSinceEpoch}',
-                    initialText: editor.content,
-                    onChanged: editor.updateContent,
-                    fontSize: settings.fontSize,
-                    wordWrap: settings.wordWrap,
-                    showLineNumbers: settings.showLineNumbers,
-                    preferDarkSurface: settings.darkEditorTheme,
+                  child: _CodemirrorHost(
+                    editorKey: _editorKey,
+                    fileId: file.id,
+                    fileKind: file.kind,
                   ),
                 ),
                 Material(
@@ -163,13 +177,13 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: FilledButton(
-                              onPressed: canPreview
+                              onPressed: file.kind.supportsHtmlPreview
                                   ? () => _preview(context)
                                   : file.kind.isPhp
                                       ? () => _phpInfo(context)
                                       : null,
                               child: Text(
-                                canPreview
+                                file.kind.supportsHtmlPreview
                                     ? 'Preview'
                                     : file.kind.isPhp
                                         ? 'Run info'
@@ -191,16 +205,18 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
   }
 
   Future<void> _save(BuildContext context) async {
+    await _syncFromEditor();
+    if (!context.mounted) return;
     final ok = await context.read<CodeEditorProvider>().save();
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(ok ? 'Saved' : 'Save failed'),
-      ),
+      SnackBar(content: Text(ok ? 'Saved' : 'Save failed')),
     );
   }
 
   Future<void> _preview(BuildContext context) async {
+    await _syncFromEditor();
+    if (!context.mounted) return;
     final editor = context.read<CodeEditorProvider>();
     if (editor.isDirty) {
       final ok = await editor.save(silent: true);
@@ -235,6 +251,8 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
   }
 
   Future<void> _onMenu(BuildContext context, String value) async {
+    await _syncFromEditor();
+    if (!context.mounted) return;
     final editor = context.read<CodeEditorProvider>();
     if (value == 'save_as') {
       final (_, err) = await editor.saveAs();
@@ -329,4 +347,94 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
       Navigator.of(context).pop();
     }
   }
+}
+
+/// Keeps the WebView editor mounted; only settings/file kind refresh the pane.
+class _CodemirrorHost extends StatefulWidget {
+  final GlobalKey<CodemirrorEditorPaneState> editorKey;
+  final String fileId;
+  final EditorFileKind fileKind;
+
+  const _CodemirrorHost({
+    required this.editorKey,
+    required this.fileId,
+    required this.fileKind,
+  });
+
+  @override
+  State<_CodemirrorHost> createState() => _CodemirrorHostState();
+}
+
+class _CodemirrorHostState extends State<_CodemirrorHost> {
+  late String _bootText;
+
+  @override
+  void initState() {
+    super.initState();
+    _bootText = context.read<CodeEditorProvider>().content;
+  }
+
+  @override
+  void didUpdateWidget(covariant _CodemirrorHost old) {
+    super.didUpdateWidget(old);
+    if (old.fileId != widget.fileId) {
+      _bootText = context.read<CodeEditorProvider>().content;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<CodeEditorProvider, CodeEditorSettingsView>(
+      selector: (_, p) => CodeEditorSettingsView(
+        fontSize: p.settings.fontSize,
+        wordWrap: p.settings.wordWrap,
+        showLineNumbers: p.settings.showLineNumbers,
+        darkEditorTheme: p.settings.darkEditorTheme,
+      ),
+      builder: (context, view, _) {
+        return CodemirrorEditorPane(
+          key: widget.editorKey,
+          documentKey: widget.fileId,
+          fileKind: widget.fileKind,
+          initialText: _bootText,
+          onChanged: context.read<CodeEditorProvider>().updateContent,
+          fontSize: view.fontSize,
+          wordWrap: view.wordWrap,
+          showLineNumbers: view.showLineNumbers,
+          preferDarkSurface: view.darkEditorTheme,
+        );
+      },
+    );
+  }
+}
+
+@immutable
+class CodeEditorSettingsView {
+  final double fontSize;
+  final bool wordWrap;
+  final bool showLineNumbers;
+  final bool darkEditorTheme;
+
+  const CodeEditorSettingsView({
+    required this.fontSize,
+    required this.wordWrap,
+    required this.showLineNumbers,
+    required this.darkEditorTheme,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      other is CodeEditorSettingsView &&
+      fontSize == other.fontSize &&
+      wordWrap == other.wordWrap &&
+      showLineNumbers == other.showLineNumbers &&
+      darkEditorTheme == other.darkEditorTheme;
+
+  @override
+  int get hashCode => Object.hash(
+        fontSize,
+        wordWrap,
+        showLineNumbers,
+        darkEditorTheme,
+      );
 }

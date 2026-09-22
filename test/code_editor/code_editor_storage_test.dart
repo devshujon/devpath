@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:devpath/features/code_editor/models/editor_file_type.dart';
 import 'package:devpath/features/code_editor/services/code_editor_storage.dart';
+import 'package:devpath/features/code_editor/utils/workspace_preview_assets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,8 +45,8 @@ void main() {
     expect(index.length, 1);
     expect(index.first.displayName, 'page.html');
 
-    final map = await storage.allBodiesByBaseName();
-    expect(map['page.html'], contains('v2'));
+    final assets = await WorkspacePreviewAssets.load(storage: storage);
+    expect(assets.byBasename['page.html'], contains('v2'));
 
     expect(await storage.deleteFile(entry.id), isTrue);
     expect((await storage.loadIndex()).isEmpty, isTrue);

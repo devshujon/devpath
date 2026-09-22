@@ -4,50 +4,56 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>DevPath Editor</title>
+  <link rel="stylesheet" href="codemirror.css">
+  <link rel="stylesheet" href="theme/material-darker.css">
   <style>
     html, body {
       margin: 0; padding: 0; height: 100%; overflow: hidden;
-      font-family: 'JetBrains Mono', Menlo, monospace;
-      background: #1e1e1e; color: #e6e6e6;
+      background: #212121;
     }
-    #editor {
-      width: 100%; height: 100%;
-      background: #1e1e1e; color: #e6e6e6;
-      border: 0; outline: none; padding: 14px;
-      font-family: 'JetBrains Mono', Menlo, monospace;
-      font-size: 14px; line-height: 1.5;
-      resize: none; box-sizing: border-box;
-      tab-size: 2; -moz-tab-size: 2;
+    .CodeMirror {
+      height: 100% !important;
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .CodeMirror-scroll {
+      overflow: scroll !important;
+      margin-bottom: 0; margin-right: 0;
+      padding-bottom: 0;
     }
   </style>
 </head>
 <body>
-  <!--
-    PLACEHOLDER EDITOR. This is a textarea fallback so the WebView host has
-    something to render. For production: replace with bundled CodeMirror per
-    `devpath_editor.md`.
-
-    Bundle CodeMirror 5.65.x minified into assets/editor/ and reference here:
-      <script src="codemirror.min.js"></script>
-      <link rel="stylesheet" href="codemirror.min.css">
-
-    The JS bridge expects these messages via window.FlutterBridge.postMessage:
-      { type: 'ready' }
-      { type: 'change', fileId: <string>, content: <string> }
-
-    And accepts these calls from Dart (via evaluateJavaScript):
-      setCode(fileId, code, mode)
-      flushPending()
-      getCode()
-  -->
-
   <textarea id="editor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+  <script src="codemirror.js"></script>
+  <script src="addon/edit/matchbrackets.js"></script>
+  <script src="mode/xml/xml.js"></script>
+  <script src="mode/javascript/javascript.js"></script>
+  <script src="mode/css/css.js"></script>
+  <script src="mode/htmlmixed/htmlmixed.js"></script>
+  <script src="mode/clike/clike.js"></script>
+  <script src="mode/php/php.js"></script>
+  <script src="mode/markdown/markdown.js"></script>
 
   <script>
     (function() {
-      var ed = document.getElementById('editor');
+      var textarea = document.getElementById('editor');
       var currentFileId = null;
       var debounce = null;
+      var editor = CodeMirror.fromTextArea(textarea, {
+        lineNumbers: true,
+        lineWrapping: false,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        indentUnit: 2,
+        tabSize: 2,
+        indentWithTabs: false,
+        theme: 'material-darker',
+        mode: 'htmlmixed',
+        viewportMargin: Infinity
+      });
 
       function send(payload) {
         try {
@@ -59,36 +65,51 @@
 
       window.setCode = function(fileId, code, mode) {
         currentFileId = fileId;
-        ed.value = code || '';
+        var nextMode = mode || 'text/plain';
+        if (editor.getOption('mode') !== nextMode) {
+          editor.setOption('mode', nextMode);
+        }
+        var next = code || '';
+        if (editor.getValue() !== next) {
+          editor.setValue(next);
+        }
       };
 
       window.getCode = function() {
-        return ed.value;
+        return editor.getValue();
+      };
+
+      window.configureEditor = function(opts) {
+        if (!opts) return;
+        if (typeof opts.lineNumbers === 'boolean') {
+          editor.setOption('lineNumbers', opts.lineNumbers);
+        }
+        if (typeof opts.wordWrap === 'boolean') {
+          editor.setOption('lineWrapping', opts.wordWrap);
+        }
+        if (typeof opts.fontSize === 'number') {
+          editor.getWrapperElement().style.fontSize = opts.fontSize + 'px';
+        }
+        if (typeof opts.darkTheme === 'boolean') {
+          editor.setOption('theme', opts.darkTheme ? 'material-darker' : 'default');
+        }
+        editor.refresh();
       };
 
       window.flushPending = function() {
         if (debounce) { clearTimeout(debounce); debounce = null; }
         if (currentFileId != null) {
-          send({ type: 'change', fileId: currentFileId, content: ed.value });
+          send({ type: 'change', fileId: currentFileId, content: editor.getValue() });
         }
       };
 
-      ed.addEventListener('input', function() {
+      editor.on('change', function() {
         if (debounce) clearTimeout(debounce);
         debounce = setTimeout(function() {
           if (currentFileId != null) {
-            send({ type: 'change', fileId: currentFileId, content: ed.value });
+            send({ type: 'change', fileId: currentFileId, content: editor.getValue() });
           }
-        }, 300);
-      });
-
-      // IME composition (CJK, Hindi, Arabic) — flush after composition ends
-      ed.addEventListener('compositionend', function() {
-        setTimeout(function() {
-          if (currentFileId != null) {
-            send({ type: 'change', fileId: currentFileId, content: ed.value });
-          }
-        }, 50);
+        }, 120);
       });
 
       send({ type: 'ready' });

@@ -28,6 +28,17 @@ void main() {
       expect(out, isNot(contains('href="./style.css"')));
     });
 
+    test('documents ambiguous basename inlining', () {
+      const html =
+          '<html><head><link rel="stylesheet" href="style.css"></head><body></body></html>';
+      final out = HtmlPreviewBuilder.build(
+        htmlSource: html,
+        workspaceFilesByLowerName: {'style.css': 'body{color:blue}'},
+        ambiguousBasenames: {'style.css'},
+      );
+      expect(out, contains('multiple files named style.css'));
+    });
+
     test('skips remote assets with comment', () {
       const html =
           '<html><head><link rel="stylesheet" href="https://cdn/x.css"></head><body></body></html>';

@@ -12,6 +12,7 @@ import '../services/code_editor_storage.dart';
 import '../utils/file_templates.dart';
 import '../utils/file_type_registry.dart';
 import '../utils/html_preview_builder.dart';
+import '../utils/workspace_preview_assets.dart';
 
 class CodeEditorProvider extends ChangeNotifier {
   final CodeEditorStorage _storage = CodeEditorStorage.instance;
@@ -28,6 +29,9 @@ class CodeEditorProvider extends ChangeNotifier {
   String _savedContent = '';
   Timer? _autoSaveTimer;
   int _previewVersion = 0;
+  bool _dirtyNotified = false;
+  bool _saveInFlight = false;
+  int _autoSaveGeneration = 0;
 
   List<WorkspaceFile> get files => List.unmodifiable(_files);
   CodeEditorSettings get settings => _settings;
@@ -57,9 +61,9 @@ class CodeEditorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refreshIndex() async {
+  Future<void> refreshIndex({bool notify = true}) async {
     _files = await _storage.loadIndex();
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   Future<WorkspaceFile?> createNew(EditorFileKind kind) async {
@@ -69,8 +73,9 @@ class CodeEditorProvider extends ChangeNotifier {
       kind: kind,
       content: FileTemplates.starter(kind),
     );
-    await refreshIndex();
+    await refreshIndex(notify: false);
     await openWorkspaceFile(entry);
+    notifyListeners();
     return entry;
   }
 
@@ -85,49 +90,77 @@ class CodeEditorProvider extends ChangeNotifier {
       kind: pick.kind,
       content: pick.content,
     );
-    await refreshIndex();
+    await refreshIndex(notify: false);
     await openWorkspaceFile(entry);
+    notifyListeners();
     return (entry, null);
   }
 
   Future<void> openWorkspaceFile(WorkspaceFile file) async {
+    _autoSaveTimer?.cancel();
     final body = await _storage.readContent(file.id);
     _openFile = file;
     _content = body ?? '';
     _savedContent = _content;
+    _dirtyNotified = false;
     notifyListeners();
   }
 
   void updateContent(String value) {
     if (_openFile == null) return;
     _content = value;
-    notifyListeners();
+    _notifyDirtyTransition();
     if (_settings.autoSave) {
       _autoSaveTimer?.cancel();
+      final gen = ++_autoSaveGeneration;
       _autoSaveTimer = Timer(const Duration(milliseconds: 800), () {
+        if (gen != _autoSaveGeneration) return;
         // ignore: unawaited_futures
         save(silent: true);
       });
     }
   }
 
+  void _notifyDirtyTransition() {
+    final dirty = isDirty;
+    if (dirty == _dirtyNotified) return;
+    _dirtyNotified = dirty;
+    notifyListeners();
+  }
+
+  /// Apply latest WebView buffer before save, preview, or navigation.
+  void applyEditorBuffer(String value) {
+    if (_openFile == null) return;
+    _content = value;
+    _notifyDirtyTransition();
+  }
+
   Future<bool> save({bool silent = false}) async {
     final file = _openFile;
     if (file == null) return false;
+    if (_saveInFlight) return false;
+    _saveInFlight = true;
+    final contentToWrite = _content;
     try {
       final updated = await _storage.updateFile(
         fileId: file.id,
-        content: _content,
+        content: contentToWrite,
       );
       if (updated != null) {
         _openFile = updated;
-        _savedContent = _content;
-        await refreshIndex();
-        if (!silent) notifyListeners();
+        final wasDirtyFlag = _dirtyNotified;
+        _savedContent = contentToWrite;
+        _dirtyNotified = isDirty;
+        if (!silent || wasDirtyFlag != _dirtyNotified) {
+          notifyListeners();
+        }
+        await refreshIndex(notify: !silent);
         return true;
       }
     } catch (e) {
       if (kDebugMode) debugPrint('CodeEditor save failed: $e');
+    } finally {
+      _saveInFlight = false;
     }
     return false;
   }
@@ -149,8 +182,9 @@ class CodeEditorProvider extends ChangeNotifier {
         kind: kind,
         content: _content,
       );
-      await refreshIndex();
+      await refreshIndex(notify: false);
       await openWorkspaceFile(entry);
+      notifyListeners();
       return (entry, null);
     } catch (e) {
       return (null, 'Save failed: $e');
@@ -171,8 +205,7 @@ class CodeEditorProvider extends ChangeNotifier {
       );
       if (updated == null) return 'File not found';
       _openFile = updated;
-      await refreshIndex();
-      notifyListeners();
+      await refreshIndex(notify: true);
       return null;
     } catch (e) {
       return 'Rename failed: $e';
@@ -188,8 +221,7 @@ class CodeEditorProvider extends ChangeNotifier {
         _content = '';
         _savedContent = '';
       }
-      await refreshIndex();
-      notifyListeners();
+      await refreshIndex(notify: true);
       return null;
     } catch (e) {
       return 'Delete failed: $e';
@@ -208,15 +240,16 @@ class CodeEditorProvider extends ChangeNotifier {
   }
 
   Future<String> buildPreviewHtml() async {
-    final map = await _storage.allBodiesByBaseName();
-    // Ensure unsaved buffer is reflected for the active HTML file.
     final file = _openFile;
-    if (file != null) {
-      map[file.displayName.toLowerCase()] = _content;
-    }
+    final assets = await WorkspacePreviewAssets.load(
+      storage: _storage,
+      liveFileId: file?.id,
+      liveContent: file?.kind.supportsHtmlPreview == true ? _content : null,
+    );
     return HtmlPreviewBuilder.build(
       htmlSource: _content,
-      workspaceFilesByLowerName: map,
+      workspaceFilesByLowerName: assets.byBasename,
+      ambiguousBasenames: assets.ambiguousBasenames,
     );
   }
 
