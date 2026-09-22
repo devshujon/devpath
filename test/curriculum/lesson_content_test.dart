@@ -152,8 +152,9 @@ void main() {
       expect(content.deepDiveBlocks, isNotEmpty);
       expect(content.coreBlocks, isNotEmpty);
       final starter = content.exercise?.starterCode['html'] ?? '';
-      expect(starter.contains('http://'), isFalse);
       expect(starter.contains('https://'), isFalse);
+      expect(starter.contains('via.placeholder.com'), isFalse);
+      expect(starter.contains('src="data:image/svg+xml'), isTrue);
     });
 
     test('b01_html fallback-compatible file still parses', () {
