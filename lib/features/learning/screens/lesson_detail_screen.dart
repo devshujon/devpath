@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../curriculum/models/curriculum_load_result.dart';
 import '../../curriculum/models/lesson_block.dart';
@@ -269,10 +270,15 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     final args = LessonDetailArguments(lessonId: lesson.id);
     final navigator = Navigator.of(context, rootNavigator: true);
     try {
-      await navigator.pushNamed<void>(
-        AppRoutes.lessonQuiz,
-        arguments: args,
-      );
+      // Pop lesson first so curriculum figure WebViews dispose on Android
+      // (platform views otherwise draw over the quiz body).
+      navigator.pop();
+      await PlatformViewGate.instance.runSuspended(() async {
+        await navigator.pushNamed<void>(
+          AppRoutes.lessonQuiz,
+          arguments: args,
+        );
+      });
       if (kDebugMode) {
         debugPrint('LessonDetail: returned from quiz for ${lesson.id}');
       }

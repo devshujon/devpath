@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/platform/platform_view_gate.dart';
+import '../../../core/platform/platform_view_visibility.dart';
+import '../../../core/routing/app_route_observer.dart';
 import '../../code_editor/models/editor_file_type.dart';
 import '../utils/codemirror_modes.dart';
 
@@ -36,16 +39,82 @@ class CodemirrorEditorPane extends StatefulWidget {
   State<CodemirrorEditorPane> createState() => CodemirrorEditorPaneState();
 }
 
-class CodemirrorEditorPaneState extends State<CodemirrorEditorPane> {
+class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
+    with RouteAware {
   WebViewController? _controller;
   bool _ready = false;
   String? _loadedDocumentKey;
   String _lastAppliedSettings = '';
+  bool _routeVisible = true;
+  ModalRoute<void>? _route;
 
   @override
   void initState() {
     super.initState();
-    _initController();
+    PlatformViewGate.instance.addListener(_onGateChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != _route) {
+      if (_route != null) appRouteObserver.unsubscribe(this);
+      _route = route;
+      if (route != null) {
+        appRouteObserver.subscribe(this, route);
+        _routeVisible = route.isCurrent;
+      }
+    }
+    if (_shouldAttachWebView && _controller == null) {
+      _initController();
+    }
+  }
+
+  void _onGateChanged() {
+    if (!mounted) return;
+    if (_shouldAttachWebView) {
+      if (_controller == null) _initController();
+    } else {
+      _releaseController();
+    }
+    setState(() {});
+  }
+
+  @override
+  void didPushNext() {
+    _routeVisible = false;
+    _releaseController();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didPopNext() {
+    _routeVisible = true;
+    if (_shouldAttachWebView && _controller == null) _initController();
+    if (mounted) setState(() {});
+  }
+
+  bool get _shouldAttachWebView {
+    final route = ModalRoute.of(context);
+    return platformWebViewShouldShow(
+      routeSubscribedVisible: _routeVisible,
+      routeIsCurrent: route?.isCurrent ?? true,
+    );
+  }
+
+  void _releaseController() {
+    _controller = null;
+    _ready = false;
+    _loadedDocumentKey = null;
+  }
+
+  @override
+  void dispose() {
+    PlatformViewGate.instance.removeListener(_onGateChanged);
+    if (_route != null) appRouteObserver.unsubscribe(this);
+    _releaseController();
+    super.dispose();
   }
 
   void _initController() {
@@ -168,6 +237,13 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_shouldAttachWebView) {
+      return ColoredBox(
+        color: widget.preferDarkSurface
+            ? const Color(0xFF212121)
+            : const Color(0xFFF7F8FA),
+      );
+    }
     final controller = _controller;
     if (controller == null) {
       return const Center(child: CircularProgressIndicator());
@@ -177,9 +253,11 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane> {
       children: [
         WebViewWidget(controller: controller),
         if (!_ready)
-          const ColoredBox(
-            color: Color(0xFF212121),
-            child: Center(
+          ColoredBox(
+            color: widget.preferDarkSurface
+                ? const Color(0xFF212121)
+                : const Color(0xFFF7F8FA),
+            child: const Center(
               child: SizedBox(
                 width: 28,
                 height: 28,

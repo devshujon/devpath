@@ -5,6 +5,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/platform/platform_view_gate.dart';
+import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/routing/app_route_observer.dart';
 import '../theme/lesson_type.dart';
 
@@ -14,7 +16,10 @@ bool figureWebViewShouldShow({
   required bool routeSubscribedVisible,
   required bool routeIsCurrent,
 }) =>
-    routeSubscribedVisible && routeIsCurrent;
+    platformWebViewShouldShow(
+      routeSubscribedVisible: routeSubscribedVisible,
+      routeIsCurrent: routeIsCurrent,
+    );
 
 /// Allow the initial offline document; block http(s) navigations.
 bool allowFigureNavigation(String url) {
@@ -72,7 +77,17 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
   @override
   void initState() {
     super.initState();
-    _initController();
+    PlatformViewGate.instance.addListener(_onGateChanged);
+  }
+
+  void _onGateChanged() {
+    if (!mounted) return;
+    if (_shouldShowWebView) {
+      if (_controller == null && !_failed) _initController();
+    } else {
+      _releaseController();
+    }
+    setState(() {});
   }
 
   @override
@@ -87,19 +102,35 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
         _routeVisible = route.isCurrent;
       }
     }
+    if (_shouldShowWebView && _controller == null && !_failed) {
+      _initController();
+    }
   }
 
   @override
   void didPushNext() {
-    if (mounted) setState(() => _routeVisible = false);
+    _routeVisible = false;
+    _releaseController();
+    if (mounted) setState(() {});
   }
 
   @override
   void didPopNext() {
-    if (mounted) setState(() => _routeVisible = true);
+    _routeVisible = true;
+    if (_shouldShowWebView && _controller == null && !_failed) {
+      _initController();
+    }
+    if (mounted) setState(() {});
+  }
+
+  void _releaseController() {
+    _timeout?.cancel();
+    _controller = null;
+    _loading = true;
   }
 
   void _initController() {
+    if (_controller != null) return;
     try {
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.disabled)
@@ -156,14 +187,15 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
     final route = ModalRoute.of(context);
     return figureWebViewShouldShow(
       routeSubscribedVisible: _routeVisible,
-      routeIsCurrent: route?.isCurrent ?? false,
+      routeIsCurrent: route?.isCurrent ?? true,
     );
   }
 
   @override
   void dispose() {
+    PlatformViewGate.instance.removeListener(_onGateChanged);
     if (_route != null) appRouteObserver.unsubscribe(this);
-    _timeout?.cancel();
+    _releaseController();
     super.dispose();
   }
 
