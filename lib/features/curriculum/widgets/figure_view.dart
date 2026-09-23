@@ -5,7 +5,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/routing/app_route_observer.dart';
 import '../theme/lesson_type.dart';
+
+/// Whether the figure WebView should be attached (Android draws platform
+/// views over routes pushed on top if this stays true).
+bool figureWebViewShouldShow({
+  required bool routeSubscribedVisible,
+  required bool routeIsCurrent,
+}) =>
+    routeSubscribedVisible && routeIsCurrent;
 
 /// Allow the initial offline document; block http(s) navigations.
 bool allowFigureNavigation(String url) {
@@ -52,16 +61,42 @@ class FigureHtmlView extends StatefulWidget {
   State<FigureHtmlView> createState() => _FigureHtmlViewState();
 }
 
-class _FigureHtmlViewState extends State<FigureHtmlView> {
+class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
   WebViewController? _controller;
   bool _loading = true;
   bool _failed = false;
   Timer? _timeout;
+  bool _routeVisible = true;
+  ModalRoute<void>? _route;
 
   @override
   void initState() {
     super.initState();
     _initController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != _route) {
+      if (_route != null) appRouteObserver.unsubscribe(this);
+      _route = route;
+      if (route != null) {
+        appRouteObserver.subscribe(this, route);
+        _routeVisible = route.isCurrent;
+      }
+    }
+  }
+
+  @override
+  void didPushNext() {
+    if (mounted) setState(() => _routeVisible = false);
+  }
+
+  @override
+  void didPopNext() {
+    if (mounted) setState(() => _routeVisible = true);
   }
 
   void _initController() {
@@ -117,8 +152,17 @@ class _FigureHtmlViewState extends State<FigureHtmlView> {
       WidgetsBinding.instance.platformDispatcher.platformBrightness ==
       Brightness.dark;
 
+  bool get _shouldShowWebView {
+    final route = ModalRoute.of(context);
+    return figureWebViewShouldShow(
+      routeSubscribedVisible: _routeVisible,
+      routeIsCurrent: route?.isCurrent ?? false,
+    );
+  }
+
   @override
   void dispose() {
+    if (_route != null) appRouteObserver.unsubscribe(this);
     _timeout?.cancel();
     super.dispose();
   }
@@ -145,27 +189,46 @@ class _FigureHtmlViewState extends State<FigureHtmlView> {
           clipBehavior: Clip.antiAlias,
           child: _failed || _controller == null
               ? _Fallback(isDark: isDark)
-              : Stack(
-                  children: [
-                    SizedBox.expand(
-                      child: WebViewWidget(
-                        controller: _controller!,
-                        gestureRecognizers:
-                            const <Factory<OneSequenceGestureRecognizer>>{},
-                      ),
-                    ),
-                    if (_loading)
-                      const Center(
-                        child: SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+              : !_shouldShowWebView
+                  ? _PausedPlaceholder(isDark: isDark)
+                  : Stack(
+                      children: [
+                        SizedBox.expand(
+                          child: WebViewWidget(
+                            controller: _controller!,
+                            gestureRecognizers: const <
+                                Factory<OneSequenceGestureRecognizer>>{},
+                          ),
                         ),
-                      ),
-                  ],
-                ),
+                        if (_loading)
+                          const Center(
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                      ],
+                    ),
         );
       },
+    );
+  }
+}
+
+/// Shown while another route (e.g. lesson quiz) covers the lesson. Avoids
+/// Android WebView platform views drawing over the new screen.
+class _PausedPlaceholder extends StatelessWidget {
+  final bool isDark;
+  const _PausedPlaceholder({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Figure paused while another screen is open',
+      child: ColoredBox(
+        color: isDark ? const Color(0xFF161A21) : const Color(0xFFF7F8FA),
+      ),
     );
   }
 }

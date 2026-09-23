@@ -149,6 +149,30 @@ const _h1Heading = Lesson(
       explanation:
           'One <h1> names the page topic. HTML5 technically allows more, but one is the safest convention.',
     ),
+    QuizQuestion(
+      question: 'Why is skipping from <h1> directly to <h3> a problem?',
+      options: [
+        'It breaks the document outline for assistive tech',
+        'It makes CSS stop working',
+        'Browsers refuse to render <h3>',
+        'It removes the page <title>',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Headings form a hierarchy. Skipping levels confuses screen readers and outline tools.',
+    ),
+    QuizQuestion(
+      question: 'Which is the best use of an <h1> on a content page?',
+      options: [
+        'Repeating the site logo text on every page',
+        'Naming the main topic of that specific page',
+        'Making random paragraphs look bigger',
+        'Replacing meta keywords for SEO spam',
+      ],
+      correctIndex: 1,
+      explanation:
+          'The H1 describes what the page is about. Visual size belongs in CSS, not heading abuse.',
+    ),
   ],
 );
 

@@ -1,3 +1,4 @@
+import 'package:devpath/core/routing/app_route_observer.dart';
 import 'package:devpath/core/routing/app_routes.dart';
 import 'package:devpath/features/learning/providers/learning_progress_provider.dart';
 import 'package:devpath/features/learning/screens/lesson_detail_screen.dart';
@@ -20,6 +21,7 @@ void main() {
       ChangeNotifierProvider<LearningProgressProvider>.value(
         value: learning,
         child: MaterialApp(
+          navigatorObservers: [appRouteObserver],
           routes: {
             AppRoutes.lessonQuiz: (_) => const LessonQuizScreen(),
           },
@@ -53,6 +55,12 @@ void main() {
 
     expect(find.textContaining('Question 1'), findsOneWidget);
     expect(find.text('The H1 Heading'), findsWidgets);
+    expect(
+      find.text('Which tag marks the most important heading on a page?'),
+      findsOneWidget,
+    );
+    expect(find.text('<h1>'), findsOneWidget);
+    expect(find.text('Next'), findsOneWidget);
   });
 
   testWidgets('Take Quiz opens lesson quiz for b01_html when unlocked', (tester) async {

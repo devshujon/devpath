@@ -21,6 +21,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   Lesson? _lesson;
   String? _argsLessonId;
   String? _initError;
+  bool _initializing = true;
   int _index = 0;
   final Map<int, int> _answers = {};
   bool _showResult = false;
@@ -34,11 +35,17 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is! LessonDetailArguments) {
       if (_initError == null && _lesson == null) {
-        setState(() => _initError = 'Quiz could not start (missing lesson).');
+        setState(() {
+          _initializing = false;
+          _initError = 'Quiz could not start (missing lesson).';
+        });
       }
       return;
     }
-    if (_argsLessonId == args.lessonId && _lesson != null) return;
+    if (_argsLessonId == args.lessonId && _lesson != null) {
+      if (_initializing) setState(() => _initializing = false);
+      return;
+    }
     _argsLessonId = args.lessonId;
     if (kDebugMode) {
       debugPrint('LessonQuiz: initializing for ${args.lessonId}');
@@ -46,17 +53,34 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     final loaded = LessonsCatalog.byId(args.lessonId);
     if (loaded == null) {
       setState(() {
+        _initializing = false;
         _lesson = null;
         _initError = 'Lesson not found: ${args.lessonId}';
       });
       return;
     }
+    if (kDebugMode) {
+      debugPrint(
+        'LessonQuiz: loaded ${loaded.id} '
+        'questions=${loaded.quizQuestions.length}',
+      );
+    }
     setState(() {
       _lesson = loaded;
       _initError = null;
+      _initializing = false;
       _index = 0;
       _answers.clear();
       _showResult = false;
+    });
+  }
+
+  void _retryInit() {
+    setState(() {
+      _initializing = true;
+      _initError = null;
+      _lesson = null;
+      _argsLessonId = null;
     });
   }
 
@@ -80,6 +104,22 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_initializing) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Quiz')),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Loading quiz…'),
+            ],
+          ),
+        ),
+      );
+    }
+
     final lesson = _lesson;
     if (lesson == null) {
       return Scaffold(
@@ -87,9 +127,30 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Text(
-              _initError ?? 'Loading quiz…',
-              textAlign: TextAlign.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _initError ?? "Couldn't load this quiz.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: _retryInit,
+                  child: const Text('Retry'),
+                ),
+                const SizedBox(height: 10),
+                OutlinedButton(
+                  onPressed: () => Navigator.maybePop(context),
+                  child: const Text('Back'),
+                ),
+              ],
             ),
           ),
         ),
@@ -140,7 +201,25 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        body: const Center(child: Text('No quiz questions for this lesson.')),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'No questions available for this lesson.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                OutlinedButton(
+                  onPressed: () => Navigator.maybePop(context),
+                  child: const Text('Back'),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
     }
     if (_showResult) {

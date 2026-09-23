@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'core/routing/app_route_observer.dart';
 import 'core/routing/app_routes.dart';
 import 'core/theme/app_theme.dart';
 
@@ -16,6 +17,7 @@ class DevPathApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       initialRoute: AppRoutes.shell,
       routes: AppRoutes.routes,
+      navigatorObservers: [appRouteObserver],
     );
   }
 }
