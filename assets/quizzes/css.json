@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "subject": "CSS",
+  "questions": [
+    {
+      "id": "css_q_01",
+      "subject": "CSS",
+      "level": "beginner",
+      "question": "Which property changes the text color?",
+      "options": ["text-color", "color", "font-color", "foreground"],
+      "correctIndex": 1,
+      "explanation": "The 'color' property sets the text color in CSS. There is no 'text-color' property."
+    },
+    {
+      "id": "css_q_02",
+      "subject": "CSS",
+      "level": "beginner",
+      "question": "How do you write a comment in CSS?",
+      "options": ["// comment", "<!-- comment -->", "/* comment */", "# comment"],
+      "correctIndex": 2,
+      "explanation": "CSS uses /* */ for comments. // is JavaScript, <!-- --> is HTML, # is Python/shell."
+    },
+    {
+      "id": "css_q_03",
+      "subject": "CSS",
+      "level": "beginner",
+      "question": "Which selector targets an element with id='hero'?",
+      "options": [".hero", "#hero", "*hero", "hero"],
+      "correctIndex": 1,
+      "explanation": "# targets IDs, . targets classes, plain names target tags."
+    }
+  ]
+}
