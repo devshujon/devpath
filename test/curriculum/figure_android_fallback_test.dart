@@ -33,5 +33,7 @@ void main() {
 
     expect(find.byType(WebViewWidget), findsNothing);
     expect(find.textContaining('Title'), findsOneWidget);
+
+    debugDefaultTargetPlatformOverride = null;
   });
 }
