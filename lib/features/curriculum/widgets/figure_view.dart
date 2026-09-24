@@ -8,6 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/routing/app_route_observer.dart';
+import 'figure_android_fallback.dart';
 import '../theme/lesson_type.dart';
 
 /// Whether the figure WebView should be attached (Android draws platform
@@ -93,6 +94,7 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (useFlutterFigureRendererOnAndroid) return;
     final route = ModalRoute.of(context);
     if (route != _route) {
       if (_route != null) appRouteObserver.unsubscribe(this);
@@ -204,6 +206,10 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final maxH = MediaQuery.sizeOf(context).height;
     final height = widget.height.clamp(80.0, maxH < 700 ? 220.0 : 280.0);
+
+    if (useFlutterFigureRendererOnAndroid) {
+      return FigureAndroidFallback(spec: widget.spec, height: height);
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {

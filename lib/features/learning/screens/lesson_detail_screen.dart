@@ -270,9 +270,6 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     final args = LessonDetailArguments(lessonId: lesson.id);
     final navigator = Navigator.of(context, rootNavigator: true);
     try {
-      // Pop lesson first so curriculum figure WebViews dispose on Android
-      // (platform views otherwise draw over the quiz body).
-      navigator.pop();
       await PlatformViewGate.instance.runSuspended(() async {
         await navigator.pushNamed<void>(
           AppRoutes.lessonQuiz,

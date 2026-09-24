@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../data/lessons_catalog.dart';
 import '../logic/lesson_progression.dart';
 import '../models/lesson.dart';
@@ -334,9 +335,12 @@ class _QuestionView extends StatelessWidget {
     final q = lesson.quizQuestions[index];
     final total = lesson.quizQuestions.length;
     final isLast = index == total - 1;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final fg = isDark ? AppColors.darkText : AppColors.lightText;
+    final subtle = isDark ? AppColors.darkSubtle : AppColors.lightSubtle;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
       appBar: AppBar(
         title: Text(
           lesson.title,
@@ -351,64 +355,66 @@ class _QuestionView extends StatelessWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+      body: Material(
+        color: isDark ? AppColors.darkBg : AppColors.lightBg,
+        child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Question ${index + 1} of $total',
-                        style: Theme.of(context).textTheme.bodySmall,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                  children: [
+                    Text(
+                      'Question ${index + 1} of $total',
+                      style: TextStyle(color: subtle, fontSize: 13),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      q.question,
+                      style: TextStyle(
+                        color: fg,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        q.question,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              height: 1.3,
-                            ),
-                      ),
-                      const SizedBox(height: 24),
-                      ...List.generate(q.options.length, (i) {
-                        final isSelected = selected == i;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _OptionTile(
-                            text: q.options[i],
-                            selected: isSelected,
-                            onTap: () => onSelect(i),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+                    ...List.generate(q.options.length, (i) {
+                      final isSelected = selected == i;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _OptionTile(
+                          text: q.options[i],
+                          selected: isSelected,
+                          onTap: () => onSelect(i),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  if (onPrev != null)
-                    OutlinedButton.icon(
-                      onPressed: onPrev,
-                      icon: const Icon(Icons.arrow_back, size: 16),
-                      label: const Text('Back'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                child: Row(
+                  children: [
+                    if (onPrev != null)
+                      OutlinedButton.icon(
+                        onPressed: onPrev,
+                        icon: const Icon(Icons.arrow_back, size: 16),
+                        label: const Text('Back'),
+                      ),
+                    const Spacer(),
+                    FilledButton.icon(
+                      onPressed: onNext,
+                      icon: Icon(
+                        isLast ? Icons.check : Icons.arrow_forward,
+                        size: 16,
+                      ),
+                      label: Text(isLast ? 'Finish' : 'Next'),
                     ),
-                  const Spacer(),
-                  FilledButton.icon(
-                    onPressed: onNext,
-                    icon: Icon(
-                      isLast ? Icons.check : Icons.arrow_forward,
-                      size: 16,
-                    ),
-                    label: Text(isLast ? 'Finish' : 'Next'),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
