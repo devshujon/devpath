@@ -1,0 +1,62 @@
+name: devpath
+description: Learn HTML, CSS, JavaScript, and PHP on your phone.
+publish_to: 'none'
+version: 1.2.0+3
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State management
+  provider: ^6.1.2
+
+  # Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.3.5
+
+  # WebView (CodeMirror editor + preview)
+  webview_flutter: ^4.10.0
+
+  # Ads
+  google_mobile_ads: ^5.3.1
+
+  # Notifications + permissions
+  # v17 is the last branch with our current zonedSchedule signature.
+  # Bumping further (v18+) changes androidScheduleMode to required and
+  # other surface; staying on v17 keeps current code working.
+  flutter_local_notifications: ^17.2.4
+  permission_handler: ^11.4.0
+  timezone: ^0.9.4
+
+  # Share + export
+  share_plus: ^10.1.4
+  file_picker: ^8.1.2
+  path: ^1.9.0
+
+  # Utility
+  uuid: ^4.5.1
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  path_provider_platform_interface: ^2.1.2
+  build_runner: ^2.4.13
+  hive_generator: ^2.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/lessons/
+    - assets/quizzes/
+    - assets/quizzes/advanced/
+    - assets/editor/
+    - assets/curriculum/html/
