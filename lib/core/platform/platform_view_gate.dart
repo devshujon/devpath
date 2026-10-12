@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -15,12 +13,18 @@ class PlatformViewGate extends ChangeNotifier {
 
   void suspend() {
     _depth++;
+    if (kDebugMode) {
+      debugPrint('[PlatformViewGate] suspend depth=$_depth');
+    }
     notifyListeners();
   }
 
   void resume() {
     if (_depth <= 0) return;
     _depth--;
+    if (kDebugMode) {
+      debugPrint('[PlatformViewGate] resume depth=$_depth');
+    }
     notifyListeners();
   }
 
@@ -40,8 +44,5 @@ class PlatformViewGate extends ChangeNotifier {
     await SchedulerBinding.instance.endOfFrame;
     await SchedulerBinding.instance.endOfFrame;
     if (kIsWeb) return;
-    if (Platform.isAndroid || defaultTargetPlatform == TargetPlatform.android) {
-      await Future<void>.delayed(const Duration(milliseconds: 280));
-    }
   }
 }

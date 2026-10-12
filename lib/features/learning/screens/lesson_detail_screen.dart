@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../curriculum/models/curriculum_load_result.dart';
 import '../../curriculum/models/lesson_block.dart';
@@ -16,8 +15,8 @@ import '../../quiz_engine/screens/quiz_runner_screen.dart';
 import '../../quiz_engine/services/quiz_set_loader.dart';
 import '../data/lessons_catalog.dart';
 import '../models/lesson.dart';
+import '../logic/lesson_quiz_launcher.dart';
 import '../providers/learning_progress_provider.dart';
-import 'lesson_quiz_screen.dart';
 
 class LessonDetailArguments {
   final String lessonId;
@@ -269,34 +268,9 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     }
 
     final args = LessonDetailArguments(lessonId: lesson.id);
-    final rootNav = Navigator.of(context, rootNavigator: true);
-    final navContext = rootNav.context;
     final messenger = ScaffoldMessenger.maybeOf(context);
     try {
-      await PlatformViewGate.instance.runSuspended(() async {
-        // Dispose the lesson route (and any platform views in its subtree)
-        // before showing the quiz in the root overlay layer.
-        rootNav.pop();
-        await PlatformViewGate.waitForNativeTeardown();
-        if (!navContext.mounted) return;
-        await rootNav.push<void>(
-          MaterialPageRoute<void>(
-            settings: RouteSettings(
-              name: AppRoutes.lessonQuiz,
-              arguments: args,
-            ),
-            builder: (_) => const SizedBox.expand(
-              child: LessonQuizScreen(),
-            ),
-          ),
-        );
-        if (rootNav.mounted) {
-          await rootNav.pushNamed<void>(
-            AppRoutes.lessonDetail,
-            arguments: args,
-          );
-        }
-      });
+      await openLessonQuiz(context, args: args);
       if (kDebugMode) {
         debugPrint('LessonDetail: returned from quiz for ${lesson.id}');
       }

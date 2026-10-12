@@ -1,9 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../widgets/quiz_body_shell.dart';
 import '../data/lessons_catalog.dart';
 import '../logic/lesson_progression.dart';
 import '../models/lesson.dart';
@@ -48,9 +49,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       return;
     }
     _argsLessonId = args.lessonId;
-    if (kDebugMode) {
-      debugPrint('LessonQuiz: initializing for ${args.lessonId}');
-    }
+    QuizDiagnostics.log('init lessonId=${args.lessonId}');
     final loaded = LessonsCatalog.byId(args.lessonId);
     if (loaded == null) {
       setState(() {
@@ -60,12 +59,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       });
       return;
     }
-    if (kDebugMode) {
-      debugPrint(
-        'LessonQuiz: loaded ${loaded.id} '
-        'questions=${loaded.quizQuestions.length}',
-      );
-    }
+    QuizDiagnostics.log(
+      'loaded ${loaded.id} questions=${loaded.quizQuestions.length}',
+    );
     setState(() {
       _lesson = loaded;
       _initError = null;
@@ -247,22 +243,117 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         onClose: () => Navigator.maybePop(context),
       ));
     }
-    return _fullScreen(_QuestionView(
-      lesson: lesson,
-      index: _index,
-      selected: _answers[_index],
-      onSelect: (i) => setState(() => _answers[_index] = i),
-      onPrev: _index > 0 ? () => setState(() => _index--) : null,
-      onNext: _answers.containsKey(_index)
-          ? () {
-              if (_index < lesson.quizQuestions.length - 1) {
-                setState(() => _index++);
-              } else {
-                setState(() => _showResult = true);
-              }
-            }
-          : null,
-    ));
+    return _fullScreen(_buildQuestionScaffold(context, lesson));
+  }
+
+  Widget _buildQuestionScaffold(BuildContext context, Lesson lesson) {
+    final index = _index;
+    final q = lesson.quizQuestions[index];
+    final total = lesson.quizQuestions.length;
+    final isLast = index == total - 1;
+    final selected = _answers[index];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final fg = isDark ? AppColors.darkText : AppColors.lightText;
+    final subtle = isDark ? AppColors.darkSubtle : AppColors.lightSubtle;
+    final bg = isDark ? AppColors.darkBg : AppColors.lightBg;
+
+    QuizDiagnostics.log(
+      'build question index=$index/$total text=${q.question.length} chars '
+      'options=${q.options.length}',
+    );
+
+    return Scaffold(
+      backgroundColor: bg,
+      appBar: AppBar(
+        backgroundColor: bg,
+        title: Text(
+          lesson.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4),
+          child: LinearProgressIndicator(
+            value: (index + 1) / total,
+            minHeight: 4,
+            backgroundColor:
+                isDark ? const Color(0xFF262B35) : const Color(0xFFE4E7EE),
+          ),
+        ),
+      ),
+      body: QuizBodyShell(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                  children: [
+                    Text(
+                      'Question ${index + 1} of $total',
+                      style: TextStyle(color: subtle, fontSize: 13),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      q.question,
+                      style: TextStyle(
+                        color: fg,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ...List.generate(q.options.length, (i) {
+                      final isSelected = selected == i;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _OptionTile(
+                          text: q.options[i],
+                          selected: isSelected,
+                          onTap: () => setState(() => _answers[index] = i),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                child: Row(
+                  children: [
+                    if (index > 0)
+                      OutlinedButton.icon(
+                        onPressed: () => setState(() => _index--),
+                        icon: const Icon(Icons.arrow_back, size: 16),
+                        label: const Text('Back'),
+                      ),
+                    const Spacer(),
+                    FilledButton.icon(
+                      onPressed: _answers.containsKey(index)
+                          ? () {
+                              if (index < total - 1) {
+                                setState(() => _index++);
+                              } else {
+                                setState(() => _showResult = true);
+                              }
+                            }
+                          : null,
+                      icon: Icon(
+                        isLast ? Icons.check : Icons.arrow_forward,
+                        size: 16,
+                      ),
+                      label: Text(isLast ? 'Finish' : 'Next'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _markCompleteAndCelebrate(
@@ -312,140 +403,6 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       final name = route.settings.name;
       return name != AppRoutes.lessonQuiz && name != AppRoutes.lessonDetail;
     });
-  }
-}
-
-class _QuestionView extends StatelessWidget {
-  final Lesson lesson;
-  final int index;
-  final int? selected;
-  final ValueChanged<int> onSelect;
-  final VoidCallback? onPrev;
-  final VoidCallback? onNext;
-
-  const _QuestionView({
-    required this.lesson,
-    required this.index,
-    required this.selected,
-    required this.onSelect,
-    required this.onPrev,
-    required this.onNext,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final q = lesson.quizQuestions[index];
-    final total = lesson.quizQuestions.length;
-    final isLast = index == total - 1;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final fg = isDark ? AppColors.darkText : AppColors.lightText;
-    final subtle = isDark ? AppColors.darkSubtle : AppColors.lightSubtle;
-
-    final bg = isDark ? AppColors.darkBg : AppColors.lightBg;
-    return Theme(
-      data: Theme.of(context).copyWith(
-        scaffoldBackgroundColor: bg,
-        textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: fg,
-              displayColor: fg,
-            ),
-      ),
-      child: Scaffold(
-        backgroundColor: bg,
-        appBar: AppBar(
-          backgroundColor: bg,
-          title: Text(
-            lesson.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4),
-            child: LinearProgressIndicator(
-              value: (index + 1) / total,
-              minHeight: 4,
-              backgroundColor: isDark
-                  ? const Color(0xFF262B35)
-                  : const Color(0xFFE4E7EE),
-            ),
-          ),
-        ),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                  children: [
-                    if (kDebugMode)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          'Quiz loaded · $total questions',
-                          style: TextStyle(
-                            color: subtle,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    Text(
-                      'Question ${index + 1} of $total',
-                      style: TextStyle(color: subtle, fontSize: 13),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      q.question,
-                      style: TextStyle(
-                        color: fg,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ...List.generate(q.options.length, (i) {
-                      final isSelected = selected == i;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _OptionTile(
-                          text: q.options[i],
-                          selected: isSelected,
-                          onTap: () => onSelect(i),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-                child: Row(
-                  children: [
-                    if (onPrev != null)
-                      OutlinedButton.icon(
-                        onPressed: onPrev,
-                        icon: const Icon(Icons.arrow_back, size: 16),
-                        label: const Text('Back'),
-                      ),
-                    const Spacer(),
-                    FilledButton.icon(
-                      onPressed: onNext,
-                      icon: Icon(
-                        isLast ? Icons.check : Icons.arrow_forward,
-                        size: 16,
-                      ),
-                      label: Text(isLast ? 'Finish' : 'Next'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

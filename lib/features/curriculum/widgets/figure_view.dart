@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/routing/app_route_observer.dart';
@@ -127,6 +128,9 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
 
   void _releaseController() {
     _timeout?.cancel();
+    if (_controller != null) {
+      QuizDiagnostics.log('FigureHtmlView WebView released');
+    }
     _controller = null;
     _loading = true;
   }
@@ -161,6 +165,7 @@ class _FigureHtmlViewState extends State<FigureHtmlView> with RouteAware {
         )
         ..loadHtmlString(wrapFigureHtml(widget.spec, isDark: _isDark));
       _controller = controller;
+      QuizDiagnostics.log('FigureHtmlView WebView created');
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Curriculum figure failed to start WebView: $e');

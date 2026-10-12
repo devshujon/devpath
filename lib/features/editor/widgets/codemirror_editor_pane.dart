@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/routing/app_route_observer.dart';
@@ -104,6 +105,9 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
   }
 
   void _releaseController() {
+    if (_controller != null) {
+      QuizDiagnostics.log('CodemirrorEditorPane WebView released');
+    }
     _controller = null;
     _ready = false;
     _loadedDocumentKey = null;
@@ -144,6 +148,7 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
       );
 
     _controller = controller;
+    QuizDiagnostics.log('CodemirrorEditorPane WebView created');
     controller.loadFlutterAsset('assets/editor/editor.html');
   }
 
