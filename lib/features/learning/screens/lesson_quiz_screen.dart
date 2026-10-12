@@ -245,21 +245,26 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         onClose: () => Navigator.maybePop(context),
       );
     }
-    return _QuestionView(
-      lesson: lesson,
-      index: _index,
-      selected: _answers[_index],
-      onSelect: (i) => setState(() => _answers[_index] = i),
-      onPrev: _index > 0 ? () => setState(() => _index--) : null,
-      onNext: _answers.containsKey(_index)
-          ? () {
-              if (_index < lesson.quizQuestions.length - 1) {
-                setState(() => _index++);
-              } else {
-                setState(() => _showResult = true);
+    return ColoredBox(
+      color: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.darkBg
+          : AppColors.lightBg,
+      child: _QuestionView(
+        lesson: lesson,
+        index: _index,
+        selected: _answers[_index],
+        onSelect: (i) => setState(() => _answers[_index] = i),
+        onPrev: _index > 0 ? () => setState(() => _index--) : null,
+        onNext: _answers.containsKey(_index)
+            ? () {
+                if (_index < lesson.quizQuestions.length - 1) {
+                  setState(() => _index++);
+                } else {
+                  setState(() => _showResult = true);
+                }
               }
-            }
-          : null,
+            : null,
+      ),
     );
   }
 

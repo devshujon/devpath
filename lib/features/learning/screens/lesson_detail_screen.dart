@@ -17,6 +17,7 @@ import '../../quiz_engine/services/quiz_set_loader.dart';
 import '../data/lessons_catalog.dart';
 import '../models/lesson.dart';
 import '../providers/learning_progress_provider.dart';
+import 'lesson_quiz_screen.dart';
 
 class LessonDetailArguments {
   final String lessonId;
@@ -268,13 +269,34 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     }
 
     final args = LessonDetailArguments(lessonId: lesson.id);
-    final navigator = Navigator.of(context, rootNavigator: true);
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.maybeOf(context);
     try {
       await PlatformViewGate.instance.runSuspended(() async {
-        await navigator.pushNamed<void>(
-          AppRoutes.lessonQuiz,
-          arguments: args,
-        );
+        // Android keeps native WebView layers from the lesson route
+        // painted over the quiz unless the lesson route is removed first.
+        navigator.pop();
+        await PlatformViewGate.waitForNativeTeardown();
+
+        try {
+          await navigator.push<void>(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(
+                name: AppRoutes.lessonQuiz,
+                arguments: args,
+              ),
+              fullscreenDialog: true,
+              builder: (_) => const LessonQuizScreen(),
+            ),
+          );
+        } finally {
+          if (navigator.mounted) {
+            await navigator.pushNamed<void>(
+              AppRoutes.lessonDetail,
+              arguments: args,
+            );
+          }
+        }
       });
       if (kDebugMode) {
         debugPrint('LessonDetail: returned from quiz for ${lesson.id}');
@@ -283,8 +305,13 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
       if (kDebugMode) {
         debugPrint('LessonDetail: quiz navigation failed: $e\n$st');
       }
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      if (navigator.mounted) {
+        await navigator.pushNamed<void>(
+          AppRoutes.lessonDetail,
+          arguments: args,
+        );
+      }
+      messenger?.showSnackBar(
         SnackBar(content: Text('Could not open the quiz: $e')),
       );
     }
