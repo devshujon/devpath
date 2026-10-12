@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/platform/platform_view_gate.dart';
+import '../../../core/platform/platform_view_visibility.dart';
+import '../../../core/routing/app_route_observer.dart';
+
 /// Renders a string of HTML in a WebView. Reloads whenever [version]
 /// changes — even if [htmlDocument] is byte-identical.
 ///
@@ -32,15 +36,69 @@ class PreviewPane extends StatefulWidget {
   State<PreviewPane> createState() => _PreviewPaneState();
 }
 
-class _PreviewPaneState extends State<PreviewPane> {
-  late final WebViewController _controller;
+class _PreviewPaneState extends State<PreviewPane> with RouteAware {
+  WebViewController? _controller;
   int _lastRenderedVersion = -1;
   bool _loading = false;
   Timer? _loadTimeout;
+  bool _routeVisible = true;
+  ModalRoute<void>? _route;
 
   @override
   void initState() {
     super.initState();
+    PlatformViewGate.instance.addListener(_onGateChanged);
+  }
+
+  void _onGateChanged() {
+    if (!mounted) return;
+    if (_shouldAttachWebView) {
+      _ensureController();
+    } else {
+      _controller = null;
+    }
+    setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != _route) {
+      if (_route != null) appRouteObserver.unsubscribe(this);
+      _route = route;
+      if (route != null) {
+        appRouteObserver.subscribe(this, route);
+        _routeVisible = route.isCurrent;
+      }
+    }
+    if (_shouldAttachWebView) _ensureController();
+  }
+
+  @override
+  void didPushNext() {
+    _routeVisible = false;
+    _controller = null;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didPopNext() {
+    _routeVisible = true;
+    if (_shouldAttachWebView) _ensureController();
+    if (mounted) setState(() {});
+  }
+
+  bool get _shouldAttachWebView {
+    final route = ModalRoute.of(context);
+    return platformWebViewShouldShow(
+      routeSubscribedVisible: _routeVisible,
+      routeIsCurrent: route?.isCurrent ?? true,
+    );
+  }
+
+  void _ensureController() {
+    if (_controller != null) return;
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.white)
@@ -56,7 +114,6 @@ class _PreviewPaneState extends State<PreviewPane> {
           onNavigationRequest: _allowOnlyLocalSchemes,
         ),
       );
-
     _renderIfNeeded();
   }
 
@@ -78,14 +135,18 @@ class _PreviewPaneState extends State<PreviewPane> {
 
   @override
   void dispose() {
+    PlatformViewGate.instance.removeListener(_onGateChanged);
+    if (_route != null) appRouteObserver.unsubscribe(this);
     _loadTimeout?.cancel();
     super.dispose();
   }
 
   void _renderIfNeeded() {
+    final controller = _controller;
+    if (controller == null) return;
     if (widget.version == _lastRenderedVersion) return;
     _lastRenderedVersion = widget.version;
-    _controller.loadHtmlString(_wrapWithErrorTrap(widget.htmlDocument));
+    controller.loadHtmlString(_wrapWithErrorTrap(widget.htmlDocument));
     // Safety net: if the platform WebView never fires onPageFinished
     // (some Android System WebView builds stall on loadHtmlString),
     // clear the loading indicator anyway so it can't spin forever.
@@ -170,8 +231,12 @@ $userHtml
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF0A0C10) : const Color(0xFFFAFBFD);
+    if (!_shouldAttachWebView || _controller == null) {
+      return ColoredBox(color: bg);
+    }
     return Container(
-      color: isDark ? const Color(0xFF0A0C10) : const Color(0xFFFAFBFD),
+      color: bg,
       child: Stack(
         children: [
           Padding(
@@ -180,7 +245,7 @@ $userHtml
               borderRadius: BorderRadius.circular(10),
               child: Container(
                 color: Colors.white,
-                child: WebViewWidget(controller: _controller),
+                child: WebViewWidget(controller: _controller!),
               ),
             ),
           ),

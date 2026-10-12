@@ -269,34 +269,20 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     }
 
     final args = LessonDetailArguments(lessonId: lesson.id);
-    final navigator = Navigator.of(context);
+    final rootNav = Navigator.of(context, rootNavigator: true);
     final messenger = ScaffoldMessenger.maybeOf(context);
     try {
       await PlatformViewGate.instance.runSuspended(() async {
-        // Android keeps native WebView layers from the lesson route
-        // painted over the quiz unless the lesson route is removed first.
-        navigator.pop();
         await PlatformViewGate.waitForNativeTeardown();
-
-        try {
-          await navigator.push<void>(
-            MaterialPageRoute<void>(
-              settings: RouteSettings(
-                name: AppRoutes.lessonQuiz,
-                arguments: args,
-              ),
-              fullscreenDialog: true,
-              builder: (_) => const LessonQuizScreen(),
-            ),
-          );
-        } finally {
-          if (navigator.mounted) {
-            await navigator.pushNamed<void>(
-              AppRoutes.lessonDetail,
+        await rootNav.push<void>(
+          MaterialPageRoute<void>(
+            settings: RouteSettings(
+              name: AppRoutes.lessonQuiz,
               arguments: args,
-            );
-          }
-        }
+            ),
+            builder: (_) => const LessonQuizScreen(),
+          ),
+        );
       });
       if (kDebugMode) {
         debugPrint('LessonDetail: returned from quiz for ${lesson.id}');
@@ -304,12 +290,6 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
     } catch (e, st) {
       if (kDebugMode) {
         debugPrint('LessonDetail: quiz navigation failed: $e\n$st');
-      }
-      if (navigator.mounted) {
-        await navigator.pushNamed<void>(
-          AppRoutes.lessonDetail,
-          arguments: args,
-        );
       }
       messenger?.showSnackBar(
         SnackBar(content: Text('Could not open the quiz: $e')),

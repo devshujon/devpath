@@ -245,26 +245,21 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         onClose: () => Navigator.maybePop(context),
       );
     }
-    return ColoredBox(
-      color: Theme.of(context).brightness == Brightness.dark
-          ? AppColors.darkBg
-          : AppColors.lightBg,
-      child: _QuestionView(
-        lesson: lesson,
-        index: _index,
-        selected: _answers[_index],
-        onSelect: (i) => setState(() => _answers[_index] = i),
-        onPrev: _index > 0 ? () => setState(() => _index--) : null,
-        onNext: _answers.containsKey(_index)
-            ? () {
-                if (_index < lesson.quizQuestions.length - 1) {
-                  setState(() => _index++);
-                } else {
-                  setState(() => _showResult = true);
-                }
+    return _QuestionView(
+      lesson: lesson,
+      index: _index,
+      selected: _answers[_index],
+      onSelect: (i) => setState(() => _answers[_index] = i),
+      onPrev: _index > 0 ? () => setState(() => _index--) : null,
+      onNext: _answers.containsKey(_index)
+          ? () {
+              if (_index < lesson.quizQuestions.length - 1) {
+                setState(() => _index++);
+              } else {
+                setState(() => _showResult = true);
               }
-            : null,
-      ),
+            }
+          : null,
     );
   }
 
@@ -344,64 +339,69 @@ class _QuestionView extends StatelessWidget {
     final fg = isDark ? AppColors.darkText : AppColors.lightText;
     final subtle = isDark ? AppColors.darkSubtle : AppColors.lightSubtle;
 
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
-      appBar: AppBar(
-        title: Text(
-          lesson.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: LinearProgressIndicator(
-            value: (index + 1) / total,
-            minHeight: 4,
+    final bg = isDark ? AppColors.darkBg : AppColors.lightBg;
+    return Theme(
+      data: Theme.of(context).copyWith(
+        scaffoldBackgroundColor: bg,
+        textTheme: Theme.of(context).textTheme.apply(
+              bodyColor: fg,
+              displayColor: fg,
+            ),
+      ),
+      child: Scaffold(
+        backgroundColor: bg,
+        appBar: AppBar(
+          backgroundColor: bg,
+          title: Text(
+            lesson.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4),
+            child: LinearProgressIndicator(
+              value: (index + 1) / total,
+              minHeight: 4,
+              backgroundColor: isDark
+                  ? const Color(0xFF262B35)
+                  : const Color(0xFFE4E7EE),
+            ),
           ),
         ),
-      ),
-      body: Material(
-        color: isDark ? AppColors.darkBg : AppColors.lightBg,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                  children: [
-                    Text(
-                      'Question ${index + 1} of $total',
-                      style: TextStyle(color: subtle, fontSize: 13),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      q.question,
-                      style: TextStyle(
-                        color: fg,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ...List.generate(q.options.length, (i) {
-                      final isSelected = selected == i;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _OptionTile(
-                          text: q.options[i],
-                          selected: isSelected,
-                          onTap: () => onSelect(i),
-                        ),
-                      );
-                    }),
-                  ],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Question ${index + 1} of $total',
+                  style: TextStyle(color: subtle, fontSize: 13),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-                child: Row(
+                const SizedBox(height: 10),
+                Text(
+                  q.question,
+                  style: TextStyle(
+                    color: fg,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ...List.generate(q.options.length, (i) {
+                  final isSelected = selected == i;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _OptionTile(
+                      text: q.options[i],
+                      selected: isSelected,
+                      onTap: () => onSelect(i),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 20),
+                Row(
                   children: [
                     if (onPrev != null)
                       OutlinedButton.icon(
@@ -420,8 +420,8 @@ class _QuestionView extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

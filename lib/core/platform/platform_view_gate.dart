@@ -41,7 +41,7 @@ class PlatformViewGate extends ChangeNotifier {
     await SchedulerBinding.instance.endOfFrame;
     if (kIsWeb) return;
     if (Platform.isAndroid || defaultTargetPlatform == TargetPlatform.android) {
-      await Future<void>.delayed(const Duration(milliseconds: 120));
+      await Future<void>.delayed(const Duration(milliseconds: 280));
     }
   }
 }
