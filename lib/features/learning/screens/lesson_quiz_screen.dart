@@ -368,16 +368,33 @@ class _QuestionView extends StatelessWidget {
             ),
           ),
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Question ${index + 1} of $total',
-                  style: TextStyle(color: subtle, fontSize: 13),
-                ),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final minBody = (MediaQuery.sizeOf(context).height * 0.55)
+                .clamp(320.0, 900.0);
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: minBody),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (kDebugMode)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          'Quiz loaded · $total questions',
+                          style: TextStyle(
+                            color: subtle,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    Text(
+                      'Question ${index + 1} of $total',
+                      style: TextStyle(color: subtle, fontSize: 13),
+                    ),
                 const SizedBox(height: 10),
                 Text(
                   q.question,
@@ -420,9 +437,11 @@ class _QuestionView extends StatelessWidget {
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

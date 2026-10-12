@@ -270,19 +270,33 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
 
     final args = LessonDetailArguments(lessonId: lesson.id);
     final rootNav = Navigator.of(context, rootNavigator: true);
+    final navContext = rootNav.context;
     final messenger = ScaffoldMessenger.maybeOf(context);
     try {
       await PlatformViewGate.instance.runSuspended(() async {
+        // Dispose the lesson route (and any platform views in its subtree)
+        // before showing the quiz in the root overlay layer.
+        rootNav.pop();
         await PlatformViewGate.waitForNativeTeardown();
-        await rootNav.push<void>(
-          MaterialPageRoute<void>(
-            settings: RouteSettings(
-              name: AppRoutes.lessonQuiz,
-              arguments: args,
-            ),
-            builder: (_) => const LessonQuizScreen(),
+        if (!navContext.mounted) return;
+        await showGeneralDialog<void>(
+          context: navContext,
+          useRootNavigator: true,
+          barrierDismissible: false,
+          barrierColor: const Color(0xFF0A0C10),
+          transitionDuration: Duration.zero,
+          routeSettings: RouteSettings(
+            name: AppRoutes.lessonQuiz,
+            arguments: args,
           ),
+          pageBuilder: (_, __, ___) => const LessonQuizScreen(),
         );
+        if (rootNav.mounted) {
+          await rootNav.pushNamed<void>(
+            AppRoutes.lessonDetail,
+            arguments: args,
+          );
+        }
       });
       if (kDebugMode) {
         debugPrint('LessonDetail: returned from quiz for ${lesson.id}');

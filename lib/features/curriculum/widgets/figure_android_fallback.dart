@@ -1,16 +1,13 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/lesson_type.dart';
 
-/// On Android, [WebViewWidget] platform views can draw over routes pushed
+/// On mobile, [WebViewWidget] platform views can draw over routes pushed
 /// on top (e.g. lesson quiz). Curriculum figures use this renderer instead.
 bool get useFlutterFigureRendererOnAndroid {
   if (kIsWeb) return false;
-  return Platform.isAndroid ||
-      defaultTargetPlatform == TargetPlatform.android;
+  return true;
 }
 
 String figureSpecToPlainText(String spec) {
