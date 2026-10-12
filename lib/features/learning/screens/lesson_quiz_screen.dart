@@ -103,10 +103,12 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
   bool get _passed => _scoreRatio >= _passingThreshold;
 
+  Widget _fullScreen(Widget child) => SizedBox.expand(child: child);
+
   @override
   Widget build(BuildContext context) {
     if (_initializing) {
-      return Scaffold(
+      return _fullScreen(Scaffold(
         appBar: AppBar(title: const Text('Quiz')),
         body: const Center(
           child: Column(
@@ -118,12 +120,12 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
             ],
           ),
         ),
-      );
+      ));
     }
 
     final lesson = _lesson;
     if (lesson == null) {
-      return Scaffold(
+      return _fullScreen(Scaffold(
         appBar: AppBar(title: const Text('Quiz')),
         body: Center(
           child: Padding(
@@ -155,13 +157,13 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
             ),
           ),
         ),
-      );
+      ));
     }
     final locked = context.select<LearningProgressProvider, bool>(
       (p) => p.lessonWithProgress(lesson).isLocked,
     );
     if (locked) {
-      return Scaffold(
+      return _fullScreen(Scaffold(
         appBar: AppBar(
           title: Text(
             lesson.title,
@@ -191,10 +193,10 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
             ),
           ),
         ),
-      );
+      ));
     }
     if (lesson.quizQuestions.isEmpty) {
-      return Scaffold(
+      return _fullScreen(Scaffold(
         appBar: AppBar(
           title: Text(
             lesson.title,
@@ -221,10 +223,10 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
             ),
           ),
         ),
-      );
+      ));
     }
     if (_showResult) {
-      return _ResultView(
+      return _fullScreen(_ResultView(
         lesson: lesson,
         correct: _correctCount,
         total: lesson.quizQuestions.length,
@@ -243,9 +245,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         },
         onFinish: () => _markCompleteAndCelebrate(context, lesson),
         onClose: () => Navigator.maybePop(context),
-      );
+      ));
     }
-    return _QuestionView(
+    return _fullScreen(_QuestionView(
       lesson: lesson,
       index: _index,
       selected: _answers[_index],
@@ -260,7 +262,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
               }
             }
           : null,
-    );
+    ));
   }
 
   Future<void> _markCompleteAndCelebrate(
@@ -368,16 +370,13 @@ class _QuestionView extends StatelessWidget {
             ),
           ),
         ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final minBody = (MediaQuery.sizeOf(context).height * 0.55)
-                .clamp(320.0, 900.0);
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: minBody),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
                   children: [
                     if (kDebugMode)
                       Padding(
@@ -395,30 +394,34 @@ class _QuestionView extends StatelessWidget {
                       'Question ${index + 1} of $total',
                       style: TextStyle(color: subtle, fontSize: 13),
                     ),
-                const SizedBox(height: 10),
-                Text(
-                  q.question,
-                  style: TextStyle(
-                    color: fg,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ...List.generate(q.options.length, (i) {
-                  final isSelected = selected == i;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _OptionTile(
-                      text: q.options[i],
-                      selected: isSelected,
-                      onTap: () => onSelect(i),
+                    const SizedBox(height: 10),
+                    Text(
+                      q.question,
+                      style: TextStyle(
+                        color: fg,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
+                      ),
                     ),
-                  );
-                }),
-                const SizedBox(height: 20),
-                Row(
+                    const SizedBox(height: 24),
+                    ...List.generate(q.options.length, (i) {
+                      final isSelected = selected == i;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _OptionTile(
+                          text: q.options[i],
+                          selected: isSelected,
+                          onTap: () => onSelect(i),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                child: Row(
                   children: [
                     if (onPrev != null)
                       OutlinedButton.icon(
@@ -437,11 +440,9 @@ class _QuestionView extends StatelessWidget {
                     ),
                   ],
                 ),
-                  ],
-                ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
     );

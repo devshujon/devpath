@@ -279,17 +279,16 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
         rootNav.pop();
         await PlatformViewGate.waitForNativeTeardown();
         if (!navContext.mounted) return;
-        await showGeneralDialog<void>(
-          context: navContext,
-          useRootNavigator: true,
-          barrierDismissible: false,
-          barrierColor: const Color(0xFF0A0C10),
-          transitionDuration: Duration.zero,
-          routeSettings: RouteSettings(
-            name: AppRoutes.lessonQuiz,
-            arguments: args,
+        await rootNav.push<void>(
+          MaterialPageRoute<void>(
+            settings: RouteSettings(
+              name: AppRoutes.lessonQuiz,
+              arguments: args,
+            ),
+            builder: (_) => const SizedBox.expand(
+              child: LessonQuizScreen(),
+            ),
           ),
-          pageBuilder: (_, __, ___) => const LessonQuizScreen(),
         );
         if (rootNav.mounted) {
           await rootNav.pushNamed<void>(
