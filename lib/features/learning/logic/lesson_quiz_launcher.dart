@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/active_webview_tracker.dart';
+import '../../../core/platform/android_native_webview_cleanup.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/routing/app_routes.dart';
 import '../screens/lesson_quiz_screen.dart';
@@ -28,6 +29,8 @@ Future<void> openLessonQuiz(
     }
 
     await ActiveWebViewTracker.instance.detachAll();
+    await AndroidNativeWebViewCleanup.removeStaleWebViews();
+    await AndroidNativeWebViewCleanup.bringFlutterSurfaceToFront();
     await PlatformViewGate.waitForNativeTeardown(frames: 4);
 
     QuizDiagnostics.log('popUntil shell to drop stale platform-view routes');
@@ -40,6 +43,8 @@ Future<void> openLessonQuiz(
       return keep;
     });
 
+    await AndroidNativeWebViewCleanup.removeStaleWebViews();
+    await AndroidNativeWebViewCleanup.bringFlutterSurfaceToFront();
     await PlatformViewGate.waitForNativeTeardown(frames: 8);
 
     if (!navContext.mounted) {

@@ -71,7 +71,7 @@ void main() {
     expect(find.text('Next'), findsOneWidget);
     expect(find.text('Code Editor route'), findsNothing);
 
-    await tester.pageBack();
+    await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
     expect(find.text('Take Quiz'), findsOneWidget);
   });
@@ -144,7 +144,7 @@ void main() {
       await tester.tap(find.text('Take Quiz'));
       await tester.pumpAndSettle();
       expect(find.text('<h1>'), findsOneWidget);
-      await tester.pageBack();
+      await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
     }
   });

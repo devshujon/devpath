@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -274,39 +275,68 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       'options=${q.options.length}',
     );
 
-    // Honor / some OEM WebViews paint over the Scaffold [body] slot after
-    // Code Editor. Keep questions in the AppBar [bottom] region instead.
-    const progressHeight = 4.0;
-    final media = MediaQuery.sizeOf(context);
-    final panelHeight = (media.height -
-            MediaQuery.paddingOf(context).top -
-            kToolbarHeight -
-            progressHeight)
-        .clamp(280.0, media.height);
+    // High-contrast quiz panel on Android (ghost WebView is often full-screen black).
+    final useLightQuizPanel =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+    final panelBg =
+        useLightQuizPanel ? const Color(0xFFF4F6FA) : bg;
+    final panelFg =
+        useLightQuizPanel ? const Color(0xFF0F1419) : fg;
+    final panelSubtle =
+        useLightQuizPanel ? const Color(0xFF5D6670) : subtle;
 
-    Widget quizPanel({required double height}) {
-      return SizedBox(
-        height: height,
-        width: double.infinity,
+    return Material(
+      color: bg,
+      child: SafeArea(
         child: QuizBodyShell(
-          child: SafeArea(
-            top: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 4, 16, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => Navigator.maybePop(context),
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    Expanded(
+                      child: Text(
+                        lesson.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: fg,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              LinearProgressIndicator(
+                value: (index + 1) / total,
+                minHeight: 4,
+                backgroundColor: isDark
+                    ? const Color(0xFF262B35)
+                    : const Color(0xFFE4E7EE),
+              ),
+              Expanded(
+                child: ColoredBox(
+                  color: panelBg,
                   child: ListView(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                     children: [
                       Text(
                         'Build $kAppFullVersionLabel · Question ${index + 1} of $total',
-                        style: TextStyle(color: subtle, fontSize: 13),
+                        style: TextStyle(color: panelSubtle, fontSize: 13),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         q.question,
                         style: TextStyle(
-                          color: fg,
+                          color: panelFg,
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                           height: 1.35,
@@ -321,13 +351,17 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                             text: q.options[i],
                             selected: isSelected,
                             onTap: () => setState(() => _answers[index] = i),
+                            forceLightChrome: useLightQuizPanel,
                           ),
                         );
                       }),
                     ],
                   ),
                 ),
-                Padding(
+              ),
+              ColoredBox(
+                color: panelBg,
+                child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
                   child: Row(
                     children: [
@@ -357,44 +391,10 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    }
-
-    return Material(
-      type: MaterialType.canvas,
-      color: bg,
-      elevation: 8,
-      child: Scaffold(
-        backgroundColor: bg,
-        appBar: AppBar(
-          backgroundColor: bg,
-          title: Text(
-            lesson.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(progressHeight + panelHeight),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                LinearProgressIndicator(
-                  value: (index + 1) / total,
-                  minHeight: progressHeight,
-                  backgroundColor: isDark
-                      ? const Color(0xFF262B35)
-                      : const Color(0xFFE4E7EE),
-                ),
-                quizPanel(height: panelHeight),
-              ],
-            ),
-          ),
-        ),
-        body: const SizedBox.shrink(),
       ),
     );
   }
@@ -453,16 +453,19 @@ class _OptionTile extends StatelessWidget {
   final String text;
   final bool selected;
   final VoidCallback onTap;
+  final bool forceLightChrome;
 
   const _OptionTile({
     required this.text,
     required this.selected,
     required this.onTap,
+    this.forceLightChrome = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark =
+        forceLightChrome ? false : Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
     return Material(
       color: selected

@@ -8,15 +8,34 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.view.View
+import android.view.ViewGroup
+import android.webkit.WebView
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val channelName = "com.devpath.app/battery"
+    private val platformViewsChannel = "com.devpath.app/platformviews"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, platformViewsChannel)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "removeStaleWebViews" -> runOnUiThread {
+                        val removed = removeStaleWebViews(window.decorView)
+                        result.success(removed)
+                    }
+                    "bringFlutterSurfaceToFront" -> runOnUiThread {
+                        bringFlutterSurfaceToFront(window.decorView)
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
             .setMethodCallHandler { call, result ->
@@ -53,6 +72,43 @@ class MainActivity : FlutterActivity() {
                 true
             } catch (_: Exception) {
                 false
+            }
+        }
+    }
+
+    /** Tear down native WebViews left after Flutter routes pop (quiz overlay bug). */
+    private fun removeStaleWebViews(root: View): Int {
+        var count = 0
+        if (root is WebView) {
+            try {
+                root.stopLoading()
+                root.loadUrl("about:blank")
+                root.visibility = View.GONE
+                (root.parent as? ViewGroup)?.removeView(root)
+                root.destroy()
+                count++
+            } catch (_: Exception) {
+                // Best-effort only.
+            }
+            return count
+        }
+        if (root is ViewGroup) {
+            for (i in root.childCount - 1 downTo 0) {
+                count += removeStaleWebViews(root.getChildAt(i))
+            }
+        }
+        return count
+    }
+
+    private fun bringFlutterSurfaceToFront(root: View) {
+        val name = root.javaClass.name
+        if (name.contains("FlutterView") || name.contains("FlutterSurfaceView")) {
+            root.bringToFront()
+            (root.parent as? ViewGroup)?.invalidate()
+        }
+        if (root is ViewGroup) {
+            for (i in 0 until root.childCount) {
+                bringFlutterSurfaceToFront(root.getChildAt(i))
             }
         }
     }
