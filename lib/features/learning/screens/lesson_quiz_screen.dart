@@ -344,7 +344,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         useLightQuizPanel ? const Color(0xFF5D6670) : subtle;
 
     return Material(
-      color: bg,
+      color: useLightQuizPanel ? Colors.white : bg,
       child: SafeArea(
         child: QuizBodyShell(
           child: Column(
@@ -359,7 +359,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     vertical: 8,
                   ),
                   child: Text(
-                    'Quiz overlay · v$kAppFullVersionLabel',
+                    'Quiz dialog · v$kAppFullVersionLabel',
                     style: const TextStyle(
                       color: Color(0xFF0F1419),
                       fontWeight: FontWeight.w700,

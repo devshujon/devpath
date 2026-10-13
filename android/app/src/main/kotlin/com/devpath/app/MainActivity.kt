@@ -19,11 +19,6 @@ class MainActivity : FlutterActivity() {
     private val channelName = "com.devpath.app/battery"
     private val platformViewsChannel = "com.devpath.app/platformviews"
 
-    override fun onResume() {
-        super.onResume()
-        window.decorView.post { hideStaleWebViews(window.decorView) }
-    }
-
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
