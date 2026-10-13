@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../widgets/quiz_body_shell.dart';
 import '../data/lessons_catalog.dart';
 import '../logic/lesson_progression.dart';
+import '../logic/lesson_quiz_validator.dart';
 import '../models/lesson.dart';
 import '../providers/learning_progress_provider.dart';
 import '../widgets/xp_award_overlay.dart';
@@ -59,9 +60,19 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       });
       return;
     }
+    final validationErrors = validateLessonQuiz(loaded);
     QuizDiagnostics.log(
-      'loaded ${loaded.id} questions=${loaded.quizQuestions.length}',
+      'loaded ${loaded.id} questions=${loaded.quizQuestions.length} '
+      'validationErrors=${validationErrors.length}',
     );
+    if (validationErrors.isNotEmpty) {
+      setState(() {
+        _initializing = false;
+        _lesson = null;
+        _initError = validationErrors.join('\n');
+      });
+      return;
+    }
     setState(() {
       _lesson = loaded;
       _initError = null;

@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.1 — Quiz reliability (Android)
+
+### Bugs fixed
+- **Android blank lesson quiz:** Stale **Code Editor** / **Playground** WebView routes on the root navigator could paint over the quiz body (AppBar + progress visible, questions invisible). Quiz now opens with `pushAndRemoveUntil`, keeping only `MainShell`, while `PlatformViewGate` suspends platform views.
+- Quiz layout uses a single full-screen scaffold and `QuizBodyShell` so a collapsed body shows an explicit error instead of a silent blank area.
+- Quiz definitions are validated before render; invalid catalog data surfaces a retry screen instead of crashing.
+
+### Tests
+- Stale Code Editor, Playground, and combined route regressions.
+- H1 five-question flow through pass result; width checks at 360–430dp.
+- Catalog-wide quiz validation including H1 (5 questions) and b01_html (3 questions).
+
+### Notes
+- Physical-device verification on Honor hardware is required before treating the Android quiz fix as fully closed; see `docs/QA_REPORT_v1.2.1.md`.
+
 ## 1.2.0 — Curriculum mobile harden
 
 ### Bugs fixed

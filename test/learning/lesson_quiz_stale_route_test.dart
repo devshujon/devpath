@@ -31,6 +31,9 @@ void main() {
             AppRoutes.lessonQuiz: (_) => const SizedBox.expand(
                   child: LessonQuizScreen(),
                 ),
+            AppRoutes.playground: (_) => const Scaffold(
+                  body: Center(child: Text('Playground route')),
+                ),
           },
         ),
       ),
@@ -71,6 +74,56 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Take Quiz'), findsOneWidget);
+  });
+
+  testWidgets('H1 quiz after stale playground route cleared', (tester) async {
+    tester.view.physicalSize = const Size(360, 780);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpRootNavigatorApp(tester);
+    final nav = tester.state<NavigatorState>(find.byType(Navigator));
+
+    nav.pushNamed(AppRoutes.playground);
+    await tester.pumpAndSettle();
+    nav.pushNamed(
+      AppRoutes.lessonDetail,
+      arguments: const LessonDetailArguments(lessonId: 'h1_heading'),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Take Quiz'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Question 1'), findsOneWidget);
+    expect(find.text('<h1>'), findsOneWidget);
+  });
+
+  testWidgets('H1 quiz after code editor then playground routes cleared',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 780);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpRootNavigatorApp(tester);
+    final nav = tester.state<NavigatorState>(find.byType(Navigator));
+    nav.pushNamed(AppRoutes.codeEditor);
+    await tester.pumpAndSettle();
+    nav.pushNamed(AppRoutes.playground);
+    await tester.pumpAndSettle();
+    nav.pushNamed(
+      AppRoutes.lessonDetail,
+      arguments: const LessonDetailArguments(lessonId: 'h1_heading'),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Take Quiz'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('<h1>'), findsOneWidget);
+    expect(find.text('Next'), findsOneWidget);
   });
 
   testWidgets('reopening H1 quiz twice still shows options', (tester) async {
