@@ -292,6 +292,23 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (useLightQuizPanel)
+                Container(
+                  width: double.infinity,
+                  color: const Color(0xFFFFD54F),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    'Quiz loaded · v$kAppFullVersionLabel',
+                    style: const TextStyle(
+                      color: Color(0xFF0F1419),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 16, 0),
                 child: Row(

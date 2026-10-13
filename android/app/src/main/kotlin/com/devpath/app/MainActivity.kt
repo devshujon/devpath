@@ -25,13 +25,9 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, platformViewsChannel)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
-                    "removeStaleWebViews" -> runOnUiThread {
-                        val removed = removeStaleWebViews(window.decorView)
-                        result.success(removed)
-                    }
-                    "bringFlutterSurfaceToFront" -> runOnUiThread {
-                        bringFlutterSurfaceToFront(window.decorView)
-                        result.success(null)
+                    "hideStaleWebViews" -> runOnUiThread {
+                        val hidden = hideStaleWebViews(window.decorView)
+                        result.success(hidden)
                     }
                     else -> result.notImplemented()
                 }
@@ -76,16 +72,14 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    /** Tear down native WebViews left after Flutter routes pop (quiz overlay bug). */
-    private fun removeStaleWebViews(root: View): Int {
+    /** Hide orphan WebViews; do not destroy (Honor black-screen after destroy). */
+    private fun hideStaleWebViews(root: View): Int {
         var count = 0
         if (root is WebView) {
             try {
                 root.stopLoading()
                 root.loadUrl("about:blank")
                 root.visibility = View.GONE
-                (root.parent as? ViewGroup)?.removeView(root)
-                root.destroy()
                 count++
             } catch (_: Exception) {
                 // Best-effort only.
@@ -94,23 +88,10 @@ class MainActivity : FlutterActivity() {
         }
         if (root is ViewGroup) {
             for (i in root.childCount - 1 downTo 0) {
-                count += removeStaleWebViews(root.getChildAt(i))
+                count += hideStaleWebViews(root.getChildAt(i))
             }
         }
         return count
-    }
-
-    private fun bringFlutterSurfaceToFront(root: View) {
-        val name = root.javaClass.name
-        if (name.contains("FlutterView") || name.contains("FlutterSurfaceView")) {
-            root.bringToFront()
-            (root.parent as? ViewGroup)?.invalidate()
-        }
-        if (root is ViewGroup) {
-            for (i in 0 until root.childCount) {
-                bringFlutterSurfaceToFront(root.getChildAt(i))
-            }
-        }
     }
 
     private fun openOemAutostartSettings(): Boolean {

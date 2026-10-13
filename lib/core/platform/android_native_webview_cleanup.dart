@@ -13,27 +13,17 @@ class AndroidNativeWebViewCleanup {
   static const MethodChannel _channel =
       MethodChannel('com.devpath.app/platformviews');
 
-  static Future<int> removeStaleWebViews() async {
+  /// Hides native WebViews without [WebView.destroy] (destroy broke Honor rendering).
+  static Future<int> hideStaleWebViews() async {
     if (kIsWeb || !Platform.isAndroid) return 0;
     try {
-      final removed =
-          await _channel.invokeMethod<int>('removeStaleWebViews');
-      final count = removed ?? 0;
-      QuizDiagnostics.log('Android native removed WebViews=$count');
+      final hidden = await _channel.invokeMethod<int>('hideStaleWebViews');
+      final count = hidden ?? 0;
+      QuizDiagnostics.log('Android native hidden WebViews=$count');
       return count;
     } catch (e, st) {
-      QuizDiagnostics.log('removeStaleWebViews failed: $e\n$st');
+      QuizDiagnostics.log('hideStaleWebViews failed: $e\n$st');
       return 0;
-    }
-  }
-
-  static Future<void> bringFlutterSurfaceToFront() async {
-    if (kIsWeb || !Platform.isAndroid) return;
-    try {
-      await _channel.invokeMethod<void>('bringFlutterSurfaceToFront');
-      QuizDiagnostics.log('Android bringFlutterSurfaceToFront ok');
-    } catch (e) {
-      QuizDiagnostics.log('bringFlutterSurfaceToFront failed: $e');
     }
   }
 }
