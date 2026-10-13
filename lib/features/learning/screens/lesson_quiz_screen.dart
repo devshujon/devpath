@@ -15,7 +15,16 @@ import '../providers/learning_progress_provider.dart';
 import '../widgets/xp_award_overlay.dart';
 
 class LessonQuizScreen extends StatefulWidget {
-  const LessonQuizScreen({super.key});
+  const LessonQuizScreen({
+    super.key,
+    this.initialArgs,
+    this.onRequestClose,
+  });
+
+  /// When set (Android overlay), route [ModalRoute] arguments are not required.
+  final LessonDetailArguments? initialArgs;
+  final VoidCallback? onRequestClose;
+
   static const route = '/lesson-quiz';
 
   @override
@@ -34,11 +43,26 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
   static const double _passingThreshold = 0.7;
 
+  LessonDetailArguments? _resolveArgs() {
+    if (widget.initialArgs != null) return widget.initialArgs;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is LessonDetailArguments) return args;
+    return null;
+  }
+
+  void _closeQuiz() {
+    if (widget.onRequestClose != null) {
+      widget.onRequestClose!();
+      return;
+    }
+    Navigator.maybePop(context);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is! LessonDetailArguments) {
+    final args = _resolveArgs();
+    if (args == null) {
       if (_initError == null && _lesson == null) {
         setState(() {
           _initializing = false;
@@ -193,7 +217,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                 ),
                 const SizedBox(height: 10),
                 OutlinedButton(
-                  onPressed: () => Navigator.maybePop(context),
+                  onPressed: _closeQuiz,
                   child: const Text('Back'),
                 ),
               ],
@@ -229,7 +253,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                 ),
                 const SizedBox(height: 20),
                 FilledButton(
-                  onPressed: () => Navigator.maybePop(context),
+                  onPressed: _closeQuiz,
                   child: const Text('Back'),
                 ),
               ],
@@ -259,7 +283,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                 ),
                 const SizedBox(height: 20),
                 OutlinedButton(
-                  onPressed: () => Navigator.maybePop(context),
+                  onPressed: _closeQuiz,
                   child: const Text('Back'),
                 ),
               ],
@@ -287,7 +311,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
           });
         },
         onFinish: () => _markCompleteAndCelebrate(context, lesson),
-        onClose: () => Navigator.maybePop(context),
+        onClose: _closeQuiz,
       ));
     }
     return _fullScreen(_buildQuestionScaffold(context, lesson));
@@ -335,7 +359,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     vertical: 8,
                   ),
                   child: Text(
-                    'Quiz loaded · v$kAppFullVersionLabel · Android safe',
+                    'Quiz overlay · v$kAppFullVersionLabel',
                     style: const TextStyle(
                       color: Color(0xFF0F1419),
                       fontWeight: FontWeight.w700,
@@ -348,7 +372,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                 child: Row(
                   children: [
                     IconButton(
-                      onPressed: () => Navigator.maybePop(context),
+                      onPressed: _closeQuiz,
                       icon: const Icon(Icons.arrow_back),
                     ),
                     Expanded(
@@ -477,11 +501,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
           ? null
           : () {
               navigatedAway = true;
-              Navigator.of(context).pop(); // dismiss overlay
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop(); // dismiss quiz
-              }
-              Navigator.of(context).pushReplacementNamed(
+              Navigator.of(context).pop(); // dismiss XP overlay
+              widget.onRequestClose?.call();
+              Navigator.of(context, rootNavigator: true).pushReplacementNamed(
                 AppRoutes.lessonDetail,
                 arguments:
                     LessonDetailArguments(lessonId: result.nextLesson!.id),
@@ -493,6 +515,10 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     setState(() => _finishing = false);
     if (!shouldPopAfterCompletionOverlay(navigatedAway: navigatedAway)) return;
     if (!context.mounted) return;
+    if (widget.onRequestClose != null) {
+      widget.onRequestClose!();
+      return;
+    }
     Navigator.of(context).popUntil((route) {
       final name = route.settings.name;
       return name != AppRoutes.lessonQuiz && name != AppRoutes.lessonDetail;
