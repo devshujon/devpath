@@ -21,18 +21,31 @@ Future<void> openLessonQuiz(
   );
 
   await PlatformViewGate.instance.runSuspended(() async {
-    await PlatformViewGate.waitForNativeTeardown();
-
     if (!navContext.mounted) {
       QuizDiagnostics.log('Abort: root navigator context unmounted');
       return;
     }
 
-    QuizDiagnostics.log(
-      'Pushing quiz with pushAndRemoveUntil (keep shell only)',
-    );
+    QuizDiagnostics.log('popUntil shell to drop stale platform-view routes');
+    rootNav.popUntil((route) {
+      final name = route.settings.name;
+      final keep = route.isFirst || name == AppRoutes.shell;
+      if (!keep && kDebugMode) {
+        QuizDiagnostics.log('popUntil removing route name=$name');
+      }
+      return keep;
+    });
 
-    await rootNav.pushAndRemoveUntil<void>(
+    await PlatformViewGate.waitForNativeTeardown(frames: 8);
+
+    if (!navContext.mounted) {
+      QuizDiagnostics.log('Abort: navigator unmounted after popUntil');
+      return;
+    }
+
+    QuizDiagnostics.log('Pushing full-screen lesson quiz');
+
+    await rootNav.push<void>(
       MaterialPageRoute<void>(
         settings: RouteSettings(
           name: AppRoutes.lessonQuiz,
@@ -42,14 +55,6 @@ Future<void> openLessonQuiz(
           child: LessonQuizScreen(),
         ),
       ),
-      (route) {
-        final name = route.settings.name;
-        final keep = route.isFirst || name == AppRoutes.shell;
-        if (!keep && kDebugMode) {
-          QuizDiagnostics.log('Removing route name=$name');
-        }
-        return keep;
-      },
     );
 
     QuizDiagnostics.log('Quiz closed; restoring lesson detail');

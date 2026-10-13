@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -273,7 +274,11 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       'options=${q.options.length}',
     );
 
-    return Scaffold(
+    return Material(
+      type: MaterialType.canvas,
+      color: bg,
+      elevation: 8,
+      child: Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: bg,
@@ -301,6 +306,18 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
                   children: [
+                    if (kDebugMode)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Text(
+                          'DevPath quiz debug · v1.2.1+5',
+                          style: TextStyle(
+                            color: subtle,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     Text(
                       'Question ${index + 1} of $total',
                       style: TextStyle(color: subtle, fontSize: 13),
@@ -363,6 +380,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

@@ -7,6 +7,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
+import '../../../core/platform/platform_webview_registry.dart';
+import '../../../core/platform/webview_detach.dart';
 import '../../../core/routing/app_route_observer.dart';
 import '../../code_editor/models/editor_file_type.dart';
 import '../utils/codemirror_modes.dart';
@@ -53,6 +55,7 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
   void initState() {
     super.initState();
     PlatformViewGate.instance.addListener(_onGateChanged);
+    PlatformWebViewRegistry.instance.register(_hardReleaseWebView);
   }
 
   @override
@@ -104,17 +107,25 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
     );
   }
 
-  void _releaseController() {
-    if (_controller != null) {
-      QuizDiagnostics.log('CodemirrorEditorPane WebView released');
-    }
+  Future<void> _hardReleaseWebView() async {
+    final controller = _controller;
+    if (controller == null) return;
     _controller = null;
     _ready = false;
     _loadedDocumentKey = null;
+    QuizDiagnostics.log('CodemirrorEditorPane WebView hard release');
+    await detachWebViewController(controller);
+  }
+
+  void _releaseController() {
+    if (_controller == null) return;
+    // ignore: unawaited_futures
+    _hardReleaseWebView();
   }
 
   @override
   void dispose() {
+    PlatformWebViewRegistry.instance.unregister(_hardReleaseWebView);
     PlatformViewGate.instance.removeListener(_onGateChanged);
     if (_route != null) appRouteObserver.unsubscribe(this);
     _releaseController();

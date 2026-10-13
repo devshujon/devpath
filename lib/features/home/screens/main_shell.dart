@@ -35,7 +35,12 @@ class _MainShellState extends State<MainShell> {
         return Scaffold(
           body: gate.isSuspended
               ? const SizedBox.shrink()
-              : IndexedStack(index: _index, children: _tabs),
+              // Only mount the active tab so no hidden subtree keeps platform
+              // views alive under [IndexedStack] on Android.
+              : KeyedSubtree(
+                  key: ValueKey<int>(_index),
+                  child: _tabs[_index],
+                ),
           bottomNavigationBar: gate.isSuspended
               ? null
               : NavigationBar(

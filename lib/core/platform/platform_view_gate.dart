@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'platform_webview_registry.dart';
+
 /// Globally suspends Flutter [WebViewWidget] / platform views on Android
 /// while full-screen routes (e.g. lesson quiz) are open.
 class PlatformViewGate extends ChangeNotifier {
@@ -32,6 +34,8 @@ class PlatformViewGate extends ChangeNotifier {
   Future<T> runSuspended<T>(Future<T> Function() action) async {
     suspend();
     try {
+      await PlatformWebViewRegistry.instance.releaseAll();
+      await waitForNativeTeardown();
       return await action();
     } finally {
       resume();
@@ -40,9 +44,10 @@ class PlatformViewGate extends ChangeNotifier {
 
   /// Gives Android time to tear down native WebView surfaces after routes
   /// pop or platform views detach.
-  static Future<void> waitForNativeTeardown() async {
-    await SchedulerBinding.instance.endOfFrame;
-    await SchedulerBinding.instance.endOfFrame;
-    if (kIsWeb) return;
+  static Future<void> waitForNativeTeardown({int frames = 6}) async {
+    final count = kIsWeb ? 2 : frames;
+    for (var i = 0; i < count; i++) {
+      await SchedulerBinding.instance.endOfFrame;
+    }
   }
 }

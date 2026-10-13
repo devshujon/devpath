@@ -2,6 +2,11 @@
 
 ## 1.2.1 — Quiz reliability (Android)
 
+### 1.2.1+5
+- Quiz open: `popUntil` shell, hard WebView detach (`about:blank`) via registry, longer frame teardown.
+- Main shell mounts only the active tab (no `IndexedStack`) so hidden tabs cannot retain platform views.
+- Debug quiz label `v1.2.1+5` on question screen (debug APK only).
+
 ### Bugs fixed
 - **Android blank lesson quiz:** Stale **Code Editor** / **Playground** WebView routes on the root navigator could paint over the quiz body (AppBar + progress visible, questions invisible). Quiz now opens with `pushAndRemoveUntil`, keeping only `MainShell`, while `PlatformViewGate` suspends platform views.
 - Quiz layout uses a single full-screen scaffold and `QuizBodyShell` so a collapsed body shows an explicit error instead of a silent blank area.

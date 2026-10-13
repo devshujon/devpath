@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
+import '../../../core/platform/platform_webview_registry.dart';
+import '../../../core/platform/webview_detach.dart';
 import '../../../core/routing/app_route_observer.dart';
 
 /// Renders a string of HTML in a WebView. Reloads whenever [version]
@@ -48,6 +51,16 @@ class _PreviewPaneState extends State<PreviewPane> with RouteAware {
   void initState() {
     super.initState();
     PlatformViewGate.instance.addListener(_onGateChanged);
+    PlatformWebViewRegistry.instance.register(_hardReleaseWebView);
+  }
+
+  Future<void> _hardReleaseWebView() async {
+    final controller = _controller;
+    if (controller == null) return;
+    _controller = null;
+    _loadTimeout?.cancel();
+    QuizDiagnostics.log('PreviewPane WebView hard release');
+    await detachWebViewController(controller);
   }
 
   void _onGateChanged() {
@@ -55,7 +68,8 @@ class _PreviewPaneState extends State<PreviewPane> with RouteAware {
     if (_shouldAttachWebView) {
       _ensureController();
     } else {
-      _controller = null;
+      // ignore: unawaited_futures
+      _hardReleaseWebView();
     }
     setState(() {});
   }
@@ -78,7 +92,8 @@ class _PreviewPaneState extends State<PreviewPane> with RouteAware {
   @override
   void didPushNext() {
     _routeVisible = false;
-    _controller = null;
+    // ignore: unawaited_futures
+    _hardReleaseWebView();
     if (mounted) setState(() {});
   }
 
@@ -135,9 +150,12 @@ class _PreviewPaneState extends State<PreviewPane> with RouteAware {
 
   @override
   void dispose() {
+    PlatformWebViewRegistry.instance.unregister(_hardReleaseWebView);
     PlatformViewGate.instance.removeListener(_onGateChanged);
     if (_route != null) appRouteObserver.unsubscribe(this);
     _loadTimeout?.cancel();
+    // ignore: unawaited_futures
+    _hardReleaseWebView();
     super.dispose();
   }
 
