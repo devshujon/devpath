@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../core/debug/quiz_diagnostics.dart';
+import '../../../core/platform/android_webview_policy.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/platform/platform_webview_registry.dart';
@@ -251,6 +252,9 @@ $userHtml
 
   @override
   Widget build(BuildContext context) {
+    if (!useHtmlPreviewWebViewOnAndroid) {
+      return _AndroidStaticPreview(htmlDocument: widget.htmlDocument);
+    }
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0A0C10) : const Color(0xFFFAFBFD);
     if (!_shouldAttachWebView || _controller == null) {
@@ -280,6 +284,38 @@ $userHtml
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Offline preview without a platform WebView (Android quiz reliability).
+class _AndroidStaticPreview extends StatelessWidget {
+  final String htmlDocument;
+
+  const _AndroidStaticPreview({required this.htmlDocument});
+
+  @override
+  Widget build(BuildContext context) {
+    final plain = htmlDocument
+        .replaceAll(RegExp(r'<[^>]+>'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    return ColoredBox(
+      color: Colors.white,
+      child: ListView(
+        padding: const EdgeInsets.all(12),
+        children: [
+          Text(
+            'Preview (Android safe mode)',
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(height: 8),
+          SelectableText(
+            plain.isEmpty ? '(empty HTML)' : plain,
+            style: const TextStyle(color: Colors.black87, height: 1.35),
+          ),
         ],
       ),
     );

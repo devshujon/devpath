@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
-import '../../editor/widgets/codemirror_editor_pane.dart';
+import '../widgets/mobile_code_editor_pane.dart';
 import '../models/editor_file_type.dart';
 import '../models/workspace_file.dart';
 import '../providers/code_editor_provider.dart';
@@ -22,8 +22,8 @@ class CodeEditorFileScreen extends StatefulWidget {
 }
 
 class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
-  final GlobalKey<CodemirrorEditorPaneState> _editorKey =
-      GlobalKey<CodemirrorEditorPaneState>();
+  final GlobalKey<MobileCodeEditorPaneState> _editorKey =
+      GlobalKey<MobileCodeEditorPaneState>();
 
   @override
   void didChangeDependencies() {
@@ -351,7 +351,7 @@ class _CodeEditorFileScreenState extends State<CodeEditorFileScreen> {
 
 /// Keeps the WebView editor mounted; only settings/file kind refresh the pane.
 class _CodemirrorHost extends StatefulWidget {
-  final GlobalKey<CodemirrorEditorPaneState> editorKey;
+  final GlobalKey<MobileCodeEditorPaneState> editorKey;
   final String fileId;
   final EditorFileKind fileKind;
 
@@ -392,7 +392,7 @@ class _CodemirrorHostState extends State<_CodemirrorHost> {
         darkEditorTheme: p.settings.darkEditorTheme,
       ),
       builder: (context, view, _) {
-        return CodemirrorEditorPane(
+        return MobileCodeEditorPane(
           key: widget.editorKey,
           documentKey: widget.fileId,
           fileKind: widget.fileKind,

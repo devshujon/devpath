@@ -22,6 +22,16 @@ class PlatformViewGate extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Clears a leaked suspend depth (e.g. after a failed route transition).
+  void forceOpen() {
+    if (_depth == 0) return;
+    _depth = 0;
+    if (kDebugMode) {
+      debugPrint('[PlatformViewGate] forceOpen');
+    }
+    notifyListeners();
+  }
+
   void resume() {
     if (_depth <= 0) return;
     _depth--;

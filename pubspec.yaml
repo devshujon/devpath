@@ -1,7 +1,7 @@
 name: devpath
 description: Learn HTML, CSS, JavaScript, and PHP on your phone.
 publish_to: 'none'
-version: 1.2.1+8
+version: 1.2.1+9
 
 environment:
   sdk: ^3.5.0

@@ -116,9 +116,38 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    try {
+      return ColoredBox(
+        color: Colors.white,
+        child: _buildQuizContent(context),
+      );
+    } catch (e, st) {
+      QuizDiagnostics.log('Quiz build failed: $e\n$st');
+      return const ColoredBox(
+        color: Colors.white,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text(
+              'Quiz could not display. Force-stop the app and try again.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black87, fontSize: 16),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildQuizContent(BuildContext context) {
     if (_initializing) {
       return _fullScreen(Scaffold(
-        appBar: AppBar(title: const Text('Quiz')),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          title: Text('Quiz · v$kAppFullVersionLabel'),
+        ),
         body: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +164,12 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     final lesson = _lesson;
     if (lesson == null) {
       return _fullScreen(Scaffold(
-        appBar: AppBar(title: const Text('Quiz')),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          title: Text('Quiz · v$kAppFullVersionLabel'),
+        ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -301,7 +335,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     vertical: 8,
                   ),
                   child: Text(
-                    'Quiz loaded · v$kAppFullVersionLabel',
+                    'Quiz loaded · v$kAppFullVersionLabel · Android safe',
                     style: const TextStyle(
                       color: Color(0xFF0F1419),
                       fontWeight: FontWeight.w700,
