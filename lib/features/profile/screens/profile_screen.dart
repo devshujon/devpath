@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/app_version.dart';
+
 import '../../../core/services/battery_service.dart';
 import '../../../core/services/storage_service.dart';
 
@@ -58,11 +60,11 @@ class ProfileScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text('About'),
-            subtitle: const Text('DevPath v1.0.0'),
+            subtitle: Text('DevPath v$kAppFullVersionLabel'),
             onTap: () => showAboutDialog(
               context: context,
               applicationName: 'DevPath',
-              applicationVersion: '1.0.0',
+              applicationVersion: kAppFullVersionLabel,
               applicationLegalese: 'Learn HTML, CSS, JavaScript, and PHP on your phone.',
             ),
           ),

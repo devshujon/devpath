@@ -7,6 +7,7 @@ import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/platform/platform_webview_registry.dart';
+import '../../../core/platform/active_webview_tracker.dart';
 import '../../../core/platform/webview_detach.dart';
 import '../../../core/routing/app_route_observer.dart';
 
@@ -61,6 +62,7 @@ class _PreviewPaneState extends State<PreviewPane> with RouteAware {
     _loadTimeout?.cancel();
     QuizDiagnostics.log('PreviewPane WebView hard release');
     await detachWebViewController(controller);
+    ActiveWebViewTracker.instance.untrack(controller);
   }
 
   void _onGateChanged() {
@@ -129,6 +131,7 @@ class _PreviewPaneState extends State<PreviewPane> with RouteAware {
           onNavigationRequest: _allowOnlyLocalSchemes,
         ),
       );
+    ActiveWebViewTracker.instance.track(_controller!);
     _renderIfNeeded();
   }
 

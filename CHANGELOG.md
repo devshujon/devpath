@@ -2,6 +2,11 @@
 
 ## 1.2.1 — Quiz reliability (Android)
 
+### 1.2.1+6
+- Quiz questions/options render in **AppBar bottom** (Honor WebView often covers Scaffold body only).
+- **ActiveWebViewTracker** detaches ghost WebViews after Code Editor route is popped.
+- Profile **About** shows real version (was hardcoded v1.0.0).
+
 ### 1.2.1+5
 - Quiz open: `popUntil` shell, hard WebView detach (`about:blank`) via registry, longer frame teardown.
 - Main shell mounts only the active tab (no `IndexedStack`) so hidden tabs cannot retain platform views.

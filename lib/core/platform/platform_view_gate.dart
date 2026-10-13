@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'active_webview_tracker.dart';
 import 'platform_webview_registry.dart';
 
 /// Globally suspends Flutter [WebViewWidget] / platform views on Android
@@ -35,6 +36,7 @@ class PlatformViewGate extends ChangeNotifier {
     suspend();
     try {
       await PlatformWebViewRegistry.instance.releaseAll();
+      await ActiveWebViewTracker.instance.detachAll();
       await waitForNativeTeardown();
       return await action();
     } finally {

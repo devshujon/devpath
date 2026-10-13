@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/debug/quiz_diagnostics.dart';
+import '../../../core/platform/active_webview_tracker.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/routing/app_routes.dart';
 import '../screens/lesson_quiz_screen.dart';
@@ -25,6 +26,9 @@ Future<void> openLessonQuiz(
       QuizDiagnostics.log('Abort: root navigator context unmounted');
       return;
     }
+
+    await ActiveWebViewTracker.instance.detachAll();
+    await PlatformViewGate.waitForNativeTeardown(frames: 4);
 
     QuizDiagnostics.log('popUntil shell to drop stale platform-view routes');
     rootNav.popUntil((route) {

@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/app_version.dart';
 import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -274,113 +274,127 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       'options=${q.options.length}',
     );
 
+    // Honor / some OEM WebViews paint over the Scaffold [body] slot after
+    // Code Editor. Keep questions in the AppBar [bottom] region instead.
+    const progressHeight = 4.0;
+    final media = MediaQuery.sizeOf(context);
+    final panelHeight = (media.height -
+            MediaQuery.paddingOf(context).top -
+            kToolbarHeight -
+            progressHeight)
+        .clamp(280.0, media.height);
+
+    Widget quizPanel({required double height}) {
+      return SizedBox(
+        height: height,
+        width: double.infinity,
+        child: QuizBodyShell(
+          child: SafeArea(
+            top: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                    children: [
+                      Text(
+                        'Build $kAppFullVersionLabel · Question ${index + 1} of $total',
+                        style: TextStyle(color: subtle, fontSize: 13),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        q.question,
+                        style: TextStyle(
+                          color: fg,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          height: 1.35,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      ...List.generate(q.options.length, (i) {
+                        final isSelected = selected == i;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _OptionTile(
+                            text: q.options[i],
+                            selected: isSelected,
+                            onTap: () => setState(() => _answers[index] = i),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                  child: Row(
+                    children: [
+                      if (index > 0)
+                        OutlinedButton.icon(
+                          onPressed: () => setState(() => _index--),
+                          icon: const Icon(Icons.arrow_back, size: 16),
+                          label: const Text('Back'),
+                        ),
+                      const Spacer(),
+                      FilledButton.icon(
+                        onPressed: _answers.containsKey(index)
+                            ? () {
+                                if (index < total - 1) {
+                                  setState(() => _index++);
+                                } else {
+                                  setState(() => _showResult = true);
+                                }
+                              }
+                            : null,
+                        icon: Icon(
+                          isLast ? Icons.check : Icons.arrow_forward,
+                          size: 16,
+                        ),
+                        label: Text(isLast ? 'Finish' : 'Next'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Material(
       type: MaterialType.canvas,
       color: bg,
       elevation: 8,
       child: Scaffold(
-      backgroundColor: bg,
-      appBar: AppBar(
         backgroundColor: bg,
-        title: Text(
-          lesson.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: LinearProgressIndicator(
-            value: (index + 1) / total,
-            minHeight: 4,
-            backgroundColor:
-                isDark ? const Color(0xFF262B35) : const Color(0xFFE4E7EE),
+        appBar: AppBar(
+          backgroundColor: bg,
+          title: Text(
+            lesson.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(progressHeight + panelHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                LinearProgressIndicator(
+                  value: (index + 1) / total,
+                  minHeight: progressHeight,
+                  backgroundColor: isDark
+                      ? const Color(0xFF262B35)
+                      : const Color(0xFFE4E7EE),
+                ),
+                quizPanel(height: panelHeight),
+              ],
+            ),
           ),
         ),
-      ),
-      body: QuizBodyShell(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                  children: [
-                    if (kDebugMode)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Text(
-                          'DevPath quiz debug · v1.2.1+5',
-                          style: TextStyle(
-                            color: subtle,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    Text(
-                      'Question ${index + 1} of $total',
-                      style: TextStyle(color: subtle, fontSize: 13),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      q.question,
-                      style: TextStyle(
-                        color: fg,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ...List.generate(q.options.length, (i) {
-                      final isSelected = selected == i;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _OptionTile(
-                          text: q.options[i],
-                          selected: isSelected,
-                          onTap: () => setState(() => _answers[index] = i),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-                child: Row(
-                  children: [
-                    if (index > 0)
-                      OutlinedButton.icon(
-                        onPressed: () => setState(() => _index--),
-                        icon: const Icon(Icons.arrow_back, size: 16),
-                        label: const Text('Back'),
-                      ),
-                    const Spacer(),
-                    FilledButton.icon(
-                      onPressed: _answers.containsKey(index)
-                          ? () {
-                              if (index < total - 1) {
-                                setState(() => _index++);
-                              } else {
-                                setState(() => _showResult = true);
-                              }
-                            }
-                          : null,
-                      icon: Icon(
-                        isLast ? Icons.check : Icons.arrow_forward,
-                        size: 16,
-                      ),
-                      label: Text(isLast ? 'Finish' : 'Next'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+        body: const SizedBox.shrink(),
       ),
     );
   }

@@ -8,6 +8,7 @@ import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/platform/platform_view_visibility.dart';
 import '../../../core/platform/platform_webview_registry.dart';
+import '../../../core/platform/active_webview_tracker.dart';
 import '../../../core/platform/webview_detach.dart';
 import '../../../core/routing/app_route_observer.dart';
 import '../../code_editor/models/editor_file_type.dart';
@@ -115,6 +116,7 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
     _loadedDocumentKey = null;
     QuizDiagnostics.log('CodemirrorEditorPane WebView hard release');
     await detachWebViewController(controller);
+    ActiveWebViewTracker.instance.untrack(controller);
   }
 
   void _releaseController() {
@@ -159,6 +161,7 @@ class CodemirrorEditorPaneState extends State<CodemirrorEditorPane>
       );
 
     _controller = controller;
+    ActiveWebViewTracker.instance.track(controller);
     QuizDiagnostics.log('CodemirrorEditorPane WebView created');
     controller.loadFlutterAsset('assets/editor/editor.html');
   }
