@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/app_version.dart';
-
 import '../../../core/services/battery_service.dart';
 import '../../../core/services/storage_service.dart';
+import 'privacy_policy_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -39,8 +40,15 @@ class ProfileScreen extends StatelessWidget {
             leading: const Icon(Icons.notifications_outlined),
             title: const Text('Daily reminder'),
             subtitle: const Text('Enable notification permission'),
-            onTap: () {
-              // TODO: NotificationPermissionFlow.requestWithRationale(context);
+            onTap: () async {
+              final status = await Permission.notification.request();
+              if (!context.mounted) return;
+              final msg = status.isGranted
+                  ? 'Notification permission granted.'
+                  : 'Notification permission denied. Enable in system settings for reminders.';
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(msg)),
+              );
             },
           ),
           ListTile(
@@ -54,7 +62,11 @@ class ProfileScreen extends StatelessWidget {
             leading: const Icon(Icons.privacy_tip_outlined),
             title: const Text('Privacy policy'),
             onTap: () {
-              // TODO: open privacy policy URL
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const PrivacyPolicyScreen(),
+                ),
+              );
             },
           ),
           ListTile(

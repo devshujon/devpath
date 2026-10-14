@@ -1,7 +1,7 @@
 name: devpath
 description: Learn HTML, CSS, JavaScript, and PHP on your phone.
 publish_to: 'none'
-version: 1.2.1+13
+version: 1.2.1+14
 
 environment:
   sdk: ^3.5.0
@@ -60,3 +60,4 @@ flutter:
     - assets/quizzes/advanced/
     - assets/editor/
     - assets/curriculum/html/
+    - assets/legal/

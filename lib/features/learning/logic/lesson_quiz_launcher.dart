@@ -25,12 +25,14 @@ Future<void> openLessonQuiz(
   final learning = context.read<LearningProgressProvider>();
 
   if (!kIsWeb && Platform.isAndroid) {
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 2),
-        content: Text('Opening quiz · v$kAppFullVersionLabel'),
-      ),
-    );
+    if (kDebugMode) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text('Opening quiz · v$kAppFullVersionLabel'),
+        ),
+      );
+    }
 
     await showModalBottomSheet<void>(
       context: context,

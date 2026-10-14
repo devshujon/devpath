@@ -373,7 +373,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (useLightQuizPanel)
+              if (useLightQuizPanel && kDebugMode)
                 Container(
                   width: double.infinity,
                   color: const Color(0xFFFFD54F),
@@ -382,7 +382,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     vertical: 8,
                   ),
                   child: Text(
-                    'Quiz · v$kAppFullVersionLabel',
+                    'Quiz debug · v$kAppFullVersionLabel',
                     style: const TextStyle(
                       color: Color(0xFF0F1419),
                       fontWeight: FontWeight.w700,
@@ -567,7 +567,11 @@ class _OptionTile extends StatelessWidget {
     final isDark =
         forceLightChrome ? false : Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
-    return Material(
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: text,
+      child: Material(
       color: selected
           ? primary.withValues(alpha: isDark ? 0.18 : 0.08)
           : (isDark ? const Color(0xFF141820) : Colors.white),
@@ -613,6 +617,7 @@ class _OptionTile extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
