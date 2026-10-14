@@ -157,10 +157,13 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   @override
   Widget build(BuildContext context) {
     try {
-      return SizedBox.expand(
-        child: ColoredBox(
-          color: Colors.white,
-          child: _buildQuizContent(context),
+      return Theme(
+        data: ThemeData.light(),
+        child: SizedBox.expand(
+          child: ColoredBox(
+            color: Colors.white,
+            child: _buildQuizContent(context),
+          ),
         ),
       );
     } catch (e, st) {
@@ -379,7 +382,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     vertical: 8,
                   ),
                   child: Text(
-                    'Quiz dialog · v$kAppFullVersionLabel',
+                    'Quiz · v$kAppFullVersionLabel',
                     style: const TextStyle(
                       color: Color(0xFF0F1419),
                       fontWeight: FontWeight.w700,

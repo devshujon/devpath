@@ -6,13 +6,12 @@ import 'package:provider/provider.dart';
 
 import '../../../core/app_version.dart';
 import '../../../core/debug/quiz_diagnostics.dart';
-import '../../../core/platform/android_native_webview_cleanup.dart';
 import '../../../core/platform/platform_view_gate.dart';
 import '../../../core/routing/app_routes.dart';
 import '../providers/learning_progress_provider.dart';
 import '../screens/lesson_quiz_screen.dart';
 
-/// Opens [LessonQuizScreen] on the root navigator (full-screen opaque route).
+/// Opens [LessonQuizScreen]. Android uses a full-height modal sheet (Honor-safe).
 Future<void> openLessonQuiz(
   BuildContext context, {
   required LessonDetailArguments args,
@@ -23,46 +22,74 @@ Future<void> openLessonQuiz(
 
   if (!context.mounted) return;
 
+  final learning = context.read<LearningProgressProvider>();
+
   if (!kIsWeb && Platform.isAndroid) {
-    await AndroidNativeWebViewCleanup.hideStaleWebViews();
-    await PlatformViewGate.waitForNativeTeardown(frames: 2);
-    if (!context.mounted) return;
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 2),
         content: Text('Opening quiz · v$kAppFullVersionLabel'),
       ),
     );
+
+    await showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.white,
+      barrierColor: Colors.black54,
+      builder: (sheetContext) {
+        final height = MediaQuery.sizeOf(sheetContext).height;
+        return Theme(
+          data: ThemeData.light(),
+          child: SizedBox(
+            width: double.infinity,
+            height: height,
+            child: ChangeNotifierProvider<LearningProgressProvider>.value(
+              value: learning,
+              child: LessonQuizScreen(
+                initialArgs: args,
+                onRequestClose: () {
+                  if (sheetContext.mounted) {
+                    Navigator.of(sheetContext).pop();
+                  }
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    QuizDiagnostics.log('Quiz sheet closed lessonId=${args.lessonId}');
+    return;
   }
 
-  final learning = context.read<LearningProgressProvider>();
   final rootNav = Navigator.of(context, rootNavigator: true);
-
   await rootNav.push<void>(
-    PageRouteBuilder<void>(
-      opaque: true,
-      barrierDismissible: false,
+    MaterialPageRoute<void>(
       settings: RouteSettings(
         name: AppRoutes.lessonQuiz,
         arguments: args,
       ),
-      pageBuilder: (routeContext, _, __) {
-        return ChangeNotifierProvider<LearningProgressProvider>.value(
-          value: learning,
-          child: LessonQuizScreen(
-            initialArgs: args,
-            onRequestClose: () {
-              if (routeContext.mounted) {
-                Navigator.of(routeContext).pop();
-              }
-            },
+      builder: (routeContext) {
+        return Theme(
+          data: ThemeData.light(),
+          child: ChangeNotifierProvider<LearningProgressProvider>.value(
+            value: learning,
+            child: LessonQuizScreen(
+              initialArgs: args,
+              onRequestClose: () {
+                if (routeContext.mounted) {
+                  Navigator.of(routeContext).pop();
+                }
+              },
+            ),
           ),
         );
       },
-      transitionsBuilder: (_, __, ___, child) => child,
-      transitionDuration: Duration.zero,
     ),
   );
-
-  QuizDiagnostics.log('Quiz route closed lessonId=${args.lessonId}');
 }
