@@ -59,8 +59,51 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final args = widget.initialArgs;
+    if (args != null) {
+      _loadLessonFromArgs(args);
+    }
+  }
+
+  void _loadLessonFromArgs(LessonDetailArguments args) {
+    if (_argsLessonId == args.lessonId && _lesson != null) {
+      _initializing = false;
+      return;
+    }
+    _argsLessonId = args.lessonId;
+    QuizDiagnostics.log('init lessonId=${args.lessonId}');
+    final loaded = LessonsCatalog.byId(args.lessonId);
+    if (loaded == null) {
+      _initializing = false;
+      _lesson = null;
+      _initError = 'Lesson not found: ${args.lessonId}';
+      return;
+    }
+    final validationErrors = validateLessonQuiz(loaded);
+    QuizDiagnostics.log(
+      'loaded ${loaded.id} questions=${loaded.quizQuestions.length} '
+      'validationErrors=${validationErrors.length}',
+    );
+    if (validationErrors.isNotEmpty) {
+      _initializing = false;
+      _lesson = null;
+      _initError = validationErrors.join('\n');
+      return;
+    }
+    _lesson = loaded;
+    _initError = null;
+    _initializing = false;
+    _index = 0;
+    _answers.clear();
+    _showResult = false;
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (widget.initialArgs != null) return;
     final args = _resolveArgs();
     if (args == null) {
       if (_initError == null && _lesson == null) {
@@ -71,42 +114,8 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       }
       return;
     }
-    if (_argsLessonId == args.lessonId && _lesson != null) {
-      if (_initializing) setState(() => _initializing = false);
-      return;
-    }
-    _argsLessonId = args.lessonId;
-    QuizDiagnostics.log('init lessonId=${args.lessonId}');
-    final loaded = LessonsCatalog.byId(args.lessonId);
-    if (loaded == null) {
-      setState(() {
-        _initializing = false;
-        _lesson = null;
-        _initError = 'Lesson not found: ${args.lessonId}';
-      });
-      return;
-    }
-    final validationErrors = validateLessonQuiz(loaded);
-    QuizDiagnostics.log(
-      'loaded ${loaded.id} questions=${loaded.quizQuestions.length} '
-      'validationErrors=${validationErrors.length}',
-    );
-    if (validationErrors.isNotEmpty) {
-      setState(() {
-        _initializing = false;
-        _lesson = null;
-        _initError = validationErrors.join('\n');
-      });
-      return;
-    }
-    setState(() {
-      _lesson = loaded;
-      _initError = null;
-      _initializing = false;
-      _index = 0;
-      _answers.clear();
-      _showResult = false;
-    });
+    if (_argsLessonId == args.lessonId && _lesson != null) return;
+    setState(() => _loadLessonFromArgs(args));
   }
 
   void _retryInit() {
@@ -115,6 +124,13 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       _initError = null;
       _lesson = null;
       _argsLessonId = null;
+      final args = _resolveArgs() ?? widget.initialArgs;
+      if (args != null) {
+        _loadLessonFromArgs(args);
+      } else {
+        _initializing = false;
+        _initError = 'Quiz could not start (missing lesson).';
+      }
     });
   }
 
@@ -141,21 +157,25 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   @override
   Widget build(BuildContext context) {
     try {
-      return ColoredBox(
-        color: Colors.white,
-        child: _buildQuizContent(context),
+      return SizedBox.expand(
+        child: ColoredBox(
+          color: Colors.white,
+          child: _buildQuizContent(context),
+        ),
       );
     } catch (e, st) {
       QuizDiagnostics.log('Quiz build failed: $e\n$st');
-      return const ColoredBox(
-        color: Colors.white,
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(24),
-            child: Text(
-              'Quiz could not display. Force-stop the app and try again.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black87, fontSize: 16),
+      return const SizedBox.expand(
+        child: ColoredBox(
+          color: Colors.white,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text(
+                'Quiz could not display. Force-stop the app and try again.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black87, fontSize: 16),
+              ),
             ),
           ),
         ),

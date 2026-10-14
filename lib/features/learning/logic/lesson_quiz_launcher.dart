@@ -12,7 +12,7 @@ import '../../../core/routing/app_routes.dart';
 import '../providers/learning_progress_provider.dart';
 import '../screens/lesson_quiz_screen.dart';
 
-/// Opens [LessonQuizScreen]. Android uses a root fullscreen dialog (Honor-safe).
+/// Opens [LessonQuizScreen] on the root navigator (full-screen opaque route).
 Future<void> openLessonQuiz(
   BuildContext context, {
   required LessonDetailArguments args,
@@ -23,71 +23,46 @@ Future<void> openLessonQuiz(
 
   if (!context.mounted) return;
 
-  final learning = context.read<LearningProgressProvider>();
-  final messenger = ScaffoldMessenger.maybeOf(context);
-
   if (!kIsWeb && Platform.isAndroid) {
     await AndroidNativeWebViewCleanup.hideStaleWebViews();
     await PlatformViewGate.waitForNativeTeardown(frames: 2);
-
     if (!context.mounted) return;
-
-    messenger?.showSnackBar(
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 2),
         content: Text('Opening quiz · v$kAppFullVersionLabel'),
       ),
     );
-
-    await showGeneralDialog<void>(
-      context: context,
-      useRootNavigator: true,
-      barrierDismissible: false,
-      barrierColor: Colors.white,
-      barrierLabel: 'Lesson quiz',
-      transitionDuration: Duration.zero,
-      pageBuilder: (dialogContext, _, __) {
-        final size = MediaQuery.sizeOf(dialogContext);
-        return PopScope(
-          canPop: true,
-          child: Material(
-            color: Colors.white,
-            child: SizedBox(
-              width: size.width,
-              height: size.height,
-              child: SafeArea(
-                child: ChangeNotifierProvider<LearningProgressProvider>.value(
-                  value: learning,
-                  child: LessonQuizScreen(
-                    initialArgs: args,
-                    onRequestClose: () =>
-                        Navigator.of(dialogContext, rootNavigator: true).pop(),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    QuizDiagnostics.log('Quiz dialog closed lessonId=${args.lessonId}');
-    return;
   }
 
+  final learning = context.read<LearningProgressProvider>();
   final rootNav = Navigator.of(context, rootNavigator: true);
+
   await rootNav.push<void>(
-    MaterialPageRoute<void>(
+    PageRouteBuilder<void>(
+      opaque: true,
+      barrierDismissible: false,
       settings: RouteSettings(
         name: AppRoutes.lessonQuiz,
         arguments: args,
       ),
-      builder: (_) => const ColoredBox(
-        color: Color(0xFFFFFFFF),
-        child: SizedBox.expand(
-          child: LessonQuizScreen(),
-        ),
-      ),
+      pageBuilder: (routeContext, _, __) {
+        return ChangeNotifierProvider<LearningProgressProvider>.value(
+          value: learning,
+          child: LessonQuizScreen(
+            initialArgs: args,
+            onRequestClose: () {
+              if (routeContext.mounted) {
+                Navigator.of(routeContext).pop();
+              }
+            },
+          ),
+        );
+      },
+      transitionsBuilder: (_, __, ___, child) => child,
+      transitionDuration: Duration.zero,
     ),
   );
+
+  QuizDiagnostics.log('Quiz route closed lessonId=${args.lessonId}');
 }
