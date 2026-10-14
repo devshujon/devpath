@@ -1,7 +1,7 @@
 # DevPath v1.2.1+14 — Android beta release preparation (final report)
 
 **Date:** 2026-10-14  
-**Branch:** `cursor/app-audit-982f` @ **`744ca2a`**  
+**Branch:** `cursor/app-audit-982f` @ **`6936e5d`**  
 **Base integration branch:** `cursor/release-v1-2-1-982f` (quiz fixes through bottom sheet @ `6d10488`)  
 **Pull request:** https://github.com/devshujon/devpath/pull/5 (draft — **not merged**)
 
