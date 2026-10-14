@@ -1,7 +1,7 @@
 # DevPath v1.2.1+14 — Android beta release preparation (final report)
 
 **Date:** 2026-10-14  
-**Branch:** `cursor/app-audit-982f` (see Git section for commit after beta-prep commit)  
+**Branch:** `cursor/app-audit-982f` @ **`744ca2a`**  
 **Base integration branch:** `cursor/release-v1-2-1-982f` (quiz fixes through bottom sheet @ `6d10488`)  
 **Pull request:** https://github.com/devshujon/devpath/pull/5 (draft — **not merged**)
 
@@ -14,7 +14,7 @@
 | Working branch | `cursor/app-audit-982f` |
 | Audit baseline | `9b31b32` — complete audit report |
 | Release quiz line | `6d10488` — H1 quiz bottom sheet (1.2.1+13), preserved |
-| Beta-prep commit | *(see `git log -1` after push — privacy, QA docs, profile flows)* |
+| Beta-prep commit | `744ca2a` — privacy policy, QA checklist, signing/AdMob docs, profile flows |
 
 **Phase 1 — audit review**
 
@@ -154,9 +154,10 @@ Created after validation from committed tree (`git archive`), excluding `.git/`,
 
 | Item | Value |
 |------|--------|
-| Path | `artifacts/beta/devpath-source-1.2.1+14.zip` |
-| Size | *(recorded at creation — see commit message or `ls -la`)* |
-| Verify | Extract to empty dir → `flutter pub get` succeeds |
+| Path | `artifacts/beta/devpath_source_1.2.1+14.zip` |
+| Size | 659,413 bytes (~644 KiB) |
+| SHA-256 | `3d758a1ab71ff002029257601bc9f3bbf4d1cf79bc9f1ba8b14a00c9d147f9ec` |
+| Verify | Extracted to `/tmp/devpath-src-verify` → `flutter pub get` succeeded |
 
 ---
 
