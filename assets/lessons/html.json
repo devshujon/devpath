@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "module": "HTML",
+  "lessons": [
+    {
+      "id": "html_b_01",
+      "module": "HTML",
+      "level": "beginner",
+      "order": 1,
+      "title": "Your first HTML page",
+      "summary": "Every web page starts with an HTML skeleton.",
+      "explanation": "HTML stands for HyperText Markup Language. It's the structure of every website you've ever visited. Tags like <h1>, <p>, and <div> tell the browser what each piece of content is.",
+      "codeExample": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My first page</title>\n  </head>\n  <body>\n    <h1>Hello, world!</h1>\n    <p>This is my first paragraph.</p>\n  </body>\n</html>",
+      "keyPoints": [
+        "<!DOCTYPE html> tells the browser this is HTML5",
+        "Everything visible lives inside <body>",
+        "<head> holds metadata like the page title"
+      ],
+      "starterFiles": {
+        "index.html": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Your turn</title>\n  </head>\n  <body>\n    <!-- write something here -->\n  </body>\n</html>"
+      }
+    },
+    {
+      "id": "html_b_02",
+      "module": "HTML",
+      "level": "beginner",
+      "order": 2,
+      "title": "Headings and paragraphs",
+      "summary": "Structure your content with h1-h6 and p tags.",
+      "explanation": "Headings come in six sizes: <h1> is the largest and most important, <h6> the smallest. Paragraphs use the <p> tag. Use one <h1> per page — it's a signal to search engines about what the page is about.",
+      "codeExample": "<h1>Main title</h1>\n<h2>Section title</h2>\n<p>This is regular paragraph text. It can be as long as you want and the browser will wrap it automatically.</p>",
+      "keyPoints": [
+        "Use one <h1> per page",
+        "Headings should follow hierarchy: h1 then h2, not h1 then h3",
+        "Paragraphs auto-wrap based on container width"
+      ],
+      "starterFiles": {
+        "index.html": "<h1>My blog</h1>\n<!-- add a heading and two paragraphs -->"
+      }
+    }
+  ]
+}

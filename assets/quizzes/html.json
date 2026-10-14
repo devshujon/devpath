@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "subject": "HTML",
+  "questions": [
+    {
+      "id": "html_q_01",
+      "subject": "HTML",
+      "level": "beginner",
+      "question": "Which tag is used for the largest heading?",
+      "options": ["<h6>", "<h1>", "<head>", "<heading>"],
+      "correctIndex": 1,
+      "explanation": "<h1> is the largest and most important heading. Headings range from h1 (largest) to h6 (smallest)."
+    },
+    {
+      "id": "html_q_02",
+      "subject": "HTML",
+      "level": "beginner",
+      "question": "What does HTML stand for?",
+      "options": [
+        "HyperText Markup Language",
+        "High-Tech Modern Language",
+        "Home Tool Markup Language",
+        "HyperText Machine Logic"
+      ],
+      "correctIndex": 0,
+      "explanation": "HTML = HyperText Markup Language. 'HyperText' refers to links between pages."
+    },
+    {
+      "id": "html_q_03",
+      "subject": "HTML",
+      "level": "beginner",
+      "question": "Where does the visible page content go?",
+      "options": ["<head>", "<title>", "<body>", "<meta>"],
+      "correctIndex": 2,
+      "explanation": "<body> contains everything users see. <head> holds metadata like the page title."
+    }
+  ]
+}

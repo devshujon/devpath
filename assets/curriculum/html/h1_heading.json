@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 2,
+  "id": "h1_heading",
+  "track": "html",
+  "difficulty": "beginner",
+  "title": "The H1 Heading",
+  "summary": "An H1 names the whole page. Browsers draw it large, but its real job is meaning — for readers, search engines, and screen readers.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Explain what an H1 is and why it exists",
+    "Write a valid heading with opening and closing tags",
+    "Build a simple outline: one H1, then H2 sections",
+    "Avoid the most common heading mistakes"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "An **`<h1>`** is a page's single most important heading. Browsers draw it large and bold, but its real job is *meaning*: it tells browsers, search engines, and screen readers what the entire page is about."
+    },
+    {
+      "type": "heading",
+      "text": "What is an H1?",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "A heading introduces a section of content — like a newspaper headline or a chapter title. HTML gives you six levels: `<h1>` is the most important, down to `<h6>` for the smallest sub-heading. The H1 sits at the top of that outline. Everything else nests beneath it."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "You choose a heading level for what it *means*, not for how big it looks. Size is the job of CSS. If you only need bigger text, use `font-size` — not a heading tag."
+    },
+    {
+      "type": "heading",
+      "text": "Why H1 exists",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "Before headings, an early web page was a flat wall of text. There was no machine-readable way to tell a title from a paragraph. Heading tags `<h1>`–`<h6>` were in HTML from its first public description in 1991, specifically to give documents **structure**."
+    },
+    {
+      "type": "figure",
+      "kind": "html",
+      "height": 180,
+      "caption": "Headings form a document outline — a built-in table of contents that machines can read.",
+      "spec": "<div style=\"line-height:1.9\"><div style=\"font-weight:800;font-size:17px\">&lt;h1&gt; Page title</div><div style=\"margin-left:18px;font-weight:700;font-size:15px;opacity:.85\">&lt;h2&gt; Section</div><div style=\"margin-left:36px;font-size:13px;opacity:.7\">&lt;h3&gt; Sub-section</div><div style=\"margin-left:36px;font-size:13px;opacity:.7\">&lt;h3&gt; Sub-section</div><div style=\"margin-left:18px;font-weight:700;font-size:15px;opacity:.85\">&lt;h2&gt; Section</div></div>"
+    },
+    {
+      "type": "heading",
+      "text": "Basic syntax",
+      "level": 2
+    },
+    {
+      "type": "syntaxBreakdown",
+      "lang": "html",
+      "code": "<h1 class=\"title\">Welcome</h1>",
+      "parts": [
+        { "fragment": "<h1>", "label": "Opening tag — starts the most important heading." },
+        { "fragment": "class=\"title\"", "label": "Optional attribute so CSS can style this heading." },
+        { "fragment": "Welcome", "label": "The words the reader sees." },
+        { "fragment": "</h1>", "label": "Closing tag — every heading must be closed." }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "A first example",
+      "level": 2
+    },
+    {
+      "type": "code",
+      "lang": "html",
+      "runnable": true,
+      "caption": "Tap Try, then Change the H1 and tap Run in the playground.",
+      "code": "<h1>Welcome to my site</h1>\n<h2>About me</h2>\n<p>I am learning to build web pages.</p>"
+    },
+    {
+      "type": "codeCompare",
+      "lang": "html",
+      "note": "Use **one** `<h1>` for the page topic, then build the rest with `<h2>`–`<h6>`. Do not jump from `<h1>` to `<h3>`.",
+      "wrong": "<h1>Home</h1>\n<h1>Our Products</h1>\n<h3>Pricing</h3>",
+      "right": "<h1>Acme Tools</h1>\n<h2>Our Products</h2>\n<h3>Pricing</h3>"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "md": "**Remember**\n\n- One main `<h1>` per page.\n- Do not skip levels: `h1` → `h2` → `h3`.\n- Write the H1 for humans, not as a keyword dump."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "**Common mistakes**\n\n- Several `<h1>` tags because they “look like titles”.\n- Using a heading only to make text bigger.\n- Skipping from `<h1>` to `<h3>`.\n- Wrapping a logo in `<h1>` on every page."
+    },
+    {
+      "type": "deepDive",
+      "title": "History & origins",
+      "children": [
+        {
+          "type": "prose",
+          "md": "In March 1989 at **CERN**, Tim Berners-Lee wrote *Information Management: A Proposal*. His manager Mike Sendall annotated it **“Vague but exciting.”** That note launched the work that became the World Wide Web."
+        },
+        {
+          "type": "prose",
+          "md": "CERN already used **SGML**, a markup system for technical papers. HTML borrowed heading levels from that world: one title, then sections, then sub-sections. The web made that structure something a *browser* could understand."
+        },
+        {
+          "type": "timeline",
+          "entries": [
+            {
+              "year": "1989",
+              "title": "The proposal",
+              "detail": "Berners-Lee proposes linked documents at CERN. His boss writes: “Vague but exciting.”"
+            },
+            {
+              "year": "1991",
+              "title": "HTML Tags",
+              "detail": "HTML is described publicly. The first set of about 18 elements already includes h1–h6. The first website is still online at info.cern.ch."
+            },
+            {
+              "year": "1995",
+              "title": "HTML 2.0",
+              "detail": "IETF RFC 1866 standardizes HTML, including headings."
+            },
+            {
+              "year": "1999",
+              "title": "HTML 4.01",
+              "detail": "Presentation moves toward CSS. Headings stay about structure, not style."
+            },
+            {
+              "year": "2014",
+              "title": "HTML5",
+              "detail": "W3C Recommendation. Sectioning elements like <section> and <article> sit alongside headings."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deepDive",
+      "title": "Tim Berners-Lee & CERN",
+      "children": [
+        {
+          "type": "creator",
+          "name": "Tim Berners-Lee",
+          "role": "Inventor of the World Wide Web",
+          "era": "Proposal 1989",
+          "place": "CERN, Switzerland",
+          "story": "A British computer scientist at CERN, Berners-Lee needed researchers on incompatible computers to share papers. He built the first browser and server on a NeXT computer and created HTML so documents could be linked and structured. He did not patent the web — he gave it away."
+        },
+        {
+          "type": "factSheet",
+          "rows": [
+            { "label": "Created by", "value": "Tim Berners-Lee" },
+            { "label": "First public HTML", "value": "1991 (HTML Tags document)" },
+            { "label": "Standardized", "value": "HTML 2.0 — 1995 (RFC 1866)" },
+            { "label": "Problem solved", "value": "Machine-readable document structure" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "deepDive",
+      "title": "How browsers handle headings",
+      "children": [
+        {
+          "type": "prose",
+          "md": "Browsers give `<h1>` a large default size and bold weight. That is only a default stylesheet. You can restyle headings with CSS without changing what they *mean*."
+        },
+        {
+          "type": "prose",
+          "md": "HTML5 described an “outline algorithm” that allowed more than one H1 inside sectioning elements. Browsers and screen readers never fully implemented it. In practice, **one H1 per page** is still the safest, clearest choice."
+        }
+      ]
+    },
+    {
+      "type": "deepDive",
+      "title": "SEO & accessibility",
+      "children": [
+        {
+          "type": "prose",
+          "md": "**Search (SEO).** Crawlers use headings to understand topic and structure. The H1 usually names the page. Headings are not a magic ranking lever — content quality matters more — but a clear outline helps engines summarize the page."
+        },
+        {
+          "type": "prose",
+          "md": "**Accessibility.** Screen readers such as VoiceOver, NVDA, and JAWS let a user open a *list of headings* and jump to a section. A correct `h1` → `h2` → `h3` tree is a map of the page."
+        },
+        {
+          "type": "prose",
+          "md": "**WCAG.** Relevant criteria include *1.3.1 Info and Relationships* and *2.4.6 Headings and Labels*. Skipping levels or using a heading only for style breaks that map, even when the page looks fine."
+        }
+      ]
+    },
+    {
+      "type": "deepDive",
+      "title": "Real-world usage",
+      "children": [
+        {
+          "type": "realWorld",
+          "items": [
+            { "name": "Wikipedia", "note": "Each article title is an H1." },
+            { "name": "MDN Web Docs", "note": "Docs keep a strict heading hierarchy." },
+            { "name": "GOV.UK", "note": "Public-service pages treat headings as an accessibility feature." },
+            { "name": "News sites", "note": "The story title is the H1; sections use H2." }
+          ]
+        },
+        {
+          "type": "quote",
+          "author": "Fun fact",
+          "text": "The first web page, published in 1991, is still online at info.cern.ch."
+        }
+      ]
+    },
+    {
+      "type": "deepDive",
+      "title": "Interview questions",
+      "children": [
+        {
+          "type": "interviewQA",
+          "items": [
+            {
+              "q": "How many H1 elements should a page have?",
+              "a": "By convention, one — the page’s main topic. HTML5 allowed more via the outline algorithm, but that algorithm was never fully implemented. One H1 remains the safest choice for SEO and accessibility."
+            },
+            {
+              "q": "What is the difference between <h1> and <title>?",
+              "a": "<title> lives in <head> and labels the browser tab and search result. <h1> is the visible heading on the page. They often say similar things but serve different surfaces."
+            },
+            {
+              "q": "Do headings affect SEO?",
+              "a": "They help search engines understand structure and topic. They are not a strong standalone ranking factor. The bigger, more certain payoff is accessibility and readability."
+            },
+            {
+              "q": "What breaks if you skip from h1 to h3?",
+              "a": "Visually, often nothing. A screen-reader user navigating by headings hits a gap and cannot tell whether a section is missing. That is an accessibility defect."
+            },
+            {
+              "q": "Why not just use CSS font-size?",
+              "a": "Big text is not a heading. Heading tags carry meaning that CSS size does not. Search engines and assistive tech read the tag, not the pixels."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "quickRecap": [
+    "An **H1** names the whole page — it is the top of the heading outline.",
+    "It is used on every web page that has a main topic: articles, docs, product pages.",
+    "It exists so machines (browsers, search, screen readers) can read structure, not just style.",
+    "Use **one** H1, then H2 / H3 in order. Do not skip levels.",
+    "Do not use a heading only to make text bigger — that is CSS."
+  ],
+  "exercise": {
+    "prompt": "**Try it now.** Create a page with:\n- one H1\n- two paragraphs\n- one image (a placeholder `src` is fine)\n\nKeep a clean outline. Then tap **Open Playground**.",
+    "starterCode": {
+      "html": "<h1>My first page</h1>\n<p>Write a short introduction here.</p>\n<p>Add a second paragraph.</p>\n<img src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Crect fill='%23dddddd' width='240' height='120'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23666666' font-size='14'%3EImage%3C/text%3E%3C/svg%3E\" alt=\"A simple placeholder\">",
+      "css": "body { font-family: system-ui, sans-serif; padding: 20px; line-height: 1.5; }\nimg { max-width: 100%; height: auto; }",
+      "js": ""
+    },
+    "checks": [
+      "one <h1>",
+      "two <p> paragraphs",
+      "one <img> with alt text"
+    ]
+  },
+  "projectPrompt": {
+    "title": "Build a short article page",
+    "brief": "Write one `<h1>` title, two `<h2>` sections, an optional `<h3>` under one of them, and a short paragraph under each heading.",
+    "starterCode": {
+      "html": "<h1>My First Article</h1>\n<h2>Introduction</h2>\n<p>Write your intro here.</p>\n<h2>Why it matters</h2>\n<h3>A closer look</h3>\n<p>Explain the detail here.</p>",
+      "css": "body { font-family: system-ui, sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; line-height: 1.6; }\nh1 { border-bottom: 2px solid #e17055; padding-bottom: 8px; }",
+      "js": ""
+    }
+  }
+}
