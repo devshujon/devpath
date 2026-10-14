@@ -31,10 +31,14 @@ class PreviewPane extends StatefulWidget {
   /// changes. Use the parent provider's runVersion.
   final int version;
 
+  /// When true on Android, use live WebView (dedicated preview route only).
+  final bool androidLivePreview;
+
   const PreviewPane({
     super.key,
     required this.htmlDocument,
     required this.version,
+    this.androidLivePreview = false,
   });
 
   @override
@@ -252,7 +256,9 @@ $userHtml
 
   @override
   Widget build(BuildContext context) {
-    if (!useHtmlPreviewWebViewOnAndroid) {
+    final useLive = useHtmlPreviewWebViewOnAndroid ||
+        (widget.androidLivePreview && useAndroidDedicatedPlaygroundPreviewWebView);
+    if (!useLive) {
       return _AndroidStaticPreview(htmlDocument: widget.htmlDocument);
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;

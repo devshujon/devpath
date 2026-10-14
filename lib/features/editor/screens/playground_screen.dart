@@ -5,10 +5,15 @@ import '../providers/playground_provider.dart';
 import '../services/autosave_service.dart';
 import '../services/lesson_templates.dart';
 import '../services/project_storage.dart';
-import '../widgets/code_editor_pane.dart';
+import '../../code_editor/models/code_editor_settings.dart';
+import '../../code_editor/services/code_editor_settings_storage.dart';
 import '../widgets/editor_tab_bar.dart';
+import '../widgets/playground_code_editor_pane.dart';
+import '../widgets/playground_editor_settings_sheet.dart';
 import '../widgets/playground_toolbar.dart';
 import '../widgets/preview_pane.dart';
+import '../utils/playground_preview_document.dart';
+import 'playground_live_preview_screen.dart';
 
 /// Arguments passed when opening the playground from a project card,
 /// a learning lesson, or an editor lesson template.
@@ -62,6 +67,8 @@ class _PlaygroundView extends StatefulWidget {
 class _PlaygroundViewState extends State<_PlaygroundView>
     with WidgetsBindingObserver {
   bool _initialLoadStarted = false;
+  CodeEditorSettings _editorSettings = const CodeEditorSettings();
+  bool _settingsLoaded = false;
 
   @override
   void initState() {
@@ -69,6 +76,16 @@ class _PlaygroundViewState extends State<_PlaygroundView>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _runInitialLoad();
+    });
+    _loadEditorSettings();
+  }
+
+  Future<void> _loadEditorSettings() async {
+    final s = await CodeEditorSettingsStorage.instance.load();
+    if (!mounted) return;
+    setState(() {
+      _editorSettings = s;
+      _settingsLoaded = true;
     });
   }
 
@@ -181,10 +198,27 @@ class _PlaygroundViewState extends State<_PlaygroundView>
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<PlaygroundProvider>();
+    final title = provider.projectTitle ?? 'Playground';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Playground'),
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
+          if (provider.isDirty)
+            const Padding(
+              padding: EdgeInsets.only(right: 4),
+              child: Center(
+                child: Tooltip(
+                  message: 'Unsaved changes',
+                  child: Icon(Icons.circle, size: 8, color: Colors.orange),
+                ),
+              ),
+            ),
+          IconButton(
+            tooltip: 'Editor settings',
+            icon: const Icon(Icons.tune),
+            onPressed: _settingsLoaded ? () => _openSettings(context) : null,
+          ),
           IconButton(
             tooltip: 'Help',
             icon: const Icon(Icons.help_outline),
@@ -193,12 +227,30 @@ class _PlaygroundViewState extends State<_PlaygroundView>
         ],
       ),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isWide = constraints.maxWidth >= 720;
-            return isWide ? const _WideLayout() : const _NarrowLayout();
-          },
-        ),
+        child: _settingsLoaded
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth >= 720;
+                  return isWide
+                      ? _WideLayout(editorSettings: _editorSettings)
+                      : _NarrowLayout(editorSettings: _editorSettings);
+                },
+              )
+            : const Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
+  Future<void> _openSettings(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => PlaygroundEditorSettingsSheet(
+        initial: _editorSettings,
+        onChanged: (s) async {
+          setState(() => _editorSettings = s);
+          await CodeEditorSettingsStorage.instance.save(s);
+        },
       ),
     );
   }
@@ -263,33 +315,37 @@ class _HelpItem extends StatelessWidget {
 }
 
 class _EditorColumn extends StatelessWidget {
-  const _EditorColumn();
+  final CodeEditorSettings editorSettings;
+  const _EditorColumn({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        EditorTabBar(),
-        Expanded(child: _ActiveTabEditor()),
-        PlaygroundToolbar(),
+        const EditorTabBar(),
+        Expanded(child: _ActiveTabEditor(editorSettings: editorSettings)),
+        const PlaygroundToolbar(),
       ],
     );
   }
 }
 
 class _ActiveTabEditor extends StatelessWidget {
-  const _ActiveTabEditor();
+  final CodeEditorSettings editorSettings;
+  const _ActiveTabEditor({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<PlaygroundProvider>();
-    return CodeEditorPane(
+    return PlaygroundCodeEditorPane(
+      tab: provider.selectedTab,
       initialText: provider.currentDraft,
       onChanged: provider.updateCurrent,
-      // Reload editor contents when:
-      //  - tab changes (different document)
-      //  - runVersion changes (reset/load/restore)
       resetKey: '${provider.selectedTab.name}:${provider.runVersion}',
+      fontSize: editorSettings.fontSize,
+      wordWrap: editorSettings.wordWrap,
+      showLineNumbers: editorSettings.showLineNumbers,
+      preferDarkSurface: editorSettings.darkEditorTheme,
     );
   }
 }
@@ -301,7 +357,7 @@ class _CombinedPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<PlaygroundProvider>();
     return PreviewPane(
-      htmlDocument: _buildDocument(
+      htmlDocument: buildPlaygroundPreviewDocument(
         html: provider.htmlCommitted,
         css: provider.cssCommitted,
         js: provider.jsCommitted,
@@ -309,91 +365,69 @@ class _CombinedPreview extends StatelessWidget {
       version: provider.runVersion,
     );
   }
-
-  static String _buildDocument({
-    required String html,
-    required String css,
-    required String js,
-  }) {
-    final safeJs = js.replaceAll('</script>', r'<\/script>');
-    final cssBlock = css.trim().isEmpty ? '' : '<style>$css</style>';
-    final jsBlock = safeJs.trim().isEmpty ? '' : '<script>$safeJs</script>';
-
-    final hasHtmlTag =
-        RegExp(r'<html[\s>]', caseSensitive: false).hasMatch(html);
-    final hasHead =
-        RegExp(r'<head[\s>]', caseSensitive: false).hasMatch(html);
-    final hasBodyClose =
-        RegExp(r'</body\s*>', caseSensitive: false).hasMatch(html);
-
-    if (hasHtmlTag) {
-      var doc = html;
-      if (cssBlock.isNotEmpty) {
-        if (hasHead) {
-          doc = doc.replaceFirstMapped(
-            RegExp(r'(<head[^>]*>)', caseSensitive: false),
-            (m) => '${m[1]}$cssBlock',
-          );
-        } else {
-          doc = doc.replaceFirstMapped(
-            RegExp(r'(<html[^>]*>)', caseSensitive: false),
-            (m) => '${m[1]}<head>$cssBlock</head>',
-          );
-        }
-      }
-      if (jsBlock.isNotEmpty) {
-        if (hasBodyClose) {
-          doc = doc.replaceFirstMapped(
-            RegExp(r'(</body\s*>)', caseSensitive: false),
-            (m) => '$jsBlock${m[1]}',
-          );
-        } else {
-          doc = '$doc\n$jsBlock';
-        }
-      }
-      return doc;
-    }
-
-    return '''<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-$cssBlock
-</head>
-<body>
-$html
-$jsBlock
-</body>
-</html>''';
-  }
 }
 
 class _NarrowLayout extends StatelessWidget {
-  const _NarrowLayout();
+  final CodeEditorSettings editorSettings;
+  const _NarrowLayout({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final provider = context.watch<PlaygroundProvider>();
+    return Column(
       children: [
-        Expanded(flex: 55, child: _EditorColumn()),
-        _PreviewLabel(),
-        Expanded(flex: 45, child: _CombinedPreview()),
+        _MobileViewSwitcher(
+          view: provider.paneView,
+          onChanged: provider.setPaneView,
+          onLivePreview: () => _openLivePreview(context, provider),
+        ),
+        Expanded(
+          child: provider.paneView == PlaygroundPaneView.editor
+              ? _EditorColumn(editorSettings: editorSettings)
+              : const Column(
+                  children: [
+                    _PreviewLabel(),
+                    Expanded(child: _CombinedPreview()),
+                  ],
+                ),
+        ),
       ],
+    );
+  }
+
+  static void _openLivePreview(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) {
+    provider.run();
+    final doc = buildPlaygroundPreviewDocument(
+      html: provider.htmlCommitted,
+      css: provider.cssCommitted,
+      js: provider.jsCommitted,
+    );
+    Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        settings: const RouteSettings(name: PlaygroundLivePreviewScreen.route),
+        builder: (_) => PlaygroundLivePreviewScreen(
+          htmlDocument: doc,
+          version: provider.runVersion,
+        ),
+      ),
     );
   }
 }
 
 class _WideLayout extends StatelessWidget {
-  const _WideLayout();
+  final CodeEditorSettings editorSettings;
+  const _WideLayout({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(child: _EditorColumn()),
-        SizedBox(width: 1, child: ColoredBox(color: Color(0x33808080))),
-        Expanded(
+        Expanded(child: _EditorColumn(editorSettings: editorSettings)),
+        const SizedBox(width: 1, child: ColoredBox(color: Color(0x33808080))),
+        const Expanded(
           child: Column(
             children: [
               _PreviewLabel(),
@@ -402,6 +436,52 @@ class _WideLayout extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MobileViewSwitcher extends StatelessWidget {
+  final PlaygroundPaneView view;
+  final ValueChanged<PlaygroundPaneView> onChanged;
+  final VoidCallback onLivePreview;
+
+  const _MobileViewSwitcher({
+    required this.view,
+    required this.onChanged,
+    required this.onLivePreview,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: SegmentedButton<PlaygroundPaneView>(
+              segments: const [
+                ButtonSegment(
+                  value: PlaygroundPaneView.editor,
+                  icon: Icon(Icons.code, size: 18),
+                  label: Text('Editor'),
+                ),
+                ButtonSegment(
+                  value: PlaygroundPaneView.preview,
+                  icon: Icon(Icons.visibility_outlined, size: 18),
+                  label: Text('Preview'),
+                ),
+              ],
+              selected: {view},
+              onSelectionChanged: (s) => onChanged(s.first),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Live preview (full screen)',
+            onPressed: onLivePreview,
+            icon: const Icon(Icons.open_in_full),
+          ),
+        ],
+      ),
     );
   }
 }

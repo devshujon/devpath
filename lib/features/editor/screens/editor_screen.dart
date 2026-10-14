@@ -1,52 +1,149 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
+import '../../learning/widgets/recent_projects_card.dart';
+import '../providers/projects_list_provider.dart';
+import '../services/html_import_service.dart';
 import '../services/lesson_templates.dart';
-
-/// Hub for editor-related features. Surfaces three entry points:
-///   - Playground (free-form HTML/CSS/JS sandbox)
-///   - Lessons (starter templates)
-///   - My Projects (saved playground projects)
-class EditorScreen extends StatelessWidget {
+/// Mobile-first IDE hub: playground, templates, projects, import, recents.
+class EditorScreen extends StatefulWidget {
   const EditorScreen({super.key});
 
   @override
+  State<EditorScreen> createState() => _EditorScreenState();
+}
+
+class _EditorScreenState extends State<EditorScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(context.read<ProjectsListProvider>().load());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(title: const Text('Editor')),
+      appBar: AppBar(
+        title: const Text('Code Studio'),
+        centerTitle: false,
+      ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           children: [
+            Text(
+              'Build pages on your phone',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'HTML, CSS, and JavaScript with run preview and local projects.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 16),
             _HubCard(
-              icon: Icons.play_circle_outline,
+              icon: Icons.play_circle_filled,
               title: 'Playground',
-              subtitle: 'Write HTML, CSS, and JS. Run instantly.',
-              onTap: () =>
-                  Navigator.pushNamed(context, AppRoutes.playground),
+              subtitle: 'Multi-file sandbox · Run · Save',
+              onTap: () => Navigator.pushNamed(context, AppRoutes.playground),
               primary: true,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: _QuickTile(
+                    icon: Icons.add_circle_outline,
+                    label: 'New project',
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.playground,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _QuickTile(
+                    icon: Icons.upload_file_outlined,
+                    label: 'Import HTML',
+                    onTap: () => _importHtml(context),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const RecentProjectsCard(),
+            const SizedBox(height: 20),
+            Text(
+              'Library',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(height: 8),
             _HubCard(
-              icon: Icons.school_outlined,
-              title: 'Lessons',
+              icon: Icons.dashboard_customize_outlined,
+              title: 'Starter templates',
               subtitle:
-                  '${LessonTemplates.all.length} starter templates to learn from.',
+                  '${LessonTemplates.all.length} lessons — portfolio, forms, JS',
               onTap: () =>
                   Navigator.pushNamed(context, AppRoutes.lessons),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             _HubCard(
-              icon: Icons.folder_outlined,
-              title: 'My Projects',
-              subtitle: 'Continue work you saved.',
+              icon: Icons.folder_open_outlined,
+              title: 'My projects',
+              subtitle: 'Saved playground work on this device',
               onTap: () =>
                   Navigator.pushNamed(context, AppRoutes.projects),
             ),
+            const SizedBox(height: 10),
+            _HubCard(
+              icon: Icons.terminal,
+              title: 'File workspace',
+              subtitle: 'Single-file editor with import (advanced)',
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.codeEditor),
+            ),
+            if (isDark) const SizedBox(height: 8),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _importHtml(BuildContext context) async {
+    HtmlImportResult? result;
+    try {
+      result = await HtmlImportService.pickAndRead();
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not read that file.')),
+      );
+      return;
+    }
+    if (result == null || !context.mounted) return;
+    await Navigator.pushNamed(
+      context,
+      AppRoutes.playground,
+      arguments: PlaygroundArguments(
+        starterCode: {'html': result.html, 'css': '', 'js': ''},
+      ),
+    );
+    if (!context.mounted) return;
+    unawaited(context.read<ProjectsListProvider>().load(force: true));
   }
 }
 
@@ -79,7 +176,7 @@ class _HubCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
@@ -113,14 +210,51 @@ class _HubCard extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
               const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.45,
+          ),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          child: Column(
+            children: [
+              Icon(icon, size: 26),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
             ],
           ),
         ),

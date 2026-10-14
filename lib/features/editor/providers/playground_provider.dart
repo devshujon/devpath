@@ -9,6 +9,9 @@ import '../services/project_storage.dart';
 
 enum PlaygroundTab { html, css, js }
 
+/// On narrow phones the playground shows one pane at a time.
+enum PlaygroundPaneView { editor, preview }
+
 extension PlaygroundTabLabel on PlaygroundTab {
   String get label => switch (this) {
         PlaygroundTab.html => 'HTML',
@@ -74,6 +77,7 @@ button{
   String _jsCommitted = defaultJs;
 
   PlaygroundTab _selectedTab = PlaygroundTab.html;
+  PlaygroundPaneView _paneView = PlaygroundPaneView.editor;
   int _runVersion = 0;
 
   // Persistent identity
@@ -93,6 +97,7 @@ button{
   String get cssCommitted => _cssCommitted;
   String get jsCommitted => _jsCommitted;
   PlaygroundTab get selectedTab => _selectedTab;
+  PlaygroundPaneView get paneView => _paneView;
   int get runVersion => _runVersion;
   String? get projectId => _projectId;
   String? get projectTitle => _projectTitle;
@@ -136,6 +141,19 @@ button{
   void switchTab(PlaygroundTab tab) {
     if (tab == _selectedTab) return;
     _selectedTab = tab;
+    notifyListeners();
+  }
+
+  void setPaneView(PlaygroundPaneView view) {
+    if (_paneView == view) return;
+    _paneView = view;
+    notifyListeners();
+  }
+
+  void togglePaneView() {
+    _paneView = _paneView == PlaygroundPaneView.editor
+        ? PlaygroundPaneView.preview
+        : PlaygroundPaneView.editor;
     notifyListeners();
   }
 

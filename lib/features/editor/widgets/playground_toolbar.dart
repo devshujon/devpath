@@ -71,6 +71,14 @@ class PlaygroundToolbar extends StatelessWidget {
               onPressed: () => _onSave(context, provider),
             ),
             const SizedBox(width: 4),
+            _IconAction(
+              tooltip: 'Preview',
+              icon: Icons.visibility_outlined,
+              onPressed: () {
+                provider.run();
+                provider.setPaneView(PlaygroundPaneView.preview);
+              },
+            ),
             FilledButton.icon(
               style: FilledButton.styleFrom(
                 minimumSize: const Size(0, 36),
