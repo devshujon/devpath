@@ -31,10 +31,18 @@ class PreviewPane extends StatefulWidget {
   /// changes. Use the parent provider's runVersion.
   final int version;
 
+  /// When true on Android, use live WebView (dedicated preview route only).
+  final bool androidLivePreview;
+
+  /// Shown on Android static embedded preview — opens isolated live route.
+  final VoidCallback? onOpenLivePreview;
+
   const PreviewPane({
     super.key,
     required this.htmlDocument,
     required this.version,
+    this.androidLivePreview = false,
+    this.onOpenLivePreview,
   });
 
   @override
@@ -252,8 +260,13 @@ $userHtml
 
   @override
   Widget build(BuildContext context) {
-    if (!useHtmlPreviewWebViewOnAndroid) {
-      return _AndroidStaticPreview(htmlDocument: widget.htmlDocument);
+    final useLive = useHtmlPreviewWebViewOnAndroid ||
+        (widget.androidLivePreview && useAndroidDedicatedPlaygroundPreviewWebView);
+    if (!useLive) {
+      return _AndroidStaticPreview(
+        htmlDocument: widget.htmlDocument,
+        onOpenLivePreview: widget.onOpenLivePreview,
+      );
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0A0C10) : const Color(0xFFFAFBFD);
@@ -293,8 +306,12 @@ $userHtml
 /// Offline preview without a platform WebView (Android quiz reliability).
 class _AndroidStaticPreview extends StatelessWidget {
   final String htmlDocument;
+  final VoidCallback? onOpenLivePreview;
 
-  const _AndroidStaticPreview({required this.htmlDocument});
+  const _AndroidStaticPreview({
+    required this.htmlDocument,
+    this.onOpenLivePreview,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -308,10 +325,26 @@ class _AndroidStaticPreview extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         children: [
           Text(
-            'Preview (Android safe mode)',
+            'Embedded preview (text only)',
             style: Theme.of(context).textTheme.labelLarge,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
+          Text(
+            'JavaScript and CSS layout are not executed here. '
+            'Use Live preview to run your code in an isolated full-screen view.',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.black54,
+                ),
+          ),
+          if (onOpenLivePreview != null) ...[
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: onOpenLivePreview,
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Open live preview'),
+            ),
+          ],
+          const SizedBox(height: 16),
           SelectableText(
             plain.isEmpty ? '(empty HTML)' : plain,
             style: const TextStyle(color: Colors.black87, height: 1.35),

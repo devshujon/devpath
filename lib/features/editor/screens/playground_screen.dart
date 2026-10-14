@@ -5,10 +5,18 @@ import '../providers/playground_provider.dart';
 import '../services/autosave_service.dart';
 import '../services/lesson_templates.dart';
 import '../services/project_storage.dart';
-import '../widgets/code_editor_pane.dart';
+import '../../code_editor/models/code_editor_settings.dart';
+import '../../code_editor/services/code_editor_settings_storage.dart';
 import '../widgets/editor_tab_bar.dart';
+import '../widgets/playground_code_editor_pane.dart';
+import '../widgets/playground_editor_settings_sheet.dart';
 import '../widgets/playground_toolbar.dart';
 import '../widgets/preview_pane.dart';
+import '../logic/playground_preview_launcher.dart';
+import '../services/html_export_service.dart';
+import '../providers/projects_list_provider.dart';
+import '../utils/playground_preview_document.dart';
+import 'playground_live_preview_screen.dart';
 
 /// Arguments passed when opening the playground from a project card,
 /// a learning lesson, or an editor lesson template.
@@ -62,6 +70,8 @@ class _PlaygroundView extends StatefulWidget {
 class _PlaygroundViewState extends State<_PlaygroundView>
     with WidgetsBindingObserver {
   bool _initialLoadStarted = false;
+  CodeEditorSettings _editorSettings = const CodeEditorSettings();
+  bool _settingsLoaded = false;
 
   @override
   void initState() {
@@ -69,6 +79,16 @@ class _PlaygroundViewState extends State<_PlaygroundView>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _runInitialLoad();
+    });
+    _loadEditorSettings();
+  }
+
+  Future<void> _loadEditorSettings() async {
+    final s = await CodeEditorSettingsStorage.instance.load();
+    if (!mounted) return;
+    setState(() {
+      _editorSettings = s;
+      _settingsLoaded = true;
     });
   }
 
@@ -181,10 +201,42 @@ class _PlaygroundViewState extends State<_PlaygroundView>
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<PlaygroundProvider>();
+    final title = provider.projectTitle ?? 'Playground';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Playground'),
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
+          if (provider.isDirty)
+            const Padding(
+              padding: EdgeInsets.only(right: 4),
+              child: Center(
+                child: Tooltip(
+                  message: 'Unsaved changes',
+                  child: Icon(Icons.circle, size: 8, color: Colors.orange),
+                ),
+              ),
+            ),
+          PopupMenuButton<String>(
+            tooltip: 'Project actions',
+            onSelected: (v) => _onProjectMenu(context, v, provider),
+            itemBuilder: (_) => [
+              const PopupMenuItem(value: 'export', child: Text('Export HTML')),
+              if (provider.isExistingProject) ...[
+                const PopupMenuItem(value: 'rename', child: Text('Rename')),
+                const PopupMenuItem(value: 'duplicate', child: Text('Duplicate')),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Text('Delete project'),
+                ),
+              ],
+            ],
+          ),
+          IconButton(
+            tooltip: 'Editor settings',
+            icon: const Icon(Icons.tune),
+            onPressed: _settingsLoaded ? () => _openSettings(context) : null,
+          ),
           IconButton(
             tooltip: 'Help',
             icon: const Icon(Icons.help_outline),
@@ -193,12 +245,161 @@ class _PlaygroundViewState extends State<_PlaygroundView>
         ],
       ),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isWide = constraints.maxWidth >= 720;
-            return isWide ? const _WideLayout() : const _NarrowLayout();
-          },
+        child: _settingsLoaded
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth >= 720;
+                  return isWide
+                      ? _WideLayout(editorSettings: _editorSettings)
+                      : _NarrowLayout(editorSettings: _editorSettings);
+                },
+              )
+            : const Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
+  Future<void> _onProjectMenu(
+    BuildContext context,
+    String action,
+    PlaygroundProvider provider,
+  ) async {
+    switch (action) {
+      case 'export':
+        await _exportHtml(context, provider);
+      case 'rename':
+        await _renameProject(context, provider);
+      case 'duplicate':
+        await _duplicateProject(context, provider);
+      case 'delete':
+        await _deleteProject(context, provider);
+    }
+  }
+
+  Future<void> _exportHtml(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    try {
+      final result = HtmlExportService.buildExport(
+        title: provider.projectTitle ?? 'playground',
+        html: provider.htmlDraft,
+        css: provider.cssDraft,
+        js: provider.jsDraft,
+      );
+      await HtmlExportService.shareExport(result);
+    } on HtmlExportTooLargeException {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Export failed: file is too large.')),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Export failed.')),
+      );
+    }
+  }
+
+  Future<void> _renameProject(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    final controller = TextEditingController(text: provider.projectTitle ?? '');
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Rename project'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 60,
+          decoration: const InputDecoration(labelText: 'Title'),
         ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (name == null || name.isEmpty || !context.mounted) return;
+    final saved = await provider.renameCurrentProject(name);
+    if (saved != null && context.mounted) {
+      context.read<ProjectsListProvider>().upsert(saved);
+    }
+  }
+
+  Future<void> _duplicateProject(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    final base = provider.projectTitle ?? 'Project';
+    final controller = TextEditingController(text: '$base copy');
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Duplicate project'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 60,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: const Text('Create copy'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (name == null || name.isEmpty || !context.mounted) return;
+    final copy = await provider.duplicateAsNewProject(title: name);
+    if (!context.mounted) return;
+    context.read<ProjectsListProvider>().upsert(copy);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Created "${copy.title}"')),
+    );
+  }
+
+  Future<void> _deleteProject(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete project?'),
+        content: const Text('This removes the saved project from this device.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+    final id = provider.projectId;
+    await provider.deleteCurrentProject();
+    if (id != null && context.mounted) {
+      await context.read<ProjectsListProvider>().deleteProject(id);
+    }
+  }
+
+  Future<void> _openSettings(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => PlaygroundEditorSettingsSheet(
+        initial: _editorSettings,
+        onChanged: (s) async {
+          setState(() => _editorSettings = s);
+          await CodeEditorSettingsStorage.instance.save(s);
+        },
       ),
     );
   }
@@ -263,33 +464,37 @@ class _HelpItem extends StatelessWidget {
 }
 
 class _EditorColumn extends StatelessWidget {
-  const _EditorColumn();
+  final CodeEditorSettings editorSettings;
+  const _EditorColumn({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        EditorTabBar(),
-        Expanded(child: _ActiveTabEditor()),
-        PlaygroundToolbar(),
+        const EditorTabBar(),
+        Expanded(child: _ActiveTabEditor(editorSettings: editorSettings)),
+        const PlaygroundToolbar(),
       ],
     );
   }
 }
 
 class _ActiveTabEditor extends StatelessWidget {
-  const _ActiveTabEditor();
+  final CodeEditorSettings editorSettings;
+  const _ActiveTabEditor({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<PlaygroundProvider>();
-    return CodeEditorPane(
+    return PlaygroundCodeEditorPane(
+      tab: provider.selectedTab,
       initialText: provider.currentDraft,
       onChanged: provider.updateCurrent,
-      // Reload editor contents when:
-      //  - tab changes (different document)
-      //  - runVersion changes (reset/load/restore)
       resetKey: '${provider.selectedTab.name}:${provider.runVersion}',
+      fontSize: editorSettings.fontSize,
+      wordWrap: editorSettings.wordWrap,
+      showLineNumbers: editorSettings.showLineNumbers,
+      preferDarkSurface: editorSettings.darkEditorTheme,
     );
   }
 }
@@ -301,107 +506,140 @@ class _CombinedPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<PlaygroundProvider>();
     return PreviewPane(
-      htmlDocument: _buildDocument(
+      htmlDocument: buildPlaygroundPreviewDocument(
         html: provider.htmlCommitted,
         css: provider.cssCommitted,
         js: provider.jsCommitted,
       ),
       version: provider.runVersion,
+      onOpenLivePreview: PlaygroundPreviewLauncher.embeddedPreviewIsStaticOnly
+          ? () => PlaygroundPreviewLauncher.commitAndOpenLive(
+                context,
+                provider,
+                runFirst: true,
+              )
+          : null,
     );
-  }
-
-  static String _buildDocument({
-    required String html,
-    required String css,
-    required String js,
-  }) {
-    final safeJs = js.replaceAll('</script>', r'<\/script>');
-    final cssBlock = css.trim().isEmpty ? '' : '<style>$css</style>';
-    final jsBlock = safeJs.trim().isEmpty ? '' : '<script>$safeJs</script>';
-
-    final hasHtmlTag =
-        RegExp(r'<html[\s>]', caseSensitive: false).hasMatch(html);
-    final hasHead =
-        RegExp(r'<head[\s>]', caseSensitive: false).hasMatch(html);
-    final hasBodyClose =
-        RegExp(r'</body\s*>', caseSensitive: false).hasMatch(html);
-
-    if (hasHtmlTag) {
-      var doc = html;
-      if (cssBlock.isNotEmpty) {
-        if (hasHead) {
-          doc = doc.replaceFirstMapped(
-            RegExp(r'(<head[^>]*>)', caseSensitive: false),
-            (m) => '${m[1]}$cssBlock',
-          );
-        } else {
-          doc = doc.replaceFirstMapped(
-            RegExp(r'(<html[^>]*>)', caseSensitive: false),
-            (m) => '${m[1]}<head>$cssBlock</head>',
-          );
-        }
-      }
-      if (jsBlock.isNotEmpty) {
-        if (hasBodyClose) {
-          doc = doc.replaceFirstMapped(
-            RegExp(r'(</body\s*>)', caseSensitive: false),
-            (m) => '$jsBlock${m[1]}',
-          );
-        } else {
-          doc = '$doc\n$jsBlock';
-        }
-      }
-      return doc;
-    }
-
-    return '''<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-$cssBlock
-</head>
-<body>
-$html
-$jsBlock
-</body>
-</html>''';
   }
 }
 
 class _NarrowLayout extends StatelessWidget {
-  const _NarrowLayout();
+  final CodeEditorSettings editorSettings;
+  const _NarrowLayout({required this.editorSettings});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final provider = context.watch<PlaygroundProvider>();
+    return Column(
       children: [
-        Expanded(flex: 55, child: _EditorColumn()),
-        _PreviewLabel(),
-        Expanded(flex: 45, child: _CombinedPreview()),
+        _MobileViewSwitcher(
+          view: provider.paneView,
+          onChanged: provider.setPaneView,
+          onLivePreview: () => _openLivePreview(context, provider),
+        ),
+        Expanded(
+          child: provider.paneView == PlaygroundPaneView.editor
+              ? _EditorColumn(editorSettings: editorSettings)
+              : const Column(
+                  children: [
+                    _PreviewLabel(),
+                    Expanded(child: _CombinedPreview()),
+                  ],
+                ),
+        ),
+      ],
+    );
+  }
+
+  static void _openLivePreview(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) {
+    PlaygroundPreviewLauncher.commitAndOpenLive(context, provider);
+  }
+}
+
+class _WideLayout extends StatelessWidget {
+  final CodeEditorSettings editorSettings;
+  const _WideLayout({required this.editorSettings});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: _EditorColumn(editorSettings: editorSettings)),
+        const SizedBox(width: 1, child: ColoredBox(color: Color(0x33808080))),
+        Expanded(
+          child: Column(
+            children: [
+              const _PreviewLabel(),
+              if (PlaygroundPreviewLauncher.embeddedPreviewIsStaticOnly)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Builder(
+                    builder: (context) {
+                      return FilledButton.tonalIcon(
+                        onPressed: () {
+                          final p = context.read<PlaygroundProvider>();
+                          PlaygroundPreviewLauncher.commitAndOpenLive(context, p);
+                        },
+                        icon: const Icon(Icons.play_arrow, size: 18),
+                        label: const Text('Live preview'),
+                      );
+                    },
+                  ),
+                ),
+              const Expanded(child: _CombinedPreview()),
+            ],
+          ),
+        ),
       ],
     );
   }
 }
 
-class _WideLayout extends StatelessWidget {
-  const _WideLayout();
+class _MobileViewSwitcher extends StatelessWidget {
+  final PlaygroundPaneView view;
+  final ValueChanged<PlaygroundPaneView> onChanged;
+  final VoidCallback onLivePreview;
+
+  const _MobileViewSwitcher({
+    required this.view,
+    required this.onChanged,
+    required this.onLivePreview,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(child: _EditorColumn()),
-        SizedBox(width: 1, child: ColoredBox(color: Color(0x33808080))),
-        Expanded(
-          child: Column(
-            children: [
-              _PreviewLabel(),
-              Expanded(child: _CombinedPreview()),
-            ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: SegmentedButton<PlaygroundPaneView>(
+              segments: const [
+                ButtonSegment(
+                  value: PlaygroundPaneView.editor,
+                  icon: Icon(Icons.code, size: 18),
+                  label: Text('Editor'),
+                ),
+                ButtonSegment(
+                  value: PlaygroundPaneView.preview,
+                  icon: Icon(Icons.visibility_outlined, size: 18),
+                  label: Text('Preview'),
+                ),
+              ],
+              selected: {view},
+              onSelectionChanged: (s) => onChanged(s.first),
+            ),
           ),
-        ),
-      ],
+          IconButton(
+            tooltip: 'Live preview (full screen)',
+            onPressed: onLivePreview,
+            icon: const Icon(Icons.open_in_full),
+          ),
+        ],
+      ),
     );
   }
 }
