@@ -624,7 +624,7 @@ form.addEventListener('submit', function(e) {
       <h3>Wireless Headphones</h3>
       <p class="desc">Comfort fit, 30-hour battery, active noise canceling.</p>
       <div class="meta">
-        <span class="price">$79</span>
+        <span class="price">\$79</span>
         <span class="rating">★ 4.8</span>
       </div>
       <button type="button" id="cart">Add to cart</button>

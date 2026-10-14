@@ -318,6 +318,47 @@ button{
 
   /// Restore from an autosave draft. Called once when the playground
   /// opens and the user has accepted the restore prompt.
+  /// Rename saved project or update working title before first save.
+  Future<UserProject?> renameCurrentProject(String newTitle) async {
+    final trimmed = newTitle.trim();
+    if (trimmed.isEmpty) return null;
+    final id = _projectId;
+    if (id == null) {
+      _projectTitle = trimmed;
+      notifyListeners();
+      return null;
+    }
+    final existing = await ProjectStorage.instance.getProject(id);
+    if (existing == null) return null;
+    final updated = existing.copyWith(
+      title: trimmed,
+      updatedAt: DateTime.now(),
+    );
+    await ProjectStorage.instance.saveProject(updated);
+    _projectTitle = updated.title;
+    _savedAt = updated.updatedAt;
+    notifyListeners();
+    return updated;
+  }
+
+  /// Save current buffers as a new project (does not mutate templates).
+  Future<UserProject> duplicateAsNewProject({required String title}) async {
+    return saveAsNew(title: title);
+  }
+
+  Future<bool> deleteCurrentProject() async {
+    final id = _projectId;
+    if (id == null) return false;
+    await ProjectStorage.instance.deleteProject(id);
+    _projectId = null;
+    _projectTitle = null;
+    _savedAt = null;
+    _isDirty = true;
+    notifyListeners();
+    await AutosaveService.instance.clear();
+    return true;
+  }
+
   void restoreFromDraft(DraftSnapshot draft) {
     _htmlDraft = draft.html;
     _cssDraft = draft.css;

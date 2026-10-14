@@ -10,7 +10,7 @@ class LessonPickerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Lessons')),
+      appBar: AppBar(title: const Text('Starter templates')),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: LessonTemplates.all.length,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../logic/playground_preview_launcher.dart';
 import '../models/user_project.dart';
 import '../providers/playground_provider.dart';
 import '../providers/projects_list_provider.dart';
@@ -87,7 +88,7 @@ class PlaygroundToolbar extends StatelessWidget {
               ),
               icon: const Icon(Icons.play_arrow, size: 18),
               label: const Text('Run'),
-              onPressed: provider.run,
+              onPressed: () => _onRun(context, provider),
             ),
           ],
         ),
@@ -102,6 +103,17 @@ class PlaygroundToolbar extends StatelessWidget {
       };
 
   // ── Actions ──
+
+  Future<void> _onRun(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    if (PlaygroundPreviewLauncher.embeddedPreviewIsStaticOnly) {
+      await PlaygroundPreviewLauncher.commitAndOpenLive(context, provider);
+      return;
+    }
+    provider.run();
+  }
 
   Future<void> _onCopy(
     BuildContext context,

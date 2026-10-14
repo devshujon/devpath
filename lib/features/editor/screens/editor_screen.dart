@@ -127,6 +127,12 @@ class _EditorScreenState extends State<EditorScreen> {
     HtmlImportResult? result;
     try {
       result = await HtmlImportService.pickAndRead();
+    } on HtmlImportTooLargeException {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('File is too large to import (max 1 MB).')),
+      );
+      return;
     } catch (_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

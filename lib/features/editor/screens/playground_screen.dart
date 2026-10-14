@@ -12,6 +12,9 @@ import '../widgets/playground_code_editor_pane.dart';
 import '../widgets/playground_editor_settings_sheet.dart';
 import '../widgets/playground_toolbar.dart';
 import '../widgets/preview_pane.dart';
+import '../logic/playground_preview_launcher.dart';
+import '../services/html_export_service.dart';
+import '../providers/projects_list_provider.dart';
 import '../utils/playground_preview_document.dart';
 import 'playground_live_preview_screen.dart';
 
@@ -214,6 +217,21 @@ class _PlaygroundViewState extends State<_PlaygroundView>
                 ),
               ),
             ),
+          PopupMenuButton<String>(
+            tooltip: 'Project actions',
+            onSelected: (v) => _onProjectMenu(context, v, provider),
+            itemBuilder: (_) => [
+              const PopupMenuItem(value: 'export', child: Text('Export HTML')),
+              if (provider.isExistingProject) ...[
+                const PopupMenuItem(value: 'rename', child: Text('Rename')),
+                const PopupMenuItem(value: 'duplicate', child: Text('Duplicate')),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Text('Delete project'),
+                ),
+              ],
+            ],
+          ),
           IconButton(
             tooltip: 'Editor settings',
             icon: const Icon(Icons.tune),
@@ -239,6 +257,137 @@ class _PlaygroundViewState extends State<_PlaygroundView>
             : const Center(child: CircularProgressIndicator()),
       ),
     );
+  }
+
+  Future<void> _onProjectMenu(
+    BuildContext context,
+    String action,
+    PlaygroundProvider provider,
+  ) async {
+    switch (action) {
+      case 'export':
+        await _exportHtml(context, provider);
+      case 'rename':
+        await _renameProject(context, provider);
+      case 'duplicate':
+        await _duplicateProject(context, provider);
+      case 'delete':
+        await _deleteProject(context, provider);
+    }
+  }
+
+  Future<void> _exportHtml(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    try {
+      final result = HtmlExportService.buildExport(
+        title: provider.projectTitle ?? 'playground',
+        html: provider.htmlDraft,
+        css: provider.cssDraft,
+        js: provider.jsDraft,
+      );
+      await HtmlExportService.shareExport(result);
+    } on HtmlExportTooLargeException {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Export failed: file is too large.')),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Export failed.')),
+      );
+    }
+  }
+
+  Future<void> _renameProject(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    final controller = TextEditingController(text: provider.projectTitle ?? '');
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Rename project'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 60,
+          decoration: const InputDecoration(labelText: 'Title'),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (name == null || name.isEmpty || !context.mounted) return;
+    final saved = await provider.renameCurrentProject(name);
+    if (saved != null && context.mounted) {
+      context.read<ProjectsListProvider>().upsert(saved);
+    }
+  }
+
+  Future<void> _duplicateProject(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    final base = provider.projectTitle ?? 'Project';
+    final controller = TextEditingController(text: '$base copy');
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Duplicate project'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 60,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: const Text('Create copy'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (name == null || name.isEmpty || !context.mounted) return;
+    final copy = await provider.duplicateAsNewProject(title: name);
+    if (!context.mounted) return;
+    context.read<ProjectsListProvider>().upsert(copy);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Created "${copy.title}"')),
+    );
+  }
+
+  Future<void> _deleteProject(
+    BuildContext context,
+    PlaygroundProvider provider,
+  ) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete project?'),
+        content: const Text('This removes the saved project from this device.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+    final id = provider.projectId;
+    await provider.deleteCurrentProject();
+    if (id != null && context.mounted) {
+      await context.read<ProjectsListProvider>().deleteProject(id);
+    }
   }
 
   Future<void> _openSettings(BuildContext context) async {
@@ -363,6 +512,13 @@ class _CombinedPreview extends StatelessWidget {
         js: provider.jsCommitted,
       ),
       version: provider.runVersion,
+      onOpenLivePreview: PlaygroundPreviewLauncher.embeddedPreviewIsStaticOnly
+          ? () => PlaygroundPreviewLauncher.commitAndOpenLive(
+                context,
+                provider,
+                runFirst: true,
+              )
+          : null,
     );
   }
 }
@@ -399,21 +555,7 @@ class _NarrowLayout extends StatelessWidget {
     BuildContext context,
     PlaygroundProvider provider,
   ) {
-    provider.run();
-    final doc = buildPlaygroundPreviewDocument(
-      html: provider.htmlCommitted,
-      css: provider.cssCommitted,
-      js: provider.jsCommitted,
-    );
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        settings: const RouteSettings(name: PlaygroundLivePreviewScreen.route),
-        builder: (_) => PlaygroundLivePreviewScreen(
-          htmlDocument: doc,
-          version: provider.runVersion,
-        ),
-      ),
-    );
+    PlaygroundPreviewLauncher.commitAndOpenLive(context, provider);
   }
 }
 
@@ -427,11 +569,27 @@ class _WideLayout extends StatelessWidget {
       children: [
         Expanded(child: _EditorColumn(editorSettings: editorSettings)),
         const SizedBox(width: 1, child: ColoredBox(color: Color(0x33808080))),
-        const Expanded(
+        Expanded(
           child: Column(
             children: [
-              _PreviewLabel(),
-              Expanded(child: _CombinedPreview()),
+              const _PreviewLabel(),
+              if (PlaygroundPreviewLauncher.embeddedPreviewIsStaticOnly)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Builder(
+                    builder: (context) {
+                      return FilledButton.tonalIcon(
+                        onPressed: () {
+                          final p = context.read<PlaygroundProvider>();
+                          PlaygroundPreviewLauncher.commitAndOpenLive(context, p);
+                        },
+                        icon: const Icon(Icons.play_arrow, size: 18),
+                        label: const Text('Live preview'),
+                      );
+                    },
+                  ),
+                ),
+              const Expanded(child: _CombinedPreview()),
             ],
           ),
         ),
