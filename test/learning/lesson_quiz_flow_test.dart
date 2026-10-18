@@ -68,8 +68,8 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    expect(find.text('You passed!'), findsOneWidget);
-    expect(find.text('5 of 5 correct'), findsOneWidget);
+    expect(find.text('Excellent Work!'), findsOneWidget);
+    expect(find.text('5 / 5 correct'), findsOneWidget);
   });
 
   for (final width in [360.0, 390.0, 430.0]) {

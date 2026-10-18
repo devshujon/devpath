@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
+import 'core/ads/rewarded_ad_coordinator.dart';
 import 'core/services/storage_service.dart';
 import 'features/code_editor/providers/code_editor_provider.dart';
 import 'features/certificates/providers/certificates_provider.dart';
@@ -17,6 +18,9 @@ import 'features/rewards/providers/rewards_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Fail-soft: learning works offline without AdMob.
+  await RewardedAdCoordinator.instance.ensureInitialized();
 
   await StorageService.instance.init();
 

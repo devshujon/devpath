@@ -2,13 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/ads/rewarded_ad_coordinator.dart';
 import '../../../core/app_version.dart';
 import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../logic/quiz_post_result_flow.dart';
 import '../widgets/quiz_body_shell.dart';
+import '../widgets/quiz_post_result_continue.dart';
+import '../widgets/quiz_result_panel.dart';
 import '../data/lessons_catalog.dart';
-import '../logic/lesson_progression.dart';
 import '../logic/lesson_quiz_validator.dart';
 import '../models/lesson.dart';
 import '../providers/learning_progress_provider.dart';
@@ -40,6 +43,13 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   final Map<int, int> _answers = {};
   bool _showResult = false;
   bool _finishing = false;
+  bool _showPostContinue = false;
+  bool _xpClaimedThisSession = false;
+  CompletionResult? _completionResult;
+  QuizPostResultPhase _postResultPhase = QuizPostResultPhase.resultVisible;
+  bool _postCloseAdStarted = false;
+  bool _navigatingNext = false;
+  String? _adStatusMessage;
 
   static const double _passingThreshold = 0.7;
 
@@ -315,27 +325,44 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         ),
       ));
     }
+    if (_showPostContinue) {
+      final next = _completionResult?.nextLesson;
+      return _fullScreen(
+        QuizPostResultContinuePanel(
+          phase: _postResultPhase,
+          nextLesson: next,
+          adStatusMessage: _adStatusMessage,
+          navigateInProgress: _navigatingNext,
+          onNext: _navigatingNext ? null : () => _navigateAfterQuiz(context, lesson),
+        ),
+      );
+    }
     if (_showResult) {
-      return _fullScreen(_ResultView(
-        lesson: lesson,
-        correct: _correctCount,
-        total: lesson.quizQuestions.length,
-        passed: _passed,
-        finishing: _finishing,
-        alreadyCompleted: context
-            .select<LearningProgressProvider, bool>(
-              (p) => p.completedLessons.contains(lesson.id),
-            ),
-        onRetry: () {
-          setState(() {
-            _answers.clear();
-            _index = 0;
-            _showResult = false;
-          });
-        },
-        onFinish: () => _markCompleteAndCelebrate(context, lesson),
-        onClose: _closeQuiz,
-      ));
+      final alreadyCompleted = context.select<LearningProgressProvider, bool>(
+        (p) => p.completedLessons.contains(lesson.id),
+      );
+      final xpHandled = _xpClaimedThisSession || alreadyCompleted;
+      return _fullScreen(
+        QuizResultPanel(
+          lesson: lesson,
+          correct: _correctCount,
+          total: lesson.quizQuestions.length,
+          passed: _passed,
+          xpReward: lesson.xpReward,
+          xpClaimed: xpHandled,
+          claimInProgress: _finishing,
+          onRetry: () {
+            setState(() {
+              _answers.clear();
+              _index = 0;
+              _showResult = false;
+              _postResultPhase = QuizPostResultPhase.resultVisible;
+            });
+          },
+          onClaimXp: () => _markCompleteAndCelebrate(context, lesson),
+          onClose: () => _onResultClose(context, lesson, xpHandled: xpHandled),
+        ),
+      );
     }
     return _fullScreen(_buildQuestionScaffold(context, lesson));
   }
@@ -501,8 +528,11 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     BuildContext context,
     Lesson lesson,
   ) async {
-    if (_finishing) return;
-    setState(() => _finishing = true);
+    if (_finishing || _xpClaimedThisSession) return;
+    setState(() {
+      _finishing = true;
+      _postResultPhase = QuizPostResultFlowLogic.beginClaimXp(_postResultPhase);
+    });
 
     final provider = context.read<LearningProgressProvider>();
     final oldProgress = provider.progressToNextLevel;
@@ -511,41 +541,120 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 
     if (!context.mounted) return;
 
-    // On level-up the bar resets to 0..newProgress visually.
     final animateFrom = result.levelUp ? 0.0 : oldProgress;
 
-    var navigatedAway = false;
     await XpAwardOverlay.show(
       context,
       result: result,
       oldProgress: animateFrom,
       newProgress: newProgress,
-      onNextLesson: result.nextLesson == null
-          ? null
-          : () {
-              navigatedAway = true;
-              Navigator.of(context).pop(); // dismiss XP overlay
-              widget.onRequestClose?.call();
-              Navigator.of(context, rootNavigator: true).pushReplacementNamed(
-                AppRoutes.lessonDetail,
-                arguments:
-                    LessonDetailArguments(lessonId: result.nextLesson!.id),
-              );
-            },
     );
 
     if (!mounted) return;
-    setState(() => _finishing = false);
-    if (!shouldPopAfterCompletionOverlay(navigatedAway: navigatedAway)) return;
-    if (!context.mounted) return;
-    if (widget.onRequestClose != null) {
-      widget.onRequestClose!();
+    setState(() {
+      _finishing = false;
+      _xpClaimedThisSession = true;
+      _completionResult = result;
+      _postResultPhase = QuizPostResultFlowLogic.afterXpClaimed();
+    });
+  }
+
+  void _ensureCompletionResult(BuildContext context) {
+    if (_completionResult != null) return;
+    final provider = context.read<LearningProgressProvider>();
+    _completionResult = CompletionResult(
+      xpEarned: 0,
+      levelUp: false,
+      newLevel: provider.currentLevel,
+      newlyEarnedBadges: const [],
+      nextLesson: provider.recommendedNextLesson,
+    );
+  }
+
+  void _onResultClose(BuildContext context, Lesson lesson, {required bool xpHandled}) {
+    if (!_passed || !xpHandled) {
+      _closeQuiz();
       return;
     }
-    Navigator.of(context).popUntil((route) {
-      final name = route.settings.name;
-      return name != AppRoutes.lessonQuiz && name != AppRoutes.lessonDetail;
+    if (_postCloseAdStarted) return;
+    _ensureCompletionResult(context);
+    _postCloseAdStarted = true;
+    setState(() {
+      _showResult = false;
+      _showPostContinue = true;
+      _postResultPhase = QuizPostResultFlowLogic.beginCloseAfterPass(
+        passed: _passed,
+        xpHandled: xpHandled,
+        phase: _postResultPhase,
+      );
+      _postResultPhase = QuizPostResultFlowLogic.afterResultClosed();
     });
+    _runPostCloseAdFlow();
+  }
+
+  Future<void> _runPostCloseAdFlow() async {
+    if (!mounted) return;
+    setState(() => _postResultPhase = QuizPostResultPhase.loadingRewardedAd);
+
+    final outcome = await RewardedAdCoordinator.gateway.showPostQuizRewardedAd(
+      onAdShowing: () {
+        if (!mounted) return;
+        setState(
+          () => _postResultPhase = QuizPostResultFlowLogic.adNowShowing(),
+        );
+      },
+    );
+
+    if (!mounted) return;
+
+    final adWasShown = outcome == RewardedAdFlowResult.rewardGranted ||
+        outcome == RewardedAdFlowResult.dismissedWithoutReward;
+
+    String? message;
+    if (outcome == RewardedAdFlowResult.unavailable ||
+        outcome == RewardedAdFlowResult.failed) {
+      message = 'No ad available right now. You can continue learning.';
+    }
+
+    setState(() {
+      _adStatusMessage = message;
+      _postResultPhase = QuizPostResultFlowLogic.afterAdFlowResolved(
+        adWasShown: adWasShown,
+      );
+    });
+  }
+
+  Future<void> _navigateAfterQuiz(BuildContext context, Lesson currentLesson) async {
+    if (_navigatingNext) return;
+    setState(() {
+      _navigatingNext = true;
+      _postResultPhase = QuizPostResultFlowLogic.beginNavigate();
+    });
+
+    final next = _completionResult?.nextLesson;
+    if (!context.mounted) return;
+
+    widget.onRequestClose?.call();
+
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (next != null) {
+      await navigator.pushReplacementNamed(
+        AppRoutes.lessonDetail,
+        arguments: LessonDetailArguments(lessonId: next.id),
+      );
+    } else {
+      navigator.popUntil((route) {
+        final name = route.settings.name;
+        return name == AppRoutes.shell ||
+            name == AppRoutes.roadmap ||
+            route.isFirst;
+      });
+      await navigator.pushNamed(AppRoutes.roadmap);
+    }
+
+    if (mounted) {
+      setState(() => _navigatingNext = false);
+    }
   }
 }
 
@@ -623,111 +732,3 @@ class _OptionTile extends StatelessWidget {
   }
 }
 
-class _ResultView extends StatelessWidget {
-  final Lesson lesson;
-  final int correct;
-  final int total;
-  final bool passed;
-  final bool finishing;
-  final bool alreadyCompleted;
-  final VoidCallback onRetry;
-  final VoidCallback onFinish;
-  final VoidCallback onClose;
-
-  const _ResultView({
-    required this.lesson,
-    required this.correct,
-    required this.total,
-    required this.passed,
-    required this.finishing,
-    required this.alreadyCompleted,
-    required this.onRetry,
-    required this.onFinish,
-    required this.onClose,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          lesson.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                passed ? Icons.celebration : Icons.refresh,
-                size: 64,
-                color: passed
-                    ? const Color(0xFF00B894)
-                    : Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                passed ? 'You passed!' : 'Almost there',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '$correct of $total correct',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 28),
-              if (passed) ...[
-                FilledButton.icon(
-                  onPressed: finishing ? null : onFinish,
-                  icon: finishing
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(Icons.check, size: 18),
-                  label: Text(finishing
-                      ? 'Saving…'
-                      : alreadyCompleted
-                          ? 'Continue'
-                          : 'Claim ${lesson.xpReward} XP'),
-                ),
-                const SizedBox(height: 10),
-                OutlinedButton(
-                  onPressed: onClose,
-                  child: const Text('Close'),
-                ),
-              ] else ...[
-                Text(
-                  'You need 70% correct to mark this lesson complete.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 20),
-                FilledButton.icon(
-                  onPressed: onRetry,
-                  icon: const Icon(Icons.refresh, size: 18),
-                  label: const Text('Retake quiz'),
-                ),
-                const SizedBox(height: 10),
-                OutlinedButton(
-                  onPressed: onClose,
-                  child: const Text('Back to lesson'),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
