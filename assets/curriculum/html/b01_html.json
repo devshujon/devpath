@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 2,
+  "id": "b01_html",
+  "track": "html",
+  "difficulty": "beginner",
+  "title": "HTML Basics",
+  "summary": "Every page starts with a document shell: doctype, html, head, and body. Then you add headings, paragraphs, and links.",
+  "estimatedMinutes": 8,
+  "objectives": [
+    "Recognize the basic HTML document shell",
+    "Add a heading, a paragraph, and a link",
+    "Know the difference between <head> and <body>"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "HTML is the **structure** of a web page. CSS is style. JavaScript is behavior. This lesson is only structure."
+    },
+    {
+      "type": "heading",
+      "text": "The document shell",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "A page starts with `<!DOCTYPE html>` so the browser uses modern HTML. Then `<html>` wraps everything, `<head>` holds metadata (title, charset), and `<body>` holds what the reader sees."
+    },
+    {
+      "type": "code",
+      "lang": "html",
+      "runnable": true,
+      "caption": "Tap Try and change the heading or paragraph.",
+      "code": "<!DOCTYPE html>\n<html>\n<head>\n  <title>My Page</title>\n</head>\n<body>\n  <h1>My Page</h1>\n  <p>This is a paragraph.</p>\n  <a href=\"#\">Click me</a>\n</body>\n</html>"
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "`<h1>` — the page title on the page itself",
+        "`<p>` — a paragraph of text",
+        "`<a href=\"...\">` — a link. `href` is the destination"
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "md": "Visible content goes in `<body>`. The tab label goes in `<title>` inside `<head>`."
+    },
+    {
+      "type": "deepDive",
+      "title": "Why the doctype matters",
+      "children": [
+        {
+          "type": "prose",
+          "md": "Without `<!DOCTYPE html>`, some browsers switch to quirks mode and layout rules from the 1990s. Always include it as the first line."
+        }
+      ]
+    }
+  ],
+  "quickRecap": [
+    "HTML describes structure, not appearance.",
+    "Visible content lives in `<body>`.",
+    "Use `<h1>`, `<p>`, and `<a>` to start a real page."
+  ],
+  "exercise": {
+    "prompt": "Build a tiny profile page: one H1 with your name, one paragraph about you, and one link.",
+    "starterCode": {
+      "html": "<!DOCTYPE html>\n<html>\n<body>\n<h1>Your name</h1>\n<p>Say something about yourself.</p>\n<a href=\"https://example.com\">A useful link</a>\n</body>\n</html>",
+      "css": "body { font-family: system-ui, sans-serif; padding: 20px; }",
+      "js": ""
+    },
+    "checks": ["one h1", "one paragraph", "one link"]
+  }
+}

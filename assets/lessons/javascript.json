@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "module": "JavaScript",
+  "lessons": [
+    {
+      "id": "js_b_01",
+      "module": "JavaScript",
+      "level": "beginner",
+      "order": 1,
+      "title": "Variables and console.log",
+      "summary": "Store values and print them out.",
+      "explanation": "JavaScript variables hold values you want to reuse. Use 'let' for values that change, 'const' for ones that don't. console.log() prints to the developer console — useful for checking what your code is doing.",
+      "codeExample": "const name = 'Alice';\nlet age = 25;\nconsole.log('Hello, ' + name);\nconsole.log('Age:', age);",
+      "keyPoints": [
+        "'const' for values that never change",
+        "'let' for values that can be reassigned",
+        "Strings join with + or template literals: `Hello, ${name}`"
+      ],
+      "starterFiles": {
+        "index.html": "<h1>Open the preview console</h1>",
+        "script.js": "// declare a variable for your name\n// log it to the console"
+      }
+    }
+  ]
+}

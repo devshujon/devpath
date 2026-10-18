@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "module": "CSS",
+  "lessons": [
+    {
+      "id": "css_b_01",
+      "module": "CSS",
+      "level": "beginner",
+      "order": 1,
+      "title": "Colors and backgrounds",
+      "summary": "Make your HTML look like something with CSS.",
+      "explanation": "CSS controls how HTML looks. Properties like color, background-color, and font-size let you transform a plain page into something polished. Selectors target which elements to style.",
+      "codeExample": "body {\n  background-color: #f5f5f5;\n  color: #333;\n  font-family: system-ui, sans-serif;\n}\n\nh1 {\n  color: #6c5ce7;\n}",
+      "keyPoints": [
+        "Selectors (like 'body' or 'h1') target HTML elements",
+        "Properties go inside curly braces",
+        "Colors can be names ('red'), hex ('#ff0000'), or rgb()"
+      ],
+      "starterFiles": {
+        "index.html": "<h1>Style me</h1>\n<p>Make this paragraph blue.</p>",
+        "style.css": "/* write your CSS here */"
+      }
+    }
+  ]
+}
