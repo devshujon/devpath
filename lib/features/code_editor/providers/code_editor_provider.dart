@@ -79,6 +79,25 @@ class CodeEditorProvider extends ChangeNotifier {
     return entry;
   }
 
+  Future<(WorkspaceFile?, String?)> importExternal({
+    required String fileName,
+    required EditorFileKind kind,
+    required String content,
+  }) async {
+    if (content.length > EditorFileTypeRegistry.maxImportBytes) {
+      return (null, 'File is too large to import.');
+    }
+    final entry = await _storage.importFile(
+      fileName: fileName,
+      kind: kind,
+      content: content,
+    );
+    await refreshIndex(notify: false);
+    await openWorkspaceFile(entry);
+    notifyListeners();
+    return (entry, null);
+  }
+
   Future<(WorkspaceFile?, String?)> importFromPicker() async {
     final (result, failure) = await CodeEditorFilePicker.pickAndRead();
     if (failure != null) {
