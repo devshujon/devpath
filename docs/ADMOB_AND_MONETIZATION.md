@@ -1,4 +1,4 @@
-# AdMob and monetization — DevPath v1.2.1
+# AdMob and monetization — DevPath v1.3.0
 
 ## Configuration (PR: official DevPath units)
 
