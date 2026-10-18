@@ -10,14 +10,14 @@
 | Field | Value |
 |--------|--------|
 | Branch | `cursor/android-file-open-982f` |
-| Git commit | `9045cfe175b9021cb5f3cd4e8089bbb0f1ca8c7a` |
+| Git commit (handoff) | `7ef7cad` (feature logic in `9045cfe`) |
 | Working tree | Clean (no uncommitted changes at doc refresh) |
 | Package ID (debug) | `com.devpath.app.debug` |
-| Version (pubspec) | `1.2.1+14` |
-| Version name (debug APK) | `1.2.1-debug` (see `android/app/build.gradle` `versionNameSuffix`) |
+| Version (pubspec) | `1.3.0+15` |
+| Version name (debug APK) | `1.3.0-debug` (see `android/app/build.gradle` `versionNameSuffix`) |
 | APK path (repo build) | `build/app/outputs/flutter-apk/app-debug.apk` |
 | APK size | ~184 MB (debug; includes symbols — normal for Flutter debug) |
-| SHA-256 | `2d86d662c3ad8a73299f4fa3829cf969076d08266a9862e023a2778f362e0ac0` |
+| SHA-256 | `4f1e35bc79d2e8638a15747fb3937aa9bead7792e2eb4ee9eaa388e442be09b9` |
 
 **Install (USB):**
 
@@ -167,7 +167,7 @@ If a messenger only sends `application/octet-stream` without extension, DevPath 
 ## Cloud agent verification (latest run)
 
 - `flutter analyze` — 12 issues (pre-existing warnings/infos; no errors)
-- `flutter test` — **158/158** passed
+- `flutter test` — **160/160** passed
 - `flutter build apk --debug` — success
 - **No** physical-device rows executed in cloud
 

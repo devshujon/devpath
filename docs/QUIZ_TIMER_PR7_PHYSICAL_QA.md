@@ -1,7 +1,8 @@
 # PR #7 — Physical device QA checklist (not executed in CI)
 
-**Branch:** `cursor/quiz-result-rewarded-982f`  
-**Version:** `1.2.1+14` (unchanged)
+**Branch:** `cursor/quiz-result-rewarded-982f` (features merged forward)  
+**Original PR #7 target:** `1.2.1+14`  
+**Current release retest:** `1.3.0+15` — re-run this checklist on a build showing **v1.3.0+15** in About / quiz debug label.
 
 ## Android platform regression (H1 / WebView)
 

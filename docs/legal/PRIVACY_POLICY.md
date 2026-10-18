@@ -2,7 +2,8 @@
 
 **Effective date:** 2026-10-14  
 **App:** DevPath — Learn Code & Earn  
-**Version:** 1.2.1 (beta)  
+**Version:** 1.3.0 (beta)  
+**Last updated (ads disclosure):** 2026-10-18  
 **Contact:** Use the GitHub repository issue tracker for the DevPath project (no dedicated support email is configured in the app).
 
 This policy describes how the DevPath mobile application handles information when you use it on your device.
@@ -33,7 +34,7 @@ This data **stays on your device** unless you back up the app through your devic
 
 ## 3. Information we do not collect (in-app)
 
-Based on the current application source code for v1.2.1:
+Based on the current application source code for v1.3.0:
 
 - No DevPath login or registration  
 - No upload of your learning progress to DevPath servers  
@@ -50,9 +51,10 @@ The app declares **INTERNET** and **ACCESS_NETWORK_STATE** permissions on Androi
 
 - Loading **local** WebView content on platforms where the code editor or preview uses embedded WebViews (on Android, the mobile code editor and playground preview use native Flutter UI instead of WebViews for HTML preview in current builds).  
 - **Future or optional features** that may fetch remote content if enabled in a later version.  
-- The **Google Mobile Ads** library is included as a dependency and registers a **Google test AdMob application ID** in the manifest; **this beta build does not display advertisements in the user interface.**
+- **Google Mobile Ads (AdMob):** Starting in v1.3.0, the app may show **rewarded**, **banner**, and **interstitial** advertisements when enabled in the build. **Debug builds** use Google’s **test** AdMob App ID and test ad units. **Release builds** use DevPath’s production AdMob App ID and ad units configured in the app. Ad requests require network access when ads are shown.
+- A **User Messaging Platform (UMP) consent flow is not yet integrated.** Before distributing production ads to users in regions that require consent (for example EEA/UK), DevPath must implement consent and update this policy.
 
-The app does **not** require network access to read bundled curriculum lessons or to take offline lesson quizzes.
+The app does **not** require network access to read bundled curriculum lessons or to take offline lesson quizzes when ads are not loaded or shown.
 
 ---
 
@@ -76,7 +78,7 @@ If you use file import, the system file picker lets **you** choose files. DevPat
 
 ## 8. Advertising identifier
 
-The manifest may declare **AD_ID** because the project depends on **google_mobile_ads**. In v1.2.1 beta, **ads are not shown in the UI** and the manifest uses Google’s **test** AdMob App ID. If advertising is enabled in a future release, this policy will be updated and consent flows will be documented.
+The manifest declares **AD_ID** because the project depends on **google_mobile_ads**. AdMob may use the advertising ID per Google’s policies when ads are served. You can limit ad personalization through your device’s advertising settings where your OS provides them.
 
 ---
 

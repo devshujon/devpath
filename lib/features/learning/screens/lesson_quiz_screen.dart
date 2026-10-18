@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/ads/interstitial_ad_coordinator.dart';
 import '../../../core/ads/rewarded_ad_coordinator.dart';
 import '../../../core/ads/rewarded_ad_purpose.dart';
 import '../../../core/app_version.dart';
@@ -988,6 +989,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen>
       _navigatingNext = true;
       _postResultPhase = QuizPostResultFlowLogic.beginNavigate();
     });
+
+    // Natural transition after quiz flow — never during active questions.
+    await InterstitialAdCoordinator.instance.maybeShowLessonTransition();
 
     final next = _completionResult?.nextLesson;
     if (!context.mounted) return;

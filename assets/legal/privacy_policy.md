@@ -1,10 +1,12 @@
 # DevPath Privacy Policy
 
-Effective date: 2026-10-14 · App version: 1.2.1 (beta)
+Effective date: 2026-10-14 · Last updated: 2026-10-18 · App version: 1.3.0 (beta)
 
 DevPath stores learning progress, XP, streaks, badges, saved projects, editor settings, and notification preferences locally on your device. There is no DevPath account or server sync in this version.
 
-The app works primarily offline using bundled lessons and quizzes. Android declares INTERNET for WebView-related components on some platforms and for included libraries; this beta does not show ads in the UI although google_mobile_ads is a dependency (test AdMob ID in manifest).
+The app works primarily offline using bundled lessons and quizzes. Android declares INTERNET for ads (when shown), libraries, and optional network features.
+
+**Advertising (v1.3.0):** Debug builds use Google test AdMob IDs. Release builds may show rewarded, banner, and interstitial ads. A consent (UMP) flow is not yet integrated for all regions — see the full policy in the repository.
 
 Notifications are scheduled locally if you grant POST_NOTIFICATIONS on Android 13+.
 

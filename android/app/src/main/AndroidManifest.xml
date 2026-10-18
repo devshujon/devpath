@@ -14,10 +14,10 @@
         android:fullBackupContent="@xml/backup_rules"
         android:dataExtractionRules="@xml/data_extraction_rules">
 
-        <!-- AdMob App ID (TEST ID — replace with your production ID before launch) -->
+        <!-- AdMob App ID (production — debug build overlays test ID in src/debug/) -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3995622198490756~4702943512"/>
 
         <activity
             android:name=".MainActivity"
