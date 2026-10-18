@@ -65,6 +65,8 @@ class InterstitialAdCoordinator {
     _loaded = null;
     final completer = Completer<void>();
 
+    var userSawInterstitial = false;
+
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdFailedToShowFullScreenContent: (ad, error) {
         debugPrint('Interstitial show failed: $error');
@@ -72,15 +74,19 @@ class InterstitialAdCoordinator {
         if (!completer.isCompleted) completer.complete();
       },
       onAdDismissedFullScreenContent: (ad) {
+        userSawInterstitial = true;
         ad.dispose();
         if (!completer.isCompleted) completer.complete();
       },
     );
 
     try {
+      // ignore: unawaited_futures
       ad.show();
       await completer.future.timeout(_showTimeout, onTimeout: () {});
-      await _recordShown();
+      if (userSawInterstitial) {
+        await _recordShown();
+      }
     } catch (e) {
       debugPrint('Interstitial show error: $e');
     } finally {
@@ -93,9 +99,21 @@ class InterstitialAdCoordinator {
   Future<bool> _frequencyAllows() async {
     final prefs = await SharedPreferences.getInstance();
     final last = prefs.getInt(_prefLastShownMs);
-    if (last == null) return true;
-    final elapsed = DateTime.now().millisecondsSinceEpoch - last;
-    return elapsed >= _minInterval.inMilliseconds;
+    return frequencyAllows(
+      lastShownMs: last,
+      nowMs: DateTime.now().millisecondsSinceEpoch,
+      minIntervalMs: _minInterval.inMilliseconds,
+    );
+  }
+
+  @visibleForTesting
+  static bool frequencyAllows({
+    required int? lastShownMs,
+    required int nowMs,
+    required int minIntervalMs,
+  }) {
+    if (lastShownMs == null) return true;
+    return nowMs - lastShownMs >= minIntervalMs;
   }
 
   Future<void> _recordShown() async {
