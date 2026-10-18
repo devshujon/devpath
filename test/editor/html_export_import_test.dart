@@ -31,4 +31,30 @@ void main() {
   test('import max size constant is documented', () {
     expect(HtmlImportService.maxImportBytes, greaterThan(0));
   });
+
+  test('decodeBytes accepts utf8', () {
+    final text = HtmlImportService.decodeBytes('hello'.codeUnits);
+    expect(text, 'hello');
+  });
+
+  test('decodeBytes falls back to latin1', () {
+    final bytes = [0xE9]; // é in latin1
+    expect(HtmlImportService.decodeBytes(bytes), 'é');
+  });
+
+  test('decodeBytes rejects oversize payload', () {
+    expect(
+      () => HtmlImportService.decodeBytes(
+        List.filled(HtmlImportService.maxImportBytes + 1, 65),
+      ),
+      throwsA(isA<HtmlImportTooLargeException>()),
+    );
+  });
+
+  test('decodeBytes rejects empty payload', () {
+    expect(
+      () => HtmlImportService.decodeBytes([]),
+      throwsA(isA<FormatException>()),
+    );
+  });
 }

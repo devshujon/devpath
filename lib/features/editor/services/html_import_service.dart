@@ -35,19 +35,24 @@ class HtmlImportService {
     final file = result.files.first;
     final bytes = file.bytes;
     if (bytes == null || bytes.isEmpty) return null;
+    final text = decodeBytes(bytes);
+
+    return HtmlImportResult(fileName: file.name, html: text);
+  }
+
+  /// Decode picked file bytes (UTF-8, else ISO-8859-1). Throws if over size cap.
+  static String decodeBytes(List<int> bytes) {
+    if (bytes.isEmpty) {
+      throw const FormatException('empty file');
+    }
     if (bytes.length > maxImportBytes) {
       throw HtmlImportTooLargeException(bytes.length);
     }
-
-    String text;
     try {
-      text = utf8.decode(bytes);
+      return utf8.decode(bytes);
     } catch (_) {
-      // Tolerate files saved in a non-UTF-8 encoding.
-      text = latin1.decode(bytes);
+      return latin1.decode(bytes);
     }
-
-    return HtmlImportResult(fileName: file.name, html: text);
   }
 }
 
