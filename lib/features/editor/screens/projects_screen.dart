@@ -104,6 +104,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               return ProjectCard(
                 project: p,
                 onContinue: () => _openProject(context, p),
+                onRename: () => _renameProject(context, provider, p),
+                onDuplicate: () => _duplicateProject(context, provider, p),
                 onDelete: () => _confirmDelete(context, provider, p),
               );
             },
@@ -125,6 +127,11 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     HtmlImportResult? result;
     try {
       result = await HtmlImportService.pickAndRead();
+    } on HtmlImportTooLargeException {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('File is too large to import (max 1 MB).')),
+      );
+      return;
     } catch (_) {
       messenger.showSnackBar(
         const SnackBar(content: Text('Could not read that file.')),
@@ -145,6 +152,53 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         if (!context.mounted) return;
         unawaited(context.read<ProjectsListProvider>().load(force: true));
       }),
+    );
+  }
+
+  Future<void> _renameProject(
+    BuildContext context,
+    ProjectsListProvider provider,
+    UserProject project,
+  ) async {
+    final controller = TextEditingController(text: project.title);
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Rename project'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLength: 60,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (name == null || name.isEmpty || !context.mounted) return;
+    final updated = project.copyWith(title: name, updatedAt: DateTime.now());
+    await ProjectStorage.instance.saveProject(updated);
+    provider.upsert(updated);
+  }
+
+  Future<void> _duplicateProject(
+    BuildContext context,
+    ProjectsListProvider provider,
+    UserProject project,
+  ) async {
+    final copy = await ProjectStorage.instance.duplicateProject(
+      project,
+      title: '${project.title} copy',
+    );
+    provider.upsert(copy);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Duplicated as "${copy.title}"')),
     );
   }
 

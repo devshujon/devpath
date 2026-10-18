@@ -9,6 +9,9 @@ import '../services/project_storage.dart';
 
 enum PlaygroundTab { html, css, js }
 
+/// On narrow phones the playground shows one pane at a time.
+enum PlaygroundPaneView { editor, preview }
+
 extension PlaygroundTabLabel on PlaygroundTab {
   String get label => switch (this) {
         PlaygroundTab.html => 'HTML',
@@ -74,6 +77,7 @@ button{
   String _jsCommitted = defaultJs;
 
   PlaygroundTab _selectedTab = PlaygroundTab.html;
+  PlaygroundPaneView _paneView = PlaygroundPaneView.editor;
   int _runVersion = 0;
 
   // Persistent identity
@@ -93,6 +97,7 @@ button{
   String get cssCommitted => _cssCommitted;
   String get jsCommitted => _jsCommitted;
   PlaygroundTab get selectedTab => _selectedTab;
+  PlaygroundPaneView get paneView => _paneView;
   int get runVersion => _runVersion;
   String? get projectId => _projectId;
   String? get projectTitle => _projectTitle;
@@ -136,6 +141,19 @@ button{
   void switchTab(PlaygroundTab tab) {
     if (tab == _selectedTab) return;
     _selectedTab = tab;
+    notifyListeners();
+  }
+
+  void setPaneView(PlaygroundPaneView view) {
+    if (_paneView == view) return;
+    _paneView = view;
+    notifyListeners();
+  }
+
+  void togglePaneView() {
+    _paneView = _paneView == PlaygroundPaneView.editor
+        ? PlaygroundPaneView.preview
+        : PlaygroundPaneView.editor;
     notifyListeners();
   }
 
@@ -300,6 +318,47 @@ button{
 
   /// Restore from an autosave draft. Called once when the playground
   /// opens and the user has accepted the restore prompt.
+  /// Rename saved project or update working title before first save.
+  Future<UserProject?> renameCurrentProject(String newTitle) async {
+    final trimmed = newTitle.trim();
+    if (trimmed.isEmpty) return null;
+    final id = _projectId;
+    if (id == null) {
+      _projectTitle = trimmed;
+      notifyListeners();
+      return null;
+    }
+    final existing = await ProjectStorage.instance.getProject(id);
+    if (existing == null) return null;
+    final updated = existing.copyWith(
+      title: trimmed,
+      updatedAt: DateTime.now(),
+    );
+    await ProjectStorage.instance.saveProject(updated);
+    _projectTitle = updated.title;
+    _savedAt = updated.updatedAt;
+    notifyListeners();
+    return updated;
+  }
+
+  /// Save current buffers as a new project (does not mutate templates).
+  Future<UserProject> duplicateAsNewProject({required String title}) async {
+    return saveAsNew(title: title);
+  }
+
+  Future<bool> deleteCurrentProject() async {
+    final id = _projectId;
+    if (id == null) return false;
+    await ProjectStorage.instance.deleteProject(id);
+    _projectId = null;
+    _projectTitle = null;
+    _savedAt = null;
+    _isDirty = true;
+    notifyListeners();
+    await AutosaveService.instance.clear();
+    return true;
+  }
+
   void restoreFromDraft(DraftSnapshot draft) {
     _htmlDraft = draft.html;
     _cssDraft = draft.css;

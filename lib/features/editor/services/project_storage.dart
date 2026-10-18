@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/user_project.dart';
 
@@ -94,6 +95,27 @@ class ProjectStorage {
 
   /// Mark a project as just opened — bumps lastOpened without touching
   /// updatedAt or any code fields.
+  /// Creates a copy with a new id; source record unchanged.
+  Future<UserProject> duplicateProject(
+    UserProject source, {
+    required String title,
+  }) async {
+    final now = DateTime.now();
+    final copy = UserProject(
+      id: const Uuid().v4(),
+      title: title.trim().isEmpty ? '${source.title} copy' : title.trim(),
+      htmlCode: source.htmlCode,
+      cssCode: source.cssCode,
+      jsCode: source.jsCode,
+      createdAt: now,
+      updatedAt: now,
+      lastOpened: now,
+      lessonId: source.lessonId,
+    );
+    await saveProject(copy);
+    return copy;
+  }
+
   Future<void> touchOpened(String id) async {
     final existing = await getProject(id);
     if (existing == null) return;

@@ -6,12 +6,16 @@ class ProjectCard extends StatelessWidget {
   final UserProject project;
   final VoidCallback onContinue;
   final VoidCallback onDelete;
+  final VoidCallback? onRename;
+  final VoidCallback? onDuplicate;
 
   const ProjectCard({
     super.key,
     required this.project,
     required this.onContinue,
     required this.onDelete,
+    this.onRename,
+    this.onDuplicate,
   });
 
   @override
@@ -75,10 +79,37 @@ class ProjectCard extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     tooltip: 'More',
                     onSelected: (v) {
-                      if (v == 'delete') onDelete();
+                      switch (v) {
+                        case 'rename':
+                          onRename?.call();
+                        case 'duplicate':
+                          onDuplicate?.call();
+                        case 'delete':
+                          onDelete();
+                      }
                     },
-                    itemBuilder: (_) => const [
-                      PopupMenuItem(
+                    itemBuilder: (_) => [
+                      if (onRename != null)
+                        const PopupMenuItem(
+                          value: 'rename',
+                          child: ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.edit_outlined, size: 18),
+                            title: Text('Rename'),
+                          ),
+                        ),
+                      if (onDuplicate != null)
+                        const PopupMenuItem(
+                          value: 'duplicate',
+                          child: ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.copy_outlined, size: 18),
+                            title: Text('Duplicate'),
+                          ),
+                        ),
+                      const PopupMenuItem(
                         value: 'delete',
                         child: ListTile(
                           dense: true,

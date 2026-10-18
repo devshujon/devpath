@@ -18,6 +18,9 @@ class HtmlImportResult {
 class HtmlImportService {
   const HtmlImportService._();
 
+  /// Maximum picked file size (bytes).
+  static const int maxImportBytes = 1024 * 1024;
+
   /// Opens the picker and reads the chosen file.
   ///
   /// Returns null if the user cancels or the file can't be read.
@@ -32,15 +35,30 @@ class HtmlImportService {
     final file = result.files.first;
     final bytes = file.bytes;
     if (bytes == null || bytes.isEmpty) return null;
-
-    String text;
-    try {
-      text = utf8.decode(bytes);
-    } catch (_) {
-      // Tolerate files saved in a non-UTF-8 encoding.
-      text = latin1.decode(bytes);
-    }
+    final text = decodeBytes(bytes);
 
     return HtmlImportResult(fileName: file.name, html: text);
   }
+
+  /// Decode picked file bytes (UTF-8, else ISO-8859-1). Throws if over size cap.
+  static String decodeBytes(List<int> bytes) {
+    if (bytes.isEmpty) {
+      throw const FormatException('empty file');
+    }
+    if (bytes.length > maxImportBytes) {
+      throw HtmlImportTooLargeException(bytes.length);
+    }
+    try {
+      return utf8.decode(bytes);
+    } catch (_) {
+      return latin1.decode(bytes);
+    }
+  }
+}
+
+class HtmlImportTooLargeException implements Exception {
+  final int bytes;
+  HtmlImportTooLargeException(this.bytes);
+  @override
+  String toString() => 'Import too large ($bytes bytes)';
 }
