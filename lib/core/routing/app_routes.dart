@@ -24,6 +24,7 @@ import '../../features/quiz_engine/screens/quiz_runner_screen.dart';
 import '../../features/projects_track/screens/project_detail_screen.dart';
 import '../../features/projects_track/screens/projects_track_screen.dart';
 import '../../features/rewards/screens/achievements_screen.dart';
+import '../../features/external_open/screens/external_file_open_screen.dart';
 
 // Re-exported so callers don't need to import the screen file directly
 // just to construct route arguments.
@@ -80,6 +81,9 @@ class AppRoutes {
   static const codeEditorFile    = '/code-editor/file';
   static const codeEditorPreview = '/code-editor/preview';
 
+  /// Android "Open with" landing screen.
+  static const externalFileOpen = '/external-file-open';
+
   static Map<String, WidgetBuilder> routes = {
     shell:                (_) => const MainShell(),
     learn:                (_) => const LearnScreen(),
@@ -105,5 +109,6 @@ class AppRoutes {
     codeEditor:        (_) => const CodeEditorHomeScreen(),
     codeEditorFile:    (_) => const CodeEditorFileScreen(),
     codeEditorPreview: (_) => const CodeEditorPreviewScreen(),
+    externalFileOpen: (_) => const ExternalFileOpenScreen(),
   };
 }
