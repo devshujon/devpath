@@ -4,7 +4,7 @@
   "track": "sql",
   "difficulty": "intermediate",
   "title": "INNER JOIN",
-  "summary": "Offline lesson 17 in the SQL track (intermediate).",
+  "summary": "INNER JOIN returns rows where the join condition matches in **both** tables — ideal for required relationships.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain INNER JOIN in practical web-development terms",
@@ -13,42 +13,10 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**INNER JOIN** — Offline lesson 17 in the SQL track (intermediate)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **INNER JOIN** as part of SQL. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
       "type": "code",
       "lang": "sql",
       "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute sql on device.",
-      "code": "-- INNER JOIN\n-- MySQL example\nSELECT id, title FROM posts WHERE status = 'published' ORDER BY created_at DESC LIMIT 10;\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "code": "-- MySQL\nSELECT o.id, u.email\nFROM orders o\nINNER JOIN users u ON u.id = o.user_id\nWHERE o.status = 'paid';\n"
     }
   ],
   "quickRecap": [

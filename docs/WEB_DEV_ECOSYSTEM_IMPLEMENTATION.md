@@ -47,9 +47,15 @@
 | `flutter build apk --debug` | Success |
 | Release APK/AAB | **Not built** (per instructions) |
 
-## Content quality note
+## Content quality (PR #11 hardening)
 
-Extended tracks use generator-authored curriculum (objectives, prose, examples, security callouts where relevant). **Phase 8 deep dives** (unique quizzes per topic, hand-tuned advanced lessons) should continue incrementally — regenerate with `dart run tool/generate_learning_tracks.dart` after editing `tool/learning_tracks/track_specs.dart`.
+**13 priority lessons** have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`:
+
+`php_22`, `php_23`, `php_24`, `php_37`, `sql_17`–`sql_20`, `sql_36`, `typescript_09`, `typescript_10`, `web_essentials_23`, `web_essentials_28`.
+
+Regenerate: `dart run tool/generate_learning_tracks.dart` (overrides merge into catalog + JSON).
+
+Remaining extended lessons still use generator templates — expand overrides incrementally.
 
 ## Physical device QA
 

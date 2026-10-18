@@ -696,23 +696,23 @@ const List<Lesson> webEssentialsLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “API Error Handling”?',
-        options: ['A unrelated desktop-only topic', 'API Error Handling', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'An API returns HTTP 422 with a JSON errors object. The client should…',
+        options: ['Assume success', 'Surface field-level messages and avoid retrying the same invalid payload', 'Disable HTTPS', 'Concatenate errors into SQL'],
         correctIndex: 1,
-        explanation: 'API Error Handling is the subject of this lesson.',
+        explanation: '4xx client errors mean fix the request; structured errors guide the user.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'For HTTP 503 Service Unavailable, a reasonable client strategy is…',
+        options: ['Infinite tight loop with no backoff', 'Limited retries with exponential backoff and a user-visible message', 'Clear local storage always', 'Ignore status codes'],
+        correctIndex: 1,
+        explanation: 'Transient server issues may resolve; backoff avoids hammering the API.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute Web Essentials code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for Web Essentials runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'When fetch() rejects due to network failure you should…',
+        options: ['Show a generic crash dump with secrets', 'Distinguish offline/network errors from HTTP error bodies when possible', 'Assume 200 OK', 'Disable CORS in production arbitrarily'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Network errors have no response object; HTTP errors do — handle both paths.',
+      ),
     ],
   ),
   Lesson(
@@ -851,23 +851,23 @@ const List<Lesson> webEssentialsLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Input Validation”?',
-        options: ['A unrelated desktop-only topic', 'Input Validation', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'Server-side input validation is required because…',
+        options: ['Browsers always enforce HTML5 attributes', 'Clients can send arbitrary HTTP requests bypassing your UI', 'CSS validates email format', 'DNS blocks SQL injection'],
         correctIndex: 1,
-        explanation: 'Input Validation is the subject of this lesson.',
+        explanation: 'Never trust the channel — validate type, length, and allowed values on the server.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'Allow-list validation means…',
+        options: ['Reject only known-bad strings', 'Accept only known-good values/patterns (e.g. enum roles)', 'Skip validation for admins', 'Validate only in Git'],
+        correctIndex: 1,
+        explanation: 'Allow-lists fail closed; block-lists miss novel attacks.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute Web Essentials code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for Web Essentials runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Validating a file upload should include…',
+        options: ['Trusting the client file extension only', 'Server checks on size, type, and storage location outside the web root', 'Embedding uploads in SQL strings', 'Returning the storage path to anonymous users'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'MIME/extension can lie; enforce limits and safe storage server-side.',
+      ),
     ],
   ),
   Lesson(

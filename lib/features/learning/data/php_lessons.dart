@@ -665,23 +665,29 @@ const List<Lesson> phpLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Building Simple API Endpoints”?',
-        options: ['A unrelated desktop-only topic', 'Building Simple API Endpoints', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'Why should a simple PHP API return JSON with an appropriate HTTP status code?',
+        options: ['So browsers can skip TLS', 'So clients can distinguish success from client/server errors programmatically', 'So SQL runs faster', 'So HTML forms are not needed'],
         correctIndex: 1,
-        explanation: 'Building Simple API Endpoints is the subject of this lesson.',
+        explanation: 'REST-style APIs use status codes (200, 400, 404, 500) plus structured JSON so clients handle errors predictably.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'Which approach is unsafe for passing user input into SQL from an API?',
+        options: ['Prepared statements with bound parameters', 'String concatenation: "SELECT * FROM users WHERE id = \$id"', 'PDO with placeholders', 'Validating input type before binding'],
+        correctIndex: 1,
+        explanation: 'Never build SQL by concatenating raw user input — use parameterized queries.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute PHP code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for PHP runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Where should authentication for a private API endpoint be enforced?',
+        options: ['Only in CSS', 'On the server before business logic runs', 'Only in localStorage on the client', 'In a README file'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Clients can be forged; authorization must be verified server-side on every request.',
+      ),
+      QuizQuestion(
+        question: 'A POST endpoint creates a resource. A duplicate submit arrives. A safe pattern is to…',
+        options: ['Disable all logging', 'Use idempotency keys or deduplicate with server-side checks where appropriate', 'Return HTTP 200 with empty body always', 'Store passwords in the JSON body in plain text'],
+        correctIndex: 1,
+        explanation: 'Design APIs for retries: idempotency keys or natural uniqueness constraints prevent double creates.',
+      ),
     ],
   ),
   Lesson(
@@ -696,23 +702,23 @@ const List<Lesson> phpLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “PDO Database Connections”?',
-        options: ['A unrelated desktop-only topic', 'PDO Database Connections', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'What does PDO provide in PHP database access?',
+        options: ['A way to style HTML tables only', 'A consistent interface to talk to databases with prepared statements support', 'Automatic frontend bundling', 'Plaintext password storage'],
         correctIndex: 1,
-        explanation: 'PDO Database Connections is the subject of this lesson.',
+        explanation: 'PDO (PHP Data Objects) abstracts database drivers and supports prepared statements across MySQL and others.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'Why set PDO error mode to exceptions in development?',
+        options: ['To hide all failures in production logs', 'To fail visibly during development so connection/SQL bugs are caught early', 'To disable prepared statements', 'To allow SQL injection'],
+        correctIndex: 1,
+        explanation: 'PDO::ERRMODE_EXCEPTION helps you debug; still handle errors safely for users in production.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute PHP code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for PHP runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Database credentials in PHP should live…',
+        options: ['In a public GitHub repo', 'In environment variables or a non-web-readable config outside version control', 'In JavaScript sent to the browser', 'In HTML comments'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Secrets belong in environment configuration, not client code or committed files.',
+      ),
     ],
   ),
   Lesson(
@@ -727,23 +733,29 @@ const List<Lesson> phpLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Prepared Statements”?',
-        options: ['A unrelated desktop-only topic', 'Prepared Statements', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'Prepared statements primarily protect against…',
+        options: ['Slow CSS animations', 'SQL injection by separating SQL structure from user-supplied data', 'Missing semicolons in HTML', 'Large image uploads only'],
         correctIndex: 1,
-        explanation: 'Prepared Statements is the subject of this lesson.',
+        explanation: 'Bound parameters ensure user input is treated as data, not executable SQL.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'Which PDO usage is correct for a user-supplied email lookup?',
+        options: ['\$pdo->query("SELECT * FROM users WHERE email = \$email")', '\$stmt = \$pdo->prepare("SELECT id FROM users WHERE email = ?"); \$stmt->execute([\$email]);', 'echo \$_GET["email"] inside the SQL string', 'Use addslashes() instead of binding'],
+        correctIndex: 1,
+        explanation: 'Placeholders (?) or named params with execute([...]) is the safe pattern.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute PHP code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for PHP runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Client-side form validation alone is…',
+        options: ['Sufficient for security', 'Helpful for UX but must be repeated on the server', 'Required to disable HTTPS', 'A replacement for password hashing'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Attackers can bypass the browser; always validate and parameterize on the server.',
+      ),
+      QuizQuestion(
+        question: 'After execute(), how should you read rows from a SELECT prepared statement?',
+        options: ['Mix user input back into the SQL string', 'Use fetch()/fetchAll() on the statement object', 'Print raw \$_POST to the page', 'Disable error reporting permanently'],
+        correctIndex: 1,
+        explanation: 'Fetch from the prepared statement result set — do not rebuild the query with user data.',
+      ),
     ],
   ),
   Lesson(
@@ -1130,23 +1142,23 @@ const List<Lesson> phpLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Testing PHP Applications”?',
-        options: ['A unrelated desktop-only topic', 'Testing PHP Applications', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'Defense in depth for a small PHP backend means…',
+        options: ['Only validating in the browser', 'Layering HTTPS, server validation, parameterized SQL, auth, and least-privilege DB users', 'Storing API keys in frontend code', 'Disabling all logging'],
         correctIndex: 1,
-        explanation: 'Testing PHP Applications is the subject of this lesson.',
+        explanation: 'Multiple controls overlap so one failure does not expose the whole system.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'The database account used by a web app should…',
+        options: ['Have root privileges for convenience', 'Have only the minimum permissions needed (e.g. CRUD on one schema)', 'Be shared with all developers in chat', 'Use an empty password on localhost only in production'],
+        correctIndex: 1,
+        explanation: 'Least privilege limits damage if the app is compromised.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute PHP code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for PHP runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'When logging errors in production you should…',
+        options: ['Include full credit card numbers', 'Log internally without exposing stack traces or secrets to end users', 'Email passwords to admins', 'Return database passwords in JSON error messages'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Users get safe messages; operators get detailed logs stored securely.',
+      ),
     ],
   ),
   Lesson(

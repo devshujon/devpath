@@ -262,23 +262,23 @@ const List<Lesson> typescriptLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Narrowing”?',
-        options: ['A unrelated desktop-only topic', 'Narrowing', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'Type narrowing lets TypeScript…',
+        options: ['Remove the need for runtime checks entirely', 'Refine a union type inside a branch after a typeof/in/instanceof check', 'Execute SQL on the phone', 'Disable strict mode'],
         correctIndex: 1,
-        explanation: 'Narrowing is the subject of this lesson.',
+        explanation: 'Control-flow analysis learns tighter types after guards — still validate at runtime for external data.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'After `if (typeof value === "string")`, inside the block value is…',
+        options: ['number', 'string', 'unknown', 'any always'],
+        correctIndex: 1,
+        explanation: 'typeof guard narrows unknown/union members to string in that branch.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute TypeScript code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for TypeScript runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Parsing JSON from an API, the first safe step is often…',
+        options: ['Cast with `as MyType` and trust it', 'Treat as unknown and narrow/validate field by field', 'Store in innerHTML', 'Skip error handling'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'External JSON is untrusted; validate before trusting the shape.',
+      ),
     ],
   ),
   Lesson(
@@ -293,23 +293,23 @@ const List<Lesson> typescriptLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Generics”?',
-        options: ['A unrelated desktop-only topic', 'Generics', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'Generics is the subject of this lesson.',
+        question: 'Generics in TypeScript let you…',
+        options: ['Write functions/types that work with many types while preserving type relationships', 'Run code without types', 'Replace interfaces entirely', 'Compile to PHP automatically'],
+        correctIndex: 0,
+        explanation: 'Generics parameterize types, e.g. ApiResponse<T> keeps payload type linked to the caller.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'function first<T>(items: T[]): T | undefined { return items[0]; } — T means…',
+        options: ['T is always string', 'T is inferred from the argument (e.g. number[] → number)', 'T disables checking', 'T is only for classes'],
+        correctIndex: 1,
+        explanation: 'Call-site inference connects input and output types.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute TypeScript code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for TypeScript runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Generic constraints (`T extends HasId`) are used to…',
+        options: ['Allow any operation on T', 'Limit T to types that satisfy a required shape', 'Remove compile errors without fixing them', 'Speed up MySQL'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'extends ensures T has the fields your function needs.',
+      ),
     ],
   ),
   Lesson(

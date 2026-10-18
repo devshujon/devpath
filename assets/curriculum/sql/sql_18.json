@@ -4,7 +4,7 @@
   "track": "sql",
   "difficulty": "intermediate",
   "title": "LEFT JOIN",
-  "summary": "Offline lesson 18 in the SQL track (intermediate).",
+  "summary": "LEFT JOIN keeps every row from the left table even when there is no match on the right (NULLs fill unmatched columns).",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain LEFT JOIN in practical web-development terms",
@@ -13,42 +13,10 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**LEFT JOIN** — Offline lesson 18 in the SQL track (intermediate)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **LEFT JOIN** as part of SQL. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
       "type": "code",
       "lang": "sql",
       "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute sql on device.",
-      "code": "-- LEFT JOIN\n-- MySQL example\nSELECT id, title FROM posts WHERE status = 'published' ORDER BY created_at DESC LIMIT 10;\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "code": "SELECT u.email, COUNT(o.id) AS order_count\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id\nGROUP BY u.id;\n"
     }
   ],
   "quickRecap": [

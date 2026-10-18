@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'learning_tracks/priority_lesson_overrides.dart';
 import 'learning_tracks/track_specs.dart';
 
 void main() {
@@ -80,7 +81,7 @@ Map<String, dynamic> _curriculumJson(_GenLesson l, TrackSpec spec) {
   final lang = _contentLang(spec.trackKey);
   final code = _sampleCode(l, lang);
   final security = _securityNote(l, spec.trackKey);
-  return {
+  final base = {
     'schemaVersion': 2,
     'id': l.id,
     'track': spec.trackKey,
@@ -155,6 +156,13 @@ Map<String, dynamic> _curriculumJson(_GenLesson l, TrackSpec spec) {
       'checks': [],
     },
   };
+  final patch = priorityCurriculumFor(l.id);
+  if (patch != null) {
+    for (final entry in patch.entries) {
+      base[entry.key] = entry.value;
+    }
+  }
+  return base;
 }
 
 class _GenLesson {
@@ -212,6 +220,8 @@ $qs
   }
 
   String _quizQuestions() {
+    final priority = priorityQuizzesToDart(id);
+    if (priority.isNotEmpty) return priority;
     final q1 = _q(
       'What is the main focus of “$title”?',
       [

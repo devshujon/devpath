@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "intermediate",
   "title": "Input Validation",
-  "summary": "Offline lesson 28 in the Web Essentials track (intermediate).",
+  "summary": "Validate on the server with allow-lists; treat browser checks as convenience only.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Input Validation in practical web-development terms",
@@ -13,35 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Input Validation** — Offline lesson 28 in the Web Essentials track (intermediate)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Input Validation** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Full-stack safety: HTML forms → PHP validation → parameterized SQL → escaped output."
     }
   ],
   "quickRecap": [

@@ -510,23 +510,23 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “INNER JOIN”?',
-        options: ['A unrelated desktop-only topic', 'INNER JOIN', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'INNER JOIN is the subject of this lesson.',
+        question: 'What does INNER JOIN return?',
+        options: ['Only rows with matches in both tables are returned', 'Only rows from the right table with no left matches', 'Cartesian product of all tables always', 'HTTP response headers'],
+        correctIndex: 0,
+        explanation: 'Only rows with matches in both tables are returned',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'The ON clause in a join specifies…',
+        options: ['CSS breakpoints', 'Which columns relate the two tables (e.g. orders.user_id = users.id)', 'PHP session names', 'Git branch names'],
+        correctIndex: 1,
+        explanation: 'ON expresses the relationship predicate between tables.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Why alias tables (FROM orders o JOIN users u)?',
+        options: ['To hide SQL from teammates', 'To shorten queries and disambiguate column names', 'To disable indexes', 'To prevent prepared statements'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Aliases clarify which table a column comes from in complex joins.',
+      ),
     ],
   ),
   Lesson(
@@ -541,23 +541,23 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “LEFT JOIN”?',
-        options: ['A unrelated desktop-only topic', 'LEFT JOIN', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'LEFT JOIN is the subject of this lesson.',
+        question: 'What does LEFT JOIN return?',
+        options: ['All rows from the left table appear; unmatched right columns are NULL', 'Only rows from the right table with no left matches', 'Cartesian product of all tables always', 'HTTP response headers'],
+        correctIndex: 0,
+        explanation: 'All rows from the left table appear; unmatched right columns are NULL',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'The ON clause in a join specifies…',
+        options: ['CSS breakpoints', 'Which columns relate the two tables (e.g. orders.user_id = users.id)', 'PHP session names', 'Git branch names'],
+        correctIndex: 1,
+        explanation: 'ON expresses the relationship predicate between tables.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Why alias tables (FROM orders o JOIN users u)?',
+        options: ['To hide SQL from teammates', 'To shorten queries and disambiguate column names', 'To disable indexes', 'To prevent prepared statements'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Aliases clarify which table a column comes from in complex joins.',
+      ),
     ],
   ),
   Lesson(
@@ -572,23 +572,23 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Relationships and Foreign Keys”?',
-        options: ['A unrelated desktop-only topic', 'Relationships and Foreign Keys', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'A foreign key enforces…',
+        options: ['Font colors in CSS', 'Referential integrity between related tables', 'HTTP caching', 'JavaScript hoisting'],
         correctIndex: 1,
-        explanation: 'Relationships and Foreign Keys is the subject of this lesson.',
+        explanation: 'FKs ensure child rows reference existing parent rows (or defined ON DELETE behavior).',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'A one-to-many relationship (author → posts) is modeled by…',
+        options: ['Duplicating the author name in every post with no key', 'A posts.author_id referencing authors.id', 'Storing posts inside a VARCHAR on authors', 'Using only HTML ids'],
+        correctIndex: 1,
+        explanation: 'The “many” side holds the foreign key to the “one” side.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'In MySQL, defining relationships in the schema helps…',
+        options: ['Replace the need for prepared statements', 'Document and enforce valid links between entities', 'Disable indexes', 'Run PHP in the browser'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Constraints catch invalid data at insert time and clarify design for teammates.',
+      ),
     ],
   ),
   Lesson(
@@ -603,23 +603,23 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Constraints”?',
-        options: ['A unrelated desktop-only topic', 'Constraints', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'A PRIMARY KEY constraint ensures…',
+        options: ['Duplicate rows are allowed', 'Each row is uniquely identifiable and NOT NULL', 'All columns must be text', 'The table has no indexes'],
         correctIndex: 1,
-        explanation: 'Constraints is the subject of this lesson.',
+        explanation: 'Primary keys uniquely identify rows; MySQL clusters InnoDB tables on the PK.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'UNIQUE on email means…',
+        options: ['Email can appear twice', 'No two rows may share the same email value (NULL handling depends on engine)', 'Email is optional on every table', 'Email is hashed automatically'],
+        correctIndex: 1,
+        explanation: 'UNIQUE prevents duplicate business keys like email or slug.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'CHECK constraints (where supported) are used to…',
+        options: ['Validate row data against a rule (e.g. price >= 0)', 'Replace foreign keys', 'Speed up DNS', 'Compile TypeScript'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'CHECK adds server-side rules at the database layer; still validate in app code too.',
+      ),
     ],
   ),
   Lesson(
@@ -1099,23 +1099,29 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “SQL Injection Prevention”?',
-        options: ['A unrelated desktop-only topic', 'SQL Injection Prevention', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
+        question: 'SQL injection happens when…',
+        options: ['CSS is minified', 'Untrusted input is concatenated into SQL and interpreted as code', 'HTTPS certificates expire', 'Images lack alt text'],
         correctIndex: 1,
-        explanation: 'SQL Injection Prevention is the subject of this lesson.',
+        explanation: 'Attackers craft input that alters query structure — parameterization prevents this.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'The safest fix for dynamic WHERE clauses is…',
+        options: ['Blacklisting the word DROP', 'Prepared statements / bound parameters with a fixed SQL template', 'Base64-encoding passwords only', 'Hiding errors from users only'],
+        correctIndex: 1,
+        explanation: 'Binding separates structure from data; blacklists are brittle.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
+        question: 'Escaping strings manually with mysqli_real_escape_string is…',
+        options: ['Preferable to prepared statements in all cases', 'Legacy-prone; prepared statements are the default recommendation', 'Unnecessary when using HTTPS', 'A substitute for authorization checks'],
         correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        explanation: 'Parameter binding avoids context mistakes; escaping is error-prone across encodings.',
+      ),
+      QuizQuestion(
+        question: 'Least privilege for SQL injection defense includes…',
+        options: ['Using the DB root user in the web app', 'Granting the app DB user only required tables/operations', 'Disabling all indexes', 'Storing SQL in cookies'],
+        correctIndex: 1,
+        explanation: 'Even if injection occurs, limited grants reduce blast radius.',
+      ),
     ],
   ),
   Lesson(
