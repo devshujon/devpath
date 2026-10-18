@@ -8,4 +8,7 @@ enum RewardedAdPurpose {
 
   /// Unlock correct option + explanation for one question.
   answerReveal,
+
+  /// Extra time on the same unanswered question after timeout.
+  questionTimerRetry,
 }

@@ -10,7 +10,11 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../logic/quiz_attempt_session.dart';
 import '../logic/quiz_post_result_flow.dart';
+import '../logic/quiz_question_timer.dart';
+import '../logic/quiz_question_timer_config.dart';
 import '../widgets/quiz_answer_feedback.dart';
+import '../widgets/quiz_question_timer_display.dart';
+import '../widgets/quiz_time_expired_panel.dart';
 import '../widgets/quiz_body_shell.dart';
 import '../widgets/quiz_post_result_continue.dart';
 import '../widgets/quiz_result_panel.dart';
@@ -37,7 +41,8 @@ class LessonQuizScreen extends StatefulWidget {
   State<LessonQuizScreen> createState() => _LessonQuizScreenState();
 }
 
-class _LessonQuizScreenState extends State<LessonQuizScreen> {
+class _LessonQuizScreenState extends State<LessonQuizScreen>
+    with WidgetsBindingObserver {
   Lesson? _lesson;
   String? _argsLessonId;
   String? _initError;
@@ -56,6 +61,13 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   bool _postCloseAdStarted = false;
   bool _navigatingNext = false;
   String? _adStatusMessage;
+  QuizQuestionTimer? _questionTimer;
+  Duration _timerRemaining = QuizQuestionTimerConfig.perQuestionDuration;
+  bool _timeExpired = false;
+  bool _timerPausedForLifecycle = false;
+  bool _submitLocked = false;
+  String? _timerAdMessage;
+  int? _timerArmedForIndex;
 
   static const double _passingThreshold = 0.7;
 
@@ -77,10 +89,92 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final args = widget.initialArgs;
     if (args != null) {
       _loadLessonFromArgs(args);
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _disposeQuestionTimer();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_showResult || _showPostContinue) return;
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        if (!_timerPausedForLifecycle && _questionTimer?.isRunning == true) {
+          _questionTimer?.pause();
+          _timerPausedForLifecycle = true;
+          if (mounted) setState(() {});
+        }
+      case AppLifecycleState.resumed:
+        if (_timerPausedForLifecycle) {
+          _questionTimer?.resume();
+          _timerPausedForLifecycle = false;
+          if (mounted) setState(() {});
+        }
+    }
+  }
+
+  void _disposeQuestionTimer() {
+    _questionTimer?.dispose();
+    _questionTimer = null;
+  }
+
+  void _armQuestionTimer() {
+    _disposeQuestionTimer();
+    _timeExpired = false;
+    _submitLocked = false;
+    _timerAdMessage = null;
+    _timerRemaining = QuizQuestionTimerConfig.perQuestionDuration;
+    _timerArmedForIndex = _session.questionIndex;
+    _questionTimer = QuizQuestionTimer(
+      onExpired: _handleQuestionTimeout,
+      onTick: (remaining) {
+        if (!mounted) return;
+        setState(() => _timerRemaining = remaining);
+      },
+    )..start();
+  }
+
+  void _scheduleTimerForActiveQuestion() {
+    if (_showResult || _showPostContinue || _awaitingQuestionFeedback) {
+      _stopQuestionTimer();
+      return;
+    }
+    if (_timeExpired) {
+      _stopQuestionTimer();
+      return;
+    }
+    final idx = _session.questionIndex;
+    if (_timerArmedForIndex == idx && _questionTimer?.isRunning == true) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _session.questionIndex != idx) return;
+      if (_timeExpired || _awaitingQuestionFeedback) return;
+      _armQuestionTimer();
+    });
+  }
+
+  void _stopQuestionTimer() {
+    _questionTimer?.stop();
+  }
+
+  void _handleQuestionTimeout() {
+    if (!mounted || _submitLocked || _timeExpired) return;
+    if (_awaitingQuestionFeedback || _showResult) return;
+    _stopQuestionTimer();
+    setState(() => _timeExpired = true);
   }
 
   void _loadLessonFromArgs(LessonDetailArguments args) {
@@ -116,6 +210,14 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     _awaitingQuestionFeedback = false;
     _lastSubmitCorrect = null;
     _questionAdMessage = null;
+    _timeExpired = false;
+    _timerAdMessage = null;
+    _submitLocked = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _lesson != null) {
+        _scheduleTimerForActiveQuestion();
+      }
+    });
   }
 
   @override
@@ -376,11 +478,44 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   }
 
   void _freeRestartAttempt() {
+    _stopQuestionTimer();
     setState(() {
       _session = _session.restartFromBeginning(countRewardedRetry: false);
       _awaitingQuestionFeedback = false;
       _lastSubmitCorrect = null;
       _questionAdMessage = null;
+      _timeExpired = false;
+      _timerAdMessage = null;
+      _submitLocked = false;
+      _timerArmedForIndex = null;
+    });
+    _scheduleTimerForActiveQuestion();
+  }
+
+  Future<void> _rewardedTimerRetrySameQuestion() async {
+    if (_adBusy) return;
+    setState(() {
+      _adBusy = true;
+      _timerAdMessage = null;
+    });
+    final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
+      purpose: RewardedAdPurpose.questionTimerRetry,
+    );
+    if (!mounted) return;
+    if (outcome == RewardedAdFlowResult.rewardGranted) {
+      setState(() {
+        _timeExpired = false;
+        _submitLocked = false;
+        _adBusy = false;
+        _timerAdMessage = null;
+        _timerArmedForIndex = null;
+      });
+      _armQuestionTimer();
+      return;
+    }
+    setState(() {
+      _adBusy = false;
+      _timerAdMessage = _adOutcomeMessage(outcome);
     });
   }
 
@@ -401,7 +536,11 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
         _lastSubmitCorrect = null;
         _adBusy = false;
         _questionAdMessage = null;
+        _timeExpired = false;
+        _timerArmedForIndex = null;
+        _submitLocked = false;
       });
+      _scheduleTimerForActiveQuestion();
       return;
     }
     setState(() {
@@ -449,9 +588,12 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   }
 
   void _submitCurrentAnswer(Lesson lesson) {
+    if (_submitLocked || _timeExpired) return;
     final index = _session.questionIndex;
     final selected = _session.answers[index];
     if (selected == null) return;
+    _submitLocked = true;
+    _stopQuestionTimer();
     final q = lesson.quizQuestions[index];
     final correct = selected == q.correctIndex;
     if (correct) {
@@ -459,13 +601,18 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
       setState(() {
         _awaitingQuestionFeedback = false;
         _lastSubmitCorrect = true;
+        _timerArmedForIndex = null;
         if (isLast) {
           _showResult = true;
         } else {
           _session.questionIndex++;
           _lastSubmitCorrect = null;
+          _submitLocked = false;
         }
       });
+      if (!isLast) {
+        _scheduleTimerForActiveQuestion();
+      }
       return;
     }
     setState(() {
@@ -477,20 +624,28 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   void _continueAfterIncorrect(Lesson lesson) {
     final index = _session.questionIndex;
     final isLast = index >= lesson.quizQuestions.length - 1;
+    _stopQuestionTimer();
     setState(() {
       _awaitingQuestionFeedback = false;
       _lastSubmitCorrect = null;
       _questionAdMessage = null;
+      _submitLocked = false;
+      _timerArmedForIndex = null;
       if (isLast) {
         _showResult = true;
       } else {
         _session.questionIndex++;
       }
     });
+    if (!isLast) {
+      _scheduleTimerForActiveQuestion();
+    }
   }
 
   Widget _buildQuestionScaffold(BuildContext context, Lesson lesson) {
     final index = _session.questionIndex;
+    final questionLocked =
+        _timeExpired || _awaitingQuestionFeedback || _adBusy;
     final q = lesson.quizQuestions[index];
     final total = lesson.quizQuestions.length;
     final isLast = index == total - 1;
@@ -560,6 +715,12 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                         ),
                       ),
                     ),
+                    QuizQuestionTimerDisplay(
+                      remaining: _timerRemaining,
+                      expired: _timeExpired,
+                      paused: _timerPausedForLifecycle,
+                      adBusy: _adBusy,
+                    ),
                   ],
                 ),
               ),
@@ -598,7 +759,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                           child: _OptionTile(
                             text: q.options[i],
                             selected: isSelected,
-                            onTap: _awaitingQuestionFeedback || _adBusy
+                            onTap: questionLocked
                                 ? null
                                 : () => setState(
                                       () => _session.answers[index] = i,
@@ -627,6 +788,14 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                   ),
                 ),
               ),
+              if (_timeExpired)
+                QuizTimeExpiredPanel(
+                  adBusy: _adBusy,
+                  adStatusMessage: _timerAdMessage,
+                  onWatchAdRetry: _rewardedTimerRetrySameQuestion,
+                  onFreeRestart: _freeRestartAttempt,
+                  onExitQuiz: _closeQuiz,
+                ),
               if (_awaitingQuestionFeedback && !revealed)
                 QuizAnswerFeedback(
                   question: q,
@@ -650,6 +819,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                     children: [
                       if (!revealed &&
                           !_awaitingQuestionFeedback &&
+                          !_timeExpired &&
                           !_adBusy)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
@@ -664,23 +834,35 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                         ),
                       Row(
                         children: [
-                          if (index > 0 && !_awaitingQuestionFeedback)
+                          if (index > 0 &&
+                              !_awaitingQuestionFeedback &&
+                              !_timeExpired)
                             OutlinedButton(
                               onPressed: _adBusy
                                   ? null
-                                  : () => setState(() {
+                                  : () {
+                                      _stopQuestionTimer();
+                                      setState(() {
                                         _session.questionIndex--;
                                         _awaitingQuestionFeedback = false;
-                                      }),
+                                        _submitLocked = false;
+                                        _timerArmedForIndex = null;
+                                      });
+                                      _scheduleTimerForActiveQuestion();
+                                    },
                               child: const Text('Back'),
                             ),
-                          if (index > 0 && !_awaitingQuestionFeedback)
+                          if (index > 0 &&
+                              !_awaitingQuestionFeedback &&
+                              !_timeExpired)
                             const SizedBox(width: 8),
                           Expanded(
                             child: FilledButton.icon(
                               onPressed: _session.answers.containsKey(index) &&
                                       !_awaitingQuestionFeedback &&
-                                      !_adBusy
+                                      !_timeExpired &&
+                                      !_adBusy &&
+                                      !_submitLocked
                                   ? () => _submitCurrentAnswer(lesson)
                                   : null,
                               icon: Icon(
