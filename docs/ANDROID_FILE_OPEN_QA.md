@@ -2,6 +2,7 @@
 
 **PR:** https://github.com/devshujon/devpath/pull/9  
 **Feature commit:** `9045cfe175b9021cb5f3cd4e8089bbb0f1ca8c7a`  
+**QA doc / handoff commit:** `7ef7cad` (includes expanded checklist; rebuild debug APK at this commit)  
 **Base commit:** `5204fcc045d0ddffbb789eedb4c99caeee21854`
 
 ## Build artifact (debug — for Honor manual QA)
