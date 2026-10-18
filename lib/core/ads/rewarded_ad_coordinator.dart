@@ -132,12 +132,16 @@ class RewardedAdCoordinator implements RewardedAdGateway {
   }
 
   Future<RewardedAd?> _loadRewardedAd() async {
-    _loadedAd?.dispose();
+    final previous = _loadedAd;
     _loadedAd = null;
+    if (previous != null) {
+      await previous.dispose();
+    }
 
     final completer = Completer<RewardedAd?>();
 
-    RewardedAd.load(
+    // Load is callback-driven; completion is awaited via [completer].
+    unawaited(RewardedAd.load(
       adUnitId: AdMobConfig.rewardedAdUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
@@ -150,7 +154,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
           if (!completer.isCompleted) completer.complete(null);
         },
       ),
-    );
+    ));
 
     return completer.future.timeout(
       const Duration(seconds: 12),

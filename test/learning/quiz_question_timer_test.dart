@@ -52,4 +52,33 @@ void main() {
       const Duration(seconds: 30),
     );
   });
+
+  test('expiry callback runs at most once', () async {
+    var count = 0;
+    final timer = QuizQuestionTimer(
+      duration: const Duration(milliseconds: 300),
+      tickInterval: const Duration(milliseconds: 100),
+      onExpired: () => count++,
+    );
+    timer.start();
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    timer.debugFireExpiryForTests();
+    expect(count, 1);
+    timer.dispose();
+  });
+
+  test('dispose prevents further ticks', () async {
+    var ticks = 0;
+    final timer = QuizQuestionTimer(
+      duration: const Duration(seconds: 5),
+      tickInterval: const Duration(milliseconds: 100),
+      onTick: (_) => ticks++,
+    );
+    timer.start();
+    await Future<void>.delayed(const Duration(milliseconds: 150));
+    final ticksBefore = ticks;
+    timer.dispose();
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    expect(ticks, ticksBefore);
+  });
 }

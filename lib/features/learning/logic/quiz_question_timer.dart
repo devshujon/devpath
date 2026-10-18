@@ -83,21 +83,23 @@ class QuizQuestionTimer {
     final left = remaining();
     onTick?.call(left);
     if (_remainingMs <= 0) {
-      _expired = true;
-      _stopped = true;
-      _tickTimer?.cancel();
-      _tickTimer = null;
-      onExpired?.call();
+      _fireExpiredOnce();
     }
   }
 
-  @visibleForTesting
-  void debugFireExpiryForTests() {
-    _remainingMs = 0;
+  void _fireExpiredOnce() {
+    if (_expired) return;
     _expired = true;
     _stopped = true;
     _tickTimer?.cancel();
     _tickTimer = null;
     onExpired?.call();
+  }
+
+  @visibleForTesting
+  void debugFireExpiryForTests() {
+    if (_expired) return;
+    _remainingMs = 0;
+    _fireExpiredOnce();
   }
 }

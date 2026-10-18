@@ -9,17 +9,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-class _TimerMockGateway implements RewardedAdGateway {
-  _TimerMockGateway(this.outcome);
-
-  final RewardedAdFlowResult outcome;
-  RewardedAdPurpose? lastPurpose;
+class _SlowTimerMockGateway implements RewardedAdGateway {
+  var callCount = 0;
 
   @override
   Future<RewardedAdFlowResult> showRewardedAd({
     required RewardedAdPurpose purpose,
     VoidCallback? onAdShowing,
   }) async {
+    callCount++;
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    return RewardedAdFlowResult.rewardGranted;
+  }
+}
+
+class _TimerMockGateway implements RewardedAdGateway {
+  _TimerMockGateway(this.outcome);
+
+  final RewardedAdFlowResult outcome;
+  RewardedAdPurpose? lastPurpose;
+  var callCount = 0;
+
+  @override
+  Future<RewardedAdFlowResult> showRewardedAd({
+    required RewardedAdPurpose purpose,
+    VoidCallback? onAdShowing,
+  }) async {
+    callCount++;
     lastPurpose = purpose;
     return outcome;
   }
@@ -119,5 +135,70 @@ void main() {
     await tester.tap(find.text('<h1>'));
     await tester.pump();
     expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
+  });
+
+  testWidgets('free restart after timeout clears expired state', (tester) async {
+    QuizQuestionTimerConfig.perQuestionDuration =
+        const Duration(milliseconds: 300);
+    await pumpQuiz(tester);
+    await tester.pump(const Duration(milliseconds: 900));
+    expect(find.text("Time's Up!"), findsOneWidget);
+    await tester.tap(find.text('Restart quiz — free'));
+    await tester.pump();
+    expect(find.text("Time's Up!"), findsNothing);
+    expect(find.textContaining('Question 1 of'), findsOneWidget);
+    expect(find.textContaining('s left'), findsOneWidget);
+  });
+
+  testWidgets('ad unavailable shows recoverable message', (tester) async {
+    QuizQuestionTimerConfig.perQuestionDuration =
+        const Duration(milliseconds: 300);
+    RewardedAdCoordinator.debugGatewayOverride =
+        _TimerMockGateway(RewardedAdFlowResult.unavailable);
+    await pumpQuiz(tester);
+    await tester.pump(const Duration(milliseconds: 900));
+    await tester.tap(find.text('Watch ad to retry'));
+    await tester.pump();
+    expect(find.textContaining('Ad unavailable'), findsOneWidget);
+    expect(find.text('Restart quiz — free'), findsOneWidget);
+  });
+
+  testWidgets('double tap watch ad issues one ad request', (tester) async {
+    QuizQuestionTimerConfig.perQuestionDuration =
+        const Duration(milliseconds: 300);
+    final mock = _SlowTimerMockGateway();
+    RewardedAdCoordinator.debugGatewayOverride = mock;
+    await pumpQuiz(tester);
+    await tester.pump(const Duration(milliseconds: 900));
+    await tester.tap(find.text('Watch ad to retry'));
+    await tester.pump();
+    await tester.tap(find.text('Watch ad to retry'));
+    await tester.pump();
+    await tester.tap(find.text('Watch ad to retry'));
+    await tester.pump();
+    expect(mock.callCount, 1);
+    await tester.pump(const Duration(milliseconds: 250));
+  });
+
+  testWidgets('timeout does not grant XP or completion', (tester) async {
+    QuizQuestionTimerConfig.perQuestionDuration =
+        const Duration(milliseconds: 300);
+    final learning = LearningProgressProvider.test(LearningProgressData.empty);
+    await tester.pumpWidget(
+      ChangeNotifierProvider<LearningProgressProvider>.value(
+        value: learning,
+        child: const MaterialApp(
+          home: SizedBox.expand(
+            child: LessonQuizScreen(
+              initialArgs: LessonDetailArguments(lessonId: 'h1_heading'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 900));
+    expect(learning.completedLessons, isEmpty);
+    expect(learning.currentXP, 0);
   });
 }

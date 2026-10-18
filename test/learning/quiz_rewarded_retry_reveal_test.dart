@@ -11,11 +11,11 @@ import 'package:provider/provider.dart';
 class _PurposeMockGateway implements RewardedAdGateway {
   _PurposeMockGateway({
     this.retryOutcome = RewardedAdFlowResult.rewardGranted,
-    this.revealOutcome = RewardedAdFlowResult.rewardGranted,
-  });
+    RewardedAdFlowResult? revealOutcome,
+  }) : revealOutcome = revealOutcome ?? RewardedAdFlowResult.rewardGranted;
 
   RewardedAdFlowResult retryOutcome;
-  RewardedAdFlowResult revealOutcome;
+  final RewardedAdFlowResult revealOutcome;
   final List<RewardedAdPurpose> calls = [];
 
   @override

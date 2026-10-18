@@ -79,6 +79,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen>
   }
 
   void _closeQuiz() {
+    _disposeQuestionTimer();
     if (widget.onRequestClose != null) {
       widget.onRequestClose!();
       return;
@@ -174,6 +175,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen>
     if (!mounted || _submitLocked || _timeExpired) return;
     if (_awaitingQuestionFeedback || _showResult) return;
     _stopQuestionTimer();
+    _timerArmedForIndex = null;
     setState(() => _timeExpired = true);
   }
 
@@ -493,11 +495,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen>
   }
 
   Future<void> _rewardedTimerRetrySameQuestion() async {
-    if (_adBusy) return;
-    setState(() {
-      _adBusy = true;
-      _timerAdMessage = null;
-    });
+    if (_adBusy || !_timeExpired) return;
+    _adBusy = true;
+    setState(() => _timerAdMessage = null);
     final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
       purpose: RewardedAdPurpose.questionTimerRetry,
     );
@@ -521,10 +521,8 @@ class _LessonQuizScreenState extends State<LessonQuizScreen>
 
   Future<void> _rewardedRetryAttempt() async {
     if (_adBusy) return;
-    setState(() {
-      _adBusy = true;
-      _questionAdMessage = null;
-    });
+    _adBusy = true;
+    setState(() => _questionAdMessage = null);
     final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
       purpose: RewardedAdPurpose.quizExtraAttempt,
     );
@@ -553,10 +551,8 @@ class _LessonQuizScreenState extends State<LessonQuizScreen>
     if (_adBusy) return;
     final index = _session.questionIndex;
     if (_session.isRevealed(index)) return;
-    setState(() {
-      _adBusy = true;
-      _questionAdMessage = null;
-    });
+    _adBusy = true;
+    setState(() => _questionAdMessage = null);
     final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
       purpose: RewardedAdPurpose.answerReveal,
     );
