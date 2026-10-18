@@ -1,4 +1,5 @@
 import 'package:devpath/core/ads/rewarded_ad_coordinator.dart';
+import 'package:devpath/core/ads/rewarded_ad_purpose.dart';
 import 'package:devpath/core/routing/app_routes.dart';
 import 'package:devpath/features/learning/providers/learning_progress_provider.dart';
 import 'package:devpath/features/learning/screens/lesson_detail_screen.dart';
@@ -15,7 +16,8 @@ class _MockRewardedGateway implements RewardedAdGateway {
   var showCount = 0;
 
   @override
-  Future<RewardedAdFlowResult> showPostQuizRewardedAd({
+  Future<RewardedAdFlowResult> showRewardedAd({
+    required RewardedAdPurpose purpose,
     VoidCallback? onAdShowing,
   }) async {
     showCount++;
@@ -86,6 +88,13 @@ void main() {
     }
   }
 
+  Future<void> continueIfIncorrect(WidgetTester tester) async {
+    if (find.text('Continue quiz').evaluate().isNotEmpty) {
+      await tester.tap(find.text('Continue quiz'));
+      await tester.pump();
+    }
+  }
+
   Future<void> passH1Quiz(WidgetTester tester) async {
     const answers = [
       '<h1>',
@@ -97,8 +106,9 @@ void main() {
     for (var q = 0; q < 5; q++) {
       await tester.tap(find.text(answers[q]));
       await tester.pump();
-      await tester.tap(find.text(q == 4 ? 'Finish' : 'Next'));
+      await tester.tap(find.text(q == 4 ? 'Finish' : 'Check answer'));
       await tester.pump();
+      await continueIfIncorrect(tester);
     }
     await pumpUntilFound(
       tester,
@@ -200,9 +210,10 @@ void main() {
     ];
     for (var q = 0; q < 5; q++) {
       await tester.tap(find.text(wrongAnswers[q]));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(q == 4 ? 'Finish' : 'Next'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.tap(find.text(q == 4 ? 'Finish' : 'Check answer'));
+      await tester.pump();
+      await continueIfIncorrect(tester);
     }
 
     expect(find.text('Keep Practicing!'), findsOneWidget);
@@ -226,9 +237,10 @@ void main() {
     ];
     for (var q = 0; q < 5; q++) {
       await tester.tap(find.text(answers[q]));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(q == 4 ? 'Finish' : 'Next'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.tap(find.text(q == 4 ? 'Finish' : 'Check answer'));
+      await tester.pump();
+      await continueIfIncorrect(tester);
     }
 
     expect(find.text('Quiz Completed!'), findsOneWidget);

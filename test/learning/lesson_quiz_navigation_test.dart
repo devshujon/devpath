@@ -60,7 +60,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('<h1>'), findsOneWidget);
-    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Check answer'), findsOneWidget);
   });
 
   testWidgets('Take Quiz opens lesson quiz for b01_html when unlocked', (tester) async {

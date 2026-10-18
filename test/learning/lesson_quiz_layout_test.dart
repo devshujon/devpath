@@ -40,6 +40,6 @@ void main() {
     await tester.pump();
     expect(tester.takeException(), isNull);
     expect(find.textContaining('Question 1'), findsOneWidget);
-    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Check answer'), findsOneWidget);
   });
 }

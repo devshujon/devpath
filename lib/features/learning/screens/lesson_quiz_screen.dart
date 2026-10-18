@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/ads/rewarded_ad_coordinator.dart';
+import '../../../core/ads/rewarded_ad_purpose.dart';
 import '../../../core/app_version.dart';
 import '../../../core/debug/quiz_diagnostics.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../logic/quiz_attempt_session.dart';
 import '../logic/quiz_post_result_flow.dart';
+import '../widgets/quiz_answer_feedback.dart';
 import '../widgets/quiz_body_shell.dart';
 import '../widgets/quiz_post_result_continue.dart';
 import '../widgets/quiz_result_panel.dart';
@@ -39,9 +42,12 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
   String? _argsLessonId;
   String? _initError;
   bool _initializing = true;
-  int _index = 0;
-  final Map<int, int> _answers = {};
+  QuizAttemptSession _session = QuizAttemptSession();
   bool _showResult = false;
+  bool _awaitingQuestionFeedback = false;
+  bool? _lastSubmitCorrect;
+  bool _adBusy = false;
+  String? _questionAdMessage;
   bool _finishing = false;
   bool _showPostContinue = false;
   bool _xpClaimedThisSession = false;
@@ -105,9 +111,11 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     _lesson = loaded;
     _initError = null;
     _initializing = false;
-    _index = 0;
-    _answers.clear();
+    _session = QuizAttemptSession();
     _showResult = false;
+    _awaitingQuestionFeedback = false;
+    _lastSubmitCorrect = null;
+    _questionAdMessage = null;
   }
 
   @override
@@ -149,7 +157,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     if (lesson == null) return 0;
     var c = 0;
     for (var i = 0; i < lesson.quizQuestions.length; i++) {
-      if (_answers[i] == lesson.quizQuestions[i].correctIndex) c++;
+      if (_session.answers[i] == lesson.quizQuestions[i].correctIndex) c++;
     }
     return c;
   }
@@ -353,9 +361,9 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
           claimInProgress: _finishing,
           onRetry: () {
             setState(() {
-              _answers.clear();
-              _index = 0;
+              _session = _session.restartFromBeginning(countRewardedRetry: false);
               _showResult = false;
+              _awaitingQuestionFeedback = false;
               _postResultPhase = QuizPostResultPhase.resultVisible;
             });
           },
@@ -367,12 +375,127 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     return _fullScreen(_buildQuestionScaffold(context, lesson));
   }
 
+  void _freeRestartAttempt() {
+    setState(() {
+      _session = _session.restartFromBeginning(countRewardedRetry: false);
+      _awaitingQuestionFeedback = false;
+      _lastSubmitCorrect = null;
+      _questionAdMessage = null;
+    });
+  }
+
+  Future<void> _rewardedRetryAttempt() async {
+    if (_adBusy) return;
+    setState(() {
+      _adBusy = true;
+      _questionAdMessage = null;
+    });
+    final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
+      purpose: RewardedAdPurpose.quizExtraAttempt,
+    );
+    if (!mounted) return;
+    if (outcome == RewardedAdFlowResult.rewardGranted) {
+      setState(() {
+        _session = _session.restartFromBeginning(countRewardedRetry: true);
+        _awaitingQuestionFeedback = false;
+        _lastSubmitCorrect = null;
+        _adBusy = false;
+        _questionAdMessage = null;
+      });
+      return;
+    }
+    setState(() {
+      _adBusy = false;
+      _questionAdMessage = _adOutcomeMessage(outcome);
+    });
+  }
+
+  Future<void> _rewardedRevealCurrentQuestion(Lesson lesson) async {
+    if (_adBusy) return;
+    final index = _session.questionIndex;
+    if (_session.isRevealed(index)) return;
+    setState(() {
+      _adBusy = true;
+      _questionAdMessage = null;
+    });
+    final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
+      purpose: RewardedAdPurpose.answerReveal,
+    );
+    if (!mounted) return;
+    if (outcome == RewardedAdFlowResult.rewardGranted) {
+      setState(() {
+        _session.markRevealed(index);
+        _session.rewardedRevealsUsed++;
+        _adBusy = false;
+        _questionAdMessage = null;
+      });
+      return;
+    }
+    setState(() {
+      _adBusy = false;
+      _questionAdMessage = _adOutcomeMessage(outcome);
+    });
+  }
+
+  String _adOutcomeMessage(RewardedAdFlowResult outcome) {
+    return switch (outcome) {
+      RewardedAdFlowResult.unavailable =>
+        'Ad unavailable (offline or no fill). Use Try Again — free.',
+      RewardedAdFlowResult.failed => 'Ad could not play. Try again later.',
+      RewardedAdFlowResult.dismissedWithoutReward =>
+        'Watch the full video to unlock this reward.',
+      RewardedAdFlowResult.rewardGranted => '',
+    };
+  }
+
+  void _submitCurrentAnswer(Lesson lesson) {
+    final index = _session.questionIndex;
+    final selected = _session.answers[index];
+    if (selected == null) return;
+    final q = lesson.quizQuestions[index];
+    final correct = selected == q.correctIndex;
+    if (correct) {
+      final isLast = index >= lesson.quizQuestions.length - 1;
+      setState(() {
+        _awaitingQuestionFeedback = false;
+        _lastSubmitCorrect = true;
+        if (isLast) {
+          _showResult = true;
+        } else {
+          _session.questionIndex++;
+          _lastSubmitCorrect = null;
+        }
+      });
+      return;
+    }
+    setState(() {
+      _lastSubmitCorrect = false;
+      _awaitingQuestionFeedback = true;
+    });
+  }
+
+  void _continueAfterIncorrect(Lesson lesson) {
+    final index = _session.questionIndex;
+    final isLast = index >= lesson.quizQuestions.length - 1;
+    setState(() {
+      _awaitingQuestionFeedback = false;
+      _lastSubmitCorrect = null;
+      _questionAdMessage = null;
+      if (isLast) {
+        _showResult = true;
+      } else {
+        _session.questionIndex++;
+      }
+    });
+  }
+
   Widget _buildQuestionScaffold(BuildContext context, Lesson lesson) {
-    final index = _index;
+    final index = _session.questionIndex;
     final q = lesson.quizQuestions[index];
     final total = lesson.quizQuestions.length;
     final isLast = index == total - 1;
-    final selected = _answers[index];
+    final selected = _session.answers[index];
+    final revealed = _session.isRevealed(index);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final fg = isDark ? AppColors.darkText : AppColors.lightText;
     final subtle = isDark ? AppColors.darkSubtle : AppColors.lightSubtle;
@@ -475,43 +598,99 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
                           child: _OptionTile(
                             text: q.options[i],
                             selected: isSelected,
-                            onTap: () => setState(() => _answers[index] = i),
+                            onTap: _awaitingQuestionFeedback || _adBusy
+                                ? null
+                                : () => setState(
+                                      () => _session.answers[index] = i,
+                                    ),
                             forceLightChrome: useLightQuizPanel,
                           ),
                         );
                       }),
+                      if (revealed) ...[
+                        const SizedBox(height: 16),
+                        QuizAnswerFeedback(
+                          question: q,
+                          wasIncorrect: _lastSubmitCorrect == false,
+                          revealed: true,
+                          adBusy: _adBusy,
+                          adStatusMessage: null,
+                          onFreeRestart: _freeRestartAttempt,
+                          onRewardedRetry: _rewardedRetryAttempt,
+                          onRewardedReveal: () =>
+                              _rewardedRevealCurrentQuestion(lesson),
+                          onContinue: () => _continueAfterIncorrect(lesson),
+                          showContinue: _awaitingQuestionFeedback,
+                        ),
+                      ],
                     ],
                   ),
                 ),
               ),
+              if (_awaitingQuestionFeedback && !revealed)
+                QuizAnswerFeedback(
+                  question: q,
+                  wasIncorrect: true,
+                  revealed: false,
+                  adBusy: _adBusy,
+                  adStatusMessage: _questionAdMessage,
+                  onFreeRestart: _freeRestartAttempt,
+                  onRewardedRetry: _rewardedRetryAttempt,
+                  onRewardedReveal: () =>
+                      _rewardedRevealCurrentQuestion(lesson),
+                  onContinue: () => _continueAfterIncorrect(lesson),
+                ),
               ColoredBox(
                 color: panelBg,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (index > 0)
-                        OutlinedButton.icon(
-                          onPressed: () => setState(() => _index--),
-                          icon: const Icon(Icons.arrow_back, size: 16),
-                          label: const Text('Back'),
+                      if (!revealed &&
+                          !_awaitingQuestionFeedback &&
+                          !_adBusy)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: OutlinedButton.icon(
+                            onPressed: () =>
+                                _rewardedRevealCurrentQuestion(lesson),
+                            icon: const Icon(Icons.lightbulb_outline, size: 18),
+                            label: const Text(
+                              'Reveal answer — watch ad',
+                            ),
+                          ),
                         ),
-                      const Spacer(),
-                      FilledButton.icon(
-                        onPressed: _answers.containsKey(index)
-                            ? () {
-                                if (index < total - 1) {
-                                  setState(() => _index++);
-                                } else {
-                                  setState(() => _showResult = true);
-                                }
-                              }
-                            : null,
-                        icon: Icon(
-                          isLast ? Icons.check : Icons.arrow_forward,
-                          size: 16,
-                        ),
-                        label: Text(isLast ? 'Finish' : 'Next'),
+                      Row(
+                        children: [
+                          if (index > 0 && !_awaitingQuestionFeedback)
+                            OutlinedButton(
+                              onPressed: _adBusy
+                                  ? null
+                                  : () => setState(() {
+                                        _session.questionIndex--;
+                                        _awaitingQuestionFeedback = false;
+                                      }),
+                              child: const Text('Back'),
+                            ),
+                          if (index > 0 && !_awaitingQuestionFeedback)
+                            const SizedBox(width: 8),
+                          Expanded(
+                            child: FilledButton.icon(
+                              onPressed: _session.answers.containsKey(index) &&
+                                      !_awaitingQuestionFeedback &&
+                                      !_adBusy
+                                  ? () => _submitCurrentAnswer(lesson)
+                                  : null,
+                              icon: Icon(
+                                isLast ? Icons.check : Icons.arrow_forward,
+                                size: 16,
+                              ),
+                              label: Text(isLast ? 'Finish' : 'Check answer'),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -596,7 +775,8 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
     if (!mounted) return;
     setState(() => _postResultPhase = QuizPostResultPhase.loadingRewardedAd);
 
-    final outcome = await RewardedAdCoordinator.gateway.showPostQuizRewardedAd(
+    final outcome = await RewardedAdCoordinator.gateway.showRewardedAd(
+      purpose: RewardedAdPurpose.postQuizContinue,
       onAdShowing: () {
         if (!mounted) return;
         setState(
@@ -661,7 +841,7 @@ class _LessonQuizScreenState extends State<LessonQuizScreen> {
 class _OptionTile extends StatelessWidget {
   final String text;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool forceLightChrome;
 
   const _OptionTile({
@@ -688,6 +868,7 @@ class _OptionTile extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
+        // Disabled when onTap is null (feedback / ad in progress).
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(

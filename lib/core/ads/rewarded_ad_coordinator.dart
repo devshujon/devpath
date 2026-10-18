@@ -4,25 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'admob_config.dart';
+import 'rewarded_ad_purpose.dart';
 
-/// Outcome of attempting to show a post-quiz rewarded ad (monetization only).
+/// Outcome of attempting to show a rewarded ad.
 enum RewardedAdFlowResult {
-  /// User earned the ad reward (watch completed).
   rewardGranted,
-
-  /// Ad closed without earning reward.
   dismissedWithoutReward,
-
-  /// No fill / offline / not supported.
   unavailable,
-
-  /// Load or show failed.
   failed,
 }
 
 /// Abstraction for tests and alternate platforms.
 abstract class RewardedAdGateway {
-  Future<RewardedAdFlowResult> showPostQuizRewardedAd({
+  Future<RewardedAdFlowResult> showRewardedAd({
+    required RewardedAdPurpose purpose,
     VoidCallback? onAdShowing,
   });
 }
@@ -62,7 +57,8 @@ class RewardedAdCoordinator implements RewardedAdGateway {
   }
 
   @override
-  Future<RewardedAdFlowResult> showPostQuizRewardedAd({
+  Future<RewardedAdFlowResult> showRewardedAd({
+    required RewardedAdPurpose purpose,
     VoidCallback? onAdShowing,
   }) async {
     if (_sessionInFlight) {
@@ -98,7 +94,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
 
       ad.fullScreenContentCallback = FullScreenContentCallback(
         onAdFailedToShowFullScreenContent: (ad, error) {
-          debugPrint('Rewarded show failed: $error');
+          debugPrint('Rewarded show failed ($purpose): $error');
           ad.dispose();
           _loadedAd = null;
           finish(RewardedAdFlowResult.failed);
@@ -119,7 +115,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
         onUserEarnedReward: (ad, reward) {
           if (rewardReported) return;
           rewardReported = true;
-          // Monetization only — no duplicate quiz XP or lesson completion.
+          // Purpose-specific grants happen in UI layer after result check.
         },
       );
 
@@ -128,7 +124,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
         onTimeout: () => RewardedAdFlowResult.failed,
       );
     } catch (e, st) {
-      debugPrint('Rewarded ad flow error: $e\n$st');
+      debugPrint('Rewarded ad flow error ($purpose): $e\n$st');
       return RewardedAdFlowResult.failed;
     } finally {
       _sessionInFlight = false;

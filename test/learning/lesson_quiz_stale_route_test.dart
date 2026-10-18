@@ -68,7 +68,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('<h1>'), findsOneWidget);
-    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Check answer'), findsOneWidget);
     expect(find.text('Code Editor route'), findsNothing);
 
     await tester.tap(find.byIcon(Icons.arrow_back));
@@ -123,7 +123,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('<h1>'), findsOneWidget);
-    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Check answer'), findsOneWidget);
   });
 
   testWidgets('reopening H1 quiz twice still shows options', (tester) async {

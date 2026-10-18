@@ -63,9 +63,9 @@ void main() {
     for (var q = 0; q < 5; q++) {
       expect(find.textContaining('Question ${q + 1}'), findsOneWidget);
       await tester.tap(find.text(answers[q]));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(q == 4 ? 'Finish' : 'Next'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.tap(find.text(q == 4 ? 'Finish' : 'Check answer'));
+      await tester.pump();
     }
 
     expect(find.text('Excellent Work!'), findsOneWidget);
@@ -85,7 +85,7 @@ void main() {
         find.text('Which tag marks the most important heading on a page?'),
         findsOneWidget,
       );
-      expect(find.text('Next'), findsOneWidget);
+      expect(find.text('Check answer'), findsOneWidget);
     });
   }
 }
