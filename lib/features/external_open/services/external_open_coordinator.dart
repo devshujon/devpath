@@ -64,6 +64,9 @@ class ExternalOpenCoordinator extends ChangeNotifier {
     ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  @visibleForTesting
+  String messageForReadError(String code) => _messageForReadError(code);
+
   String _messageForReadError(String code) => switch (code) {
         'permission_denied' => 'Permission to read this file was denied or expired.',
         'not_found' => 'The file is missing or unavailable.',
