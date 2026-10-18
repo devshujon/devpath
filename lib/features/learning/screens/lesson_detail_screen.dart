@@ -246,6 +246,9 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
   }
 
   Map<String, String> _slotFor(String lang, String code) {
+    if (lang == 'python') {
+      return {'python': code, 'html': '', 'css': '', 'js': ''};
+    }
     final slot = (lang == 'css' || lang == 'js') ? lang : 'html';
     return {'html': '', 'css': '', 'js': '', slot: code};
   }

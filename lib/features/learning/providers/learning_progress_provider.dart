@@ -134,12 +134,27 @@ class LearningProgressProvider extends ChangeNotifier {
     return computeLessonLocked(
       lessonId: lesson.id,
       difficulty: lesson.difficulty,
-      sameDifficultyIds:
-          LessonsCatalog.byDifficulty(lesson.difficulty).map((l) => l.id).toList(),
+      sameDifficultyIds: _sequentialUnlockIds(lesson),
       completedIds: completedLessons,
       beginnerProgress: _difficultyProgress(Difficulty.beginner),
       intermediateProgress: _difficultyProgress(Difficulty.intermediate),
     );
+  }
+
+  /// Web lessons keep catalog-wide beginner interleaving; Python unlocks
+  /// sequentially within the Python track only.
+  List<String> _sequentialUnlockIds(Lesson lesson) {
+    final sameDiff = LessonsCatalog.byDifficulty(lesson.difficulty);
+    if (lesson.track == LessonTrack.python) {
+      return sameDiff
+          .where((l) => l.track == LessonTrack.python)
+          .map((l) => l.id)
+          .toList();
+    }
+    return sameDiff
+        .where((l) => l.track != LessonTrack.python)
+        .map((l) => l.id)
+        .toList();
   }
 
   double _difficultyProgress(Difficulty d) {

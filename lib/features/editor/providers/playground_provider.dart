@@ -6,6 +6,7 @@ import '../models/user_project.dart';
 import '../services/autosave_service.dart';
 import '../services/lesson_templates.dart';
 import '../services/project_storage.dart';
+import '../utils/python_readonly_preview.dart';
 
 enum PlaygroundTab { html, css, js }
 
@@ -212,9 +213,17 @@ button{
     Map<String, String> starter, {
     String? lessonId,
   }) {
-    _htmlDraft = starter['html'] ?? defaultHtml;
-    _cssDraft = starter['css'] ?? '';
-    _jsDraft = starter['js'] ?? '';
+    final python = starter['python'];
+    if (python != null && python.trim().isNotEmpty) {
+      // ignore: depend_on_referenced_packages
+      _htmlDraft = pythonReadonlyPreviewHtml(python);
+      _cssDraft = '';
+      _jsDraft = '';
+    } else {
+      _htmlDraft = starter['html'] ?? defaultHtml;
+      _cssDraft = starter['css'] ?? '';
+      _jsDraft = starter['js'] ?? '';
+    }
     _htmlCommitted = _htmlDraft;
     _cssCommitted = _cssDraft;
     _jsCommitted = _jsDraft;

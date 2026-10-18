@@ -1,4 +1,5 @@
 import '../models/lesson.dart';
+import 'python_lessons.dart';
 
 /// All lessons available in the app. Sequential within difficulty;
 /// difficulty gating enforced by the provider.
@@ -58,6 +59,9 @@ class LessonsCatalog {
 
     // ───────── Capstone — counts toward Graduate cert only ─────────
     _a04MiniProjects,
+
+    // ───────── Python beginner track (sequential unlock within track) ──
+    ...pythonLessons,
   ];
 
   static Lesson? byId(String id) {

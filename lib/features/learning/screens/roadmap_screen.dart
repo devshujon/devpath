@@ -125,6 +125,13 @@ class _TrackFilterRow extends StatelessWidget {
             selected: selected == LessonTrack.js,
             onTap: () => onChanged(LessonTrack.js),
           ),
+          const SizedBox(width: 8),
+          _Chip(
+            label: 'Python',
+            color: LessonTrack.python.color,
+            selected: selected == LessonTrack.python,
+            onTap: () => onChanged(LessonTrack.python),
+          ),
         ],
       ),
     );

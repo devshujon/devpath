@@ -57,13 +57,14 @@ extension DifficultyMeta on Difficulty {
 /// [capstone] is a synthesis track for lessons that mix all three
 /// languages — it doesn't grant any track-specific certificate but
 /// counts toward the Graduate certificate.
-enum LessonTrack { html, css, js, capstone }
+enum LessonTrack { html, css, js, python, capstone }
 
 extension LessonTrackMeta on LessonTrack {
   String get label => switch (this) {
         LessonTrack.html => 'HTML',
         LessonTrack.css => 'CSS',
         LessonTrack.js => 'JavaScript',
+        LessonTrack.python => 'Python',
         LessonTrack.capstone => 'Capstone',
       };
 
@@ -71,6 +72,7 @@ extension LessonTrackMeta on LessonTrack {
         LessonTrack.html => 'html',
         LessonTrack.css => 'css',
         LessonTrack.js => 'js',
+        LessonTrack.python => 'python',
         LessonTrack.capstone => 'capstone',
       };
 
@@ -78,6 +80,7 @@ extension LessonTrackMeta on LessonTrack {
         LessonTrack.html => const Color(0xFFE17055),
         LessonTrack.css => const Color(0xFF0984E3),
         LessonTrack.js => const Color(0xFFFFB020),
+        LessonTrack.python => const Color(0xFF3776AB),
         LessonTrack.capstone => const Color(0xFF6C5CE7),
       };
 }

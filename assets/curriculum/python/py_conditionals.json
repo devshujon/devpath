@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_conditionals",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Conditional Statements",
+  "summary": "Branch with if, elif, and else.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Branch with if, elif, and else.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Branch with if, elif, and else. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "score = 85\nif score >= 90:\n    print('A')\nelif score >= 80:\n    print('B')\nelse:\n    print('C')",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

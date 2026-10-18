@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_strings_numbers",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Strings and Numbers",
+  "summary": "Work with text and numeric types.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Work with text and numeric types.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Work with text and numeric types. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "price = 9.99\nlabel = f'Price: ${price}'\nprint(label.upper())",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

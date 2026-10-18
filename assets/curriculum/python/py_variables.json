@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_variables",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Variables and Data Types",
+  "summary": "Store values in named variables.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Store values in named variables.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Store values in named variables. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "name = 'Ada'\nage = 28\nis_ready = True\nprint(name, age)",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_dicts_sets",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Dictionaries and Sets",
+  "summary": "Key-value maps and unique collections.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Key-value maps and unique collections.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Key-value maps and unique collections. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "user = {'name': 'Sam', 'xp': 50}\nprint(user['name'])\ntags = {'html', 'python'}",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

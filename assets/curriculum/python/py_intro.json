@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_intro",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Introduction to Python",
+  "summary": "What Python is and where it is used.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "What Python is and where it is used.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "What Python is and where it is used. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "print('Hello, Python!')",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_lists_tuples",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Lists and Tuples",
+  "summary": "Ordered collections in Python.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Ordered collections in Python.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Ordered collections in Python. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "nums = [1, 2, 3]\nnums.append(4)\npoint = (10, 20)\nprint(len(nums))",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

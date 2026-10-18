@@ -192,6 +192,7 @@ class _LessonPathNodeState extends State<LessonPathNode>
       LessonTrack.html => Icons.code,
       LessonTrack.css => Icons.palette_outlined,
       LessonTrack.js => Icons.bolt_outlined,
+      LessonTrack.python => Icons.terminal,
       LessonTrack.capstone => Icons.workspace_premium_outlined,
     };
   }
