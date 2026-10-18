@@ -1,4 +1,9 @@
 import '../models/lesson.dart';
+import 'php_lessons.dart' show phpLessons;
+import 'python_lessons.dart' show pythonLessons;
+import 'sql_lessons.dart' show sqlLessons;
+import 'typescript_lessons.dart' show typescriptLessons;
+import 'web_essentials_lessons.dart' show webEssentialsLessons;
 
 /// All lessons available in the app. Sequential within difficulty;
 /// difficulty gating enforced by the provider.
@@ -58,6 +63,13 @@ class LessonsCatalog {
 
     // ───────── Capstone — counts toward Graduate cert only ─────────
     _a04MiniProjects,
+
+    // ───────── Extended tracks (independent unlock per track) ────────
+    ...phpLessons,
+    ...sqlLessons,
+    ...typescriptLessons,
+    ...pythonLessons,
+    ...webEssentialsLessons,
   ];
 
   static Lesson? byId(String id) {

@@ -15,6 +15,13 @@ class ProjectsTrackCatalog {
     _dashboardUI,
     _weatherAppUI,
     _blogHomepage,
+    _contactForm,
+    _phpFormConcept,
+    _phpMysqlCrudConcept,
+    _restApiClient,
+    _databaseDesignExercise,
+    _typescriptValidator,
+    _fullStackCapstone,
   ];
 
   static TrackProject? byId(String id) {
@@ -546,4 +553,163 @@ const _blogHomepage = TrackProject(
   xpReward: 400,
   previewIcon: Icons.article_outlined,
   previewGradient: [Color(0xFFFFB020), Color(0xFFFF6B35)],
+);
+
+const _contactForm = TrackProject(
+  id: 'p10_contact_form',
+  title: 'Contact Form UI',
+  description:
+      'Accessible contact form layout (HTML/CSS/JS). Server processing is conceptual — study PHP lessons separately.',
+  difficulty: Difficulty.beginner,
+  requiredLessons: ['html_forms', 'b02_css'],
+  instructions: [
+    'Build name, email, and message fields with labels tied to inputs.',
+    'Add client-side required attributes for UX only.',
+    'Style focus states and error colors with CSS.',
+    'Document in comments where server-side validation must run.',
+  ],
+  starterHtml: '''<!DOCTYPE html>
+<html>
+<body>
+<form class="contact">
+  <label>Name <input name="name" required /></label>
+  <label>Email <input name="email" type="email" required /></label>
+  <label>Message <textarea name="message" required></textarea></label>
+  <button type="submit">Send</button>
+</form>
+</body>
+</html>''',
+  starterCss: '/* TODO: layout, focus rings */',
+  starterJs: '',
+  xpReward: 120,
+  previewIcon: Icons.mail_outline,
+  previewGradient: [Color(0xFF6C5CE7), Color(0xFFA29BFE)],
+);
+
+const _phpFormConcept = TrackProject(
+  id: 'p11_php_form_concept',
+  title: 'PHP Form Processing (Concept)',
+  description:
+      'Read and annotate PHP that sanitizes POST data. No PHP runtime in the app — study offline.',
+  difficulty: Difficulty.intermediate,
+  requiredLessons: ['php_11', 'php_12', 'php_13'],
+  instructions: [
+    'Review htmlspecialchars on output.',
+    'Identify where server validation belongs.',
+    'List three fields you would validate on the server.',
+  ],
+  starterHtml: '<!-- Open PHP track lessons for server-side examples -->',
+  starterCss: '',
+  starterJs: '',
+  xpReward: 150,
+  previewIcon: Icons.description_outlined,
+  previewGradient: [Color(0xFF777BB4), Color(0xFF4A4A8A)],
+);
+
+const _phpMysqlCrudConcept = TrackProject(
+  id: 'p12_php_mysql_crud',
+  title: 'PHP + MySQL CRUD (Concept)',
+  description:
+      'Map CREATE/READ/UPDATE/DELETE to prepared statements — design on paper, then quiz yourself.',
+  difficulty: Difficulty.intermediate,
+  requiredLessons: ['php_23', 'php_24', 'sql_10', 'sql_11'],
+  instructions: [
+    'Sketch tables and primary keys for a simple notes app.',
+    'Write pseudo-SQL for each CRUD operation using placeholders.',
+    'Note transaction boundaries for multi-step updates.',
+  ],
+  starterHtml: '',
+  starterCss: '',
+  starterJs: '',
+  xpReward: 200,
+  previewIcon: Icons.table_chart_outlined,
+  previewGradient: [Color(0xFF00758F), Color(0xFF00A3C4)],
+);
+
+const _restApiClient = TrackProject(
+  id: 'p13_rest_client',
+  title: 'REST API Client Demo',
+  description: 'Fetch JSON in JavaScript and render a list — uses playground fetch patterns from JS lessons.',
+  difficulty: Difficulty.intermediate,
+  requiredLessons: ['a02_apis', 'web_essentials_18'],
+  instructions: [
+    'fetch() a public JSON placeholder URL.',
+    'Handle non-OK status codes.',
+    'Render items in the DOM with textContent (not innerHTML with raw data).',
+  ],
+  starterHtml: '<ul id="list"></ul>',
+  starterCss: 'body { font-family: system-ui; padding: 16px; }',
+  starterJs: '''const list = document.getElementById('list');
+fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(posts => {
+    for (const p of posts) {
+      const li = document.createElement('li');
+      li.textContent = p.title;
+      list.appendChild(li);
+    }
+  })
+  .catch(err => { list.textContent = String(err); });''',
+  xpReward: 220,
+  previewIcon: Icons.cloud_download_outlined,
+  previewGradient: [Color(0xFF3178C6), Color(0xFF0984E3)],
+);
+
+const _databaseDesignExercise = TrackProject(
+  id: 'p14_db_design',
+  title: 'Database Design Exercise',
+  description: 'Normalize a messy spreadsheet into tables — SQL track practice (no live DB in app).',
+  difficulty: Difficulty.advanced,
+  requiredLessons: ['sql_21', 'sql_30', 'sql_39'],
+  instructions: [
+    'Identify entities and relationships.',
+    'Choose primary and foreign keys.',
+    'Write CREATE TABLE statements on paper or in notes.',
+  ],
+  starterHtml: '',
+  starterCss: '',
+  starterJs: '',
+  xpReward: 250,
+  previewIcon: Icons.account_tree_outlined,
+  previewGradient: [Color(0xFF00758F), Color(0xFF6C5CE7)],
+);
+
+const _typescriptValidator = TrackProject(
+  id: 'p15_ts_validator',
+  title: 'TypeScript Data Validator',
+  description:
+      'Study TypeScript narrowing patterns offline — compile on your computer; playground uses JS subset only.',
+  difficulty: Difficulty.advanced,
+  requiredLessons: ['typescript_09', 'typescript_15'],
+  instructions: [
+    'Define an interface for a form payload.',
+    'Write a type guard function.',
+    'List runtime checks that TypeScript cannot perform alone.',
+  ],
+  starterHtml: '',
+  starterCss: '',
+  starterJs: '',
+  xpReward: 280,
+  previewIcon: Icons.rule_folder_outlined,
+  previewGradient: [Color(0xFF3178C6), Color(0xFF6C5CE7)],
+);
+
+const _fullStackCapstone = TrackProject(
+  id: 'p16_full_stack',
+  title: 'Full-Stack Learning Capstone',
+  description:
+      'Plan a small product: static UI, PHP API sketch, SQL schema, deployment checklist from Web Essentials.',
+  difficulty: Difficulty.advanced,
+  requiredLessons: ['a04_mini_projects', 'web_essentials_44', 'web_essentials_45'],
+  instructions: [
+    'Draw architecture: browser, API, database.',
+    'List HTTPS, auth, and backup steps before go-live.',
+    'Complete at least one HTML/CSS project and one SQL lesson quiz.',
+  ],
+  starterHtml: '<!-- Use Editor + track lessons; no single starter -->',
+  starterCss: '',
+  starterJs: '',
+  xpReward: 400,
+  previewIcon: Icons.hub_outlined,
+  previewGradient: [Color(0xFF00B894), Color(0xFF6C5CE7)],
 );

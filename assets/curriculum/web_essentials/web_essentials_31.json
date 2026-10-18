@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_31",
+  "track": "web_essentials",
+  "difficulty": "advanced",
+  "title": "Authentication vs Authorization",
+  "summary": "Offline lesson 31 in the Web Essentials track (advanced).",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Authentication vs Authorization in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "**Authentication vs Authorization** — Offline lesson 31 in the Web Essentials track (advanced)."
+    },
+    {
+      "type": "heading",
+      "text": "Core idea",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "This lesson covers **Authentication vs Authorization** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "Never store plaintext passwords. Use modern hashing (e.g. `password_hash` in PHP) and protect secrets with environment configuration."
+    },
+    {
+      "type": "heading",
+      "text": "Best practices",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
+    },
+    {
+      "type": "heading",
+      "text": "Common mistakes",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+    }
+  ],
+  "quickRecap": [
+    "Authentication vs Authorization",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

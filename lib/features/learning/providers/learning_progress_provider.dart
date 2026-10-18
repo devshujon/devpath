@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../data/lessons_catalog.dart';
 import '../logic/lesson_progression.dart';
+import '../logic/track_unlock_policy.dart';
 import '../models/badge.dart';
 import '../models/learner_level.dart';
 import '../models/lesson.dart';
@@ -131,20 +132,24 @@ class LearningProgressProvider extends ChangeNotifier {
   ///   - Advanced: locked until ≥50% of intermediate is complete.
   ///   - Within a difficulty, lessons unlock sequentially in catalog order.
   bool _isLocked(Lesson lesson) {
+    final sameDiff = LessonsCatalog.byDifficulty(lesson.difficulty);
     return computeLessonLocked(
       lessonId: lesson.id,
       difficulty: lesson.difficulty,
-      sameDifficultyIds:
-          LessonsCatalog.byDifficulty(lesson.difficulty).map((l) => l.id).toList(),
+      sameDifficultyIds: sequentialUnlockIdsFor(
+        lesson: lesson,
+        sameDifficulty: sameDiff,
+      ),
       completedIds: completedLessons,
-      beginnerProgress: _difficultyProgress(Difficulty.beginner),
-      intermediateProgress: _difficultyProgress(Difficulty.intermediate),
+      beginnerProgress: _gateProgress(lesson, Difficulty.beginner),
+      intermediateProgress: _gateProgress(lesson, Difficulty.intermediate),
     );
   }
 
-  double _difficultyProgress(Difficulty d) {
+  double _gateProgress(Lesson lesson, Difficulty gateDifficulty) {
+    final sameDiff = LessonsCatalog.byDifficulty(gateDifficulty);
     return difficultyCompletionRatio(
-      ids: LessonsCatalog.byDifficulty(d).map((l) => l.id).toList(),
+      ids: difficultyIdsForGate(lesson: lesson, sameDifficulty: sameDiff),
       completedIds: completedLessons,
     );
   }

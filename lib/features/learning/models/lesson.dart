@@ -57,7 +57,29 @@ extension DifficultyMeta on Difficulty {
 /// [capstone] is a synthesis track for lessons that mix all three
 /// languages — it doesn't grant any track-specific certificate but
 /// counts toward the Graduate certificate.
-enum LessonTrack { html, css, js, capstone }
+enum LessonTrack {
+  html,
+  css,
+  js,
+  capstone,
+  php,
+  sql,
+  typescript,
+  python,
+  webEssentials;
+
+  /// Filter chips on Learn / Roadmap (excludes capstone — use All).
+  static const List<LessonTrack> filterChips = [
+    LessonTrack.html,
+    LessonTrack.css,
+    LessonTrack.js,
+    LessonTrack.php,
+    LessonTrack.sql,
+    LessonTrack.typescript,
+    LessonTrack.python,
+    LessonTrack.webEssentials,
+  ];
+}
 
 extension LessonTrackMeta on LessonTrack {
   String get label => switch (this) {
@@ -65,6 +87,11 @@ extension LessonTrackMeta on LessonTrack {
         LessonTrack.css => 'CSS',
         LessonTrack.js => 'JavaScript',
         LessonTrack.capstone => 'Capstone',
+        LessonTrack.php => 'PHP',
+        LessonTrack.sql => 'SQL',
+        LessonTrack.typescript => 'TypeScript',
+        LessonTrack.python => 'Python',
+        LessonTrack.webEssentials => 'Web Essentials',
       };
 
   String get key => switch (this) {
@@ -72,6 +99,11 @@ extension LessonTrackMeta on LessonTrack {
         LessonTrack.css => 'css',
         LessonTrack.js => 'js',
         LessonTrack.capstone => 'capstone',
+        LessonTrack.php => 'php',
+        LessonTrack.sql => 'sql',
+        LessonTrack.typescript => 'typescript',
+        LessonTrack.python => 'python',
+        LessonTrack.webEssentials => 'web_essentials',
       };
 
   Color get color => switch (this) {
@@ -79,6 +111,11 @@ extension LessonTrackMeta on LessonTrack {
         LessonTrack.css => const Color(0xFF0984E3),
         LessonTrack.js => const Color(0xFFFFB020),
         LessonTrack.capstone => const Color(0xFF6C5CE7),
+        LessonTrack.php => const Color(0xFF777BB4),
+        LessonTrack.sql => const Color(0xFF00758F),
+        LessonTrack.typescript => const Color(0xFF3178C6),
+        LessonTrack.python => const Color(0xFF3776AB),
+        LessonTrack.webEssentials => const Color(0xFF00B894),
       };
 }
 

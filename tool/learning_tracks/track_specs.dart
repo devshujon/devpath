@@ -1,0 +1,243 @@
+/// Source titles for generated curriculum (see generate_learning_tracks.dart).
+
+class TrackSpec {
+  final String trackKey;
+  final String moduleLabel;
+  final List<String> beginner;
+  final List<String> intermediate;
+  final List<String> advanced;
+
+  const TrackSpec({
+    required this.trackKey,
+    required this.moduleLabel,
+    required this.beginner,
+    required this.intermediate,
+    required this.advanced,
+  });
+
+  List<String> get all => [...beginner, ...intermediate, ...advanced];
+}
+
+const phpTrack = TrackSpec(
+  trackKey: 'php',
+  moduleLabel: 'PHP',
+  beginner: [
+    'What Is PHP?',
+    'How Server-Side PHP Works',
+    'PHP Syntax and Tags',
+    'Variables and Data Types',
+    'Strings and Numbers',
+    'Operators',
+    'Conditional Statements',
+    'Loops',
+    'Arrays',
+    'Functions',
+    'HTML Forms',
+    'GET vs POST',
+    'Input Validation',
+    'Error Handling',
+    'Working with JSON',
+  ],
+  intermediate: [
+    'Associative and Multidimensional Arrays',
+    'Include and Require',
+    'Sessions and Cookies',
+    'File Handling',
+    'Secure File Upload Concepts',
+    'HTTP Requests and Responses',
+    'Building Simple API Endpoints',
+    'PDO Database Connections',
+    'Prepared Statements',
+    'Password Hashing and Verification',
+    'Authentication Fundamentals',
+    'Authorization Concepts',
+    'Secure Configuration and Secrets',
+    'Composer Fundamentals',
+    'PHP Object-Oriented Programming',
+  ],
+  advanced: [
+    'Classes and Objects',
+    'Inheritance and Interfaces',
+    'Namespaces and Autoloading',
+    'REST API Design',
+    'Transactions',
+    'Secure Backend Architecture',
+    'Testing PHP Applications',
+    'Performance and Caching Fundamentals',
+    'Building a Small Backend Project',
+    'Deploying a PHP Application',
+  ],
+);
+
+const sqlTrack = TrackSpec(
+  trackKey: 'sql',
+  moduleLabel: 'SQL',
+  beginner: [
+    'What Is a Database?',
+    'What Is SQL?',
+    'Tables, Rows, and Columns',
+    'SQL Data Types',
+    'Primary Keys',
+    'SELECT',
+    'WHERE',
+    'ORDER BY',
+    'LIMIT',
+    'INSERT',
+    'UPDATE',
+    'DELETE',
+    'NULL Values',
+    'Aggregate Functions',
+    'GROUP BY',
+  ],
+  intermediate: [
+    'HAVING',
+    'INNER JOIN',
+    'LEFT JOIN',
+    'Relationships and Foreign Keys',
+    'Constraints',
+    'Database Normalization',
+    'Subqueries',
+    'CASE Expressions',
+    'DISTINCT',
+    'Index Fundamentals',
+    'Transactions',
+    'ACID Concepts',
+    'Views',
+    'Query Debugging',
+    'Database Design',
+  ],
+  advanced: [
+    'Indexing and Query Performance',
+    'Composite Indexes',
+    'Query Execution Plans',
+    'Transactions and Concurrency',
+    'Database Security',
+    'SQL Injection Prevention',
+    'Schema Migrations',
+    'Backups and Recovery',
+    'Relational Database Design for Real Projects',
+    'Practical Database Project',
+  ],
+);
+
+const typescriptTrack = TrackSpec(
+  trackKey: 'typescript',
+  moduleLabel: 'TypeScript',
+  beginner: [
+    'JavaScript vs TypeScript',
+    'Type Annotations',
+    'Primitive and Union Types',
+    'Arrays and Objects',
+    'Type Aliases',
+    'Interfaces',
+  ],
+  intermediate: [
+    'Functions and Return Types',
+    'Optional Properties',
+    'Narrowing',
+    'Generics',
+    'Classes',
+    'Modules',
+  ],
+  advanced: [
+    'Async/Await',
+    'API Response Types',
+    'Type-Safe Application Design',
+    'Practical TypeScript Projects',
+  ],
+);
+
+const pythonTrack = TrackSpec(
+  trackKey: 'python',
+  moduleLabel: 'Python',
+  beginner: [
+    'What Is Python?',
+    'Installation and Runtime Concepts',
+    'Variables and Data Types',
+    'Strings',
+    'Lists, Tuples, Sets, and Dictionaries',
+    'Operators',
+    'Conditions',
+    'Loops',
+    'Functions',
+    'Modules',
+  ],
+  intermediate: [
+    'File Handling',
+    'Exceptions',
+    'JSON',
+    'HTTP Requests',
+    'Virtual Environments',
+    'Packages and pip',
+    'Object-Oriented Programming',
+    'Automation Fundamentals',
+    'Testing Fundamentals',
+  ],
+  advanced: [
+    'Practical Python Projects',
+  ],
+);
+
+const webEssentialsTrack = TrackSpec(
+  trackKey: 'web_essentials',
+  moduleLabel: 'Web Essentials',
+  beginner: [
+    'Version Control Fundamentals',
+    'Git Repositories',
+    'Commits and History',
+    'Branches',
+    'Merging',
+    'Pull Requests',
+    'Conflict Resolution',
+    '.gitignore',
+    'Basic Collaboration Workflow',
+    'Browser and Server Communication',
+    'HTTP Methods',
+    'HTTP Status Codes',
+    'Headers',
+    'HTTPS and TLS',
+    'DNS Basics',
+  ],
+  intermediate: [
+    'Cookies and Sessions',
+    'Caching',
+    'API Fundamentals',
+    'REST Concepts',
+    'JSON Data Formats',
+    'Request and Response Structures',
+    'Authentication Concepts',
+    'API Error Handling',
+    'API Testing Basics',
+    'SQL Injection Overview',
+    'Cross-Site Scripting (XSS)',
+    'CSRF Basics',
+    'Input Validation',
+    'Output Escaping',
+    'Password Hashing Concepts',
+  ],
+  advanced: [
+    'Authentication vs Authorization',
+    'Secret Management',
+    'Secure File Handling',
+    'Reading Error Messages',
+    'Browser Developer Tools',
+    'Network Inspection',
+    'Unit Testing Concepts',
+    'Regression Testing',
+    'Debugging Workflow',
+    'Domain Names',
+    'Hosting Fundamentals',
+    'Static vs Server-Side Hosting',
+    'Environment Configuration',
+    'Deployment Workflow',
+    'Backups and Basic Monitoring',
+  ],
+);
+
+const allGeneratedTracks = [
+  phpTrack,
+  sqlTrack,
+  typescriptTrack,
+  pythonTrack,
+  webEssentialsTrack,
+];
