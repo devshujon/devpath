@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "subject": "JavaScript",
+  "questions": [
+    {
+      "id": "js_q_01",
+      "subject": "JavaScript",
+      "level": "beginner",
+      "question": "Which keyword declares a variable that cannot be reassigned?",
+      "options": ["let", "var", "const", "static"],
+      "correctIndex": 2,
+      "explanation": "'const' is for values that don't change. 'let' allows reassignment. 'var' is the old way."
+    },
+    {
+      "id": "js_q_02",
+      "subject": "JavaScript",
+      "level": "beginner",
+      "question": "How do you print to the developer console?",
+      "options": ["print()", "echo()", "console.log()", "System.out()"],
+      "correctIndex": 2,
+      "explanation": "console.log() is JavaScript's print. echo is PHP, print is Python, System.out is Java."
+    },
+    {
+      "id": "js_q_03",
+      "subject": "JavaScript",
+      "level": "beginner",
+      "question": "What is the result of: 2 + '2'?",
+      "options": ["4", "'22'", "NaN", "Error"],
+      "correctIndex": 1,
+      "explanation": "JavaScript coerces 2 to a string, then concatenates → '22'."
+    }
+  ]
+}

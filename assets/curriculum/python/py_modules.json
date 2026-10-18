@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_modules",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Modules and Imports",
+  "summary": "Reuse code from modules.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Reuse code from modules.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Reuse code from modules. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "import math\nprint(math.sqrt(16))",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

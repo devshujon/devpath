@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_loops",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "for and while Loops",
+  "summary": "Repeat code with for and while.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Repeat code with for and while.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Repeat code with for and while. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "for n in range(3):\n    print(n)",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

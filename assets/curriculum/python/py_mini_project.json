@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_mini_project",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Beginner Python Mini-Project",
+  "summary": "Build a small quiz score helper.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Build a small quiz score helper.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Build a small quiz score helper. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "scores = [70, 85, 92]\npassed = [s for s in scores if s >= 70]\nprint('Passed:', len(passed), 'of', len(scores))",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

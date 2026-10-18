@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_operators",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Operators",
+  "summary": "Arithmetic and comparison operators.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Arithmetic and comparison operators.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Arithmetic and comparison operators. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "a, b = 10, 3\nprint(a // b, a % b, a ** 2)",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

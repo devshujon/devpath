@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_functions",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Functions",
+  "summary": "Reuse logic with def and return.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Reuse logic with def and return.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Reuse logic with def and return. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "def greet(name):\n    return f'Hi, {name}!'\n\nprint(greet('Dev'))",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

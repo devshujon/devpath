@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "subject": "PHP",
+  "questions": [
+    {
+      "id": "php_q_01",
+      "subject": "PHP",
+      "level": "beginner",
+      "question": "What character do PHP variables start with?",
+      "options": ["@", "#", "$", "&"],
+      "correctIndex": 2,
+      "explanation": "All PHP variables start with $, e.g., $name = 'Alice'."
+    },
+    {
+      "id": "php_q_02",
+      "subject": "PHP",
+      "level": "beginner",
+      "question": "Which tag opens a PHP block?",
+      "options": ["<?php", "<php>", "<%php", "<? code ?>"],
+      "correctIndex": 0,
+      "explanation": "PHP code lives between <?php and ?>."
+    },
+    {
+      "id": "php_q_03",
+      "subject": "PHP",
+      "level": "beginner",
+      "question": "How do you join two strings in PHP?",
+      "options": ["+", ".", ",", "&"],
+      "correctIndex": 1,
+      "explanation": "PHP uses . (dot) to concatenate strings. + is for math only."
+    }
+  ]
+}

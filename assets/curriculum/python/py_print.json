@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_print",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Python Syntax and print()",
+  "summary": "Write your first output with print().",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Write your first output with print().",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Write your first output with print(). Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "print('DevPath')\nprint(2 + 2)",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}

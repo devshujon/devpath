@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "py_errors",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Basic Error Handling",
+  "summary": "Handle errors with try and except.",
+  "estimatedMinutes": 10,
+  "objectives": [
+    "Handle errors with try and except.",
+    "Read and copy runnable Python examples",
+    "Pass the lesson quiz"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "Handle errors with try and except. Python examples are for learning and copy \u2014 they are **not executed** in the in-app WebView playground."
+    },
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Run Python on your computer or an online REPL. DevPath preview supports HTML, CSS, and JavaScript only."
+    },
+    {
+      "type": "code",
+      "lang": "python",
+      "code": "try:\n    n = int('42')\nexcept ValueError:\n    print('Not a number')",
+      "runnable": false,
+      "caption": "Example"
+    }
+  ]
+}
