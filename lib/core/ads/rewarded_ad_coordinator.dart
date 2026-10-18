@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'ad_consent.dart';
 import 'admob_config.dart';
 import 'rewarded_ad_purpose.dart';
 
@@ -44,6 +45,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
       return;
     }
     try {
+      await AdMobConsent.prepareForAds();
       await MobileAds.instance.initialize();
       _initialized = true;
     } catch (e, st) {
@@ -67,6 +69,9 @@ class RewardedAdCoordinator implements RewardedAdGateway {
     if (kIsWeb) {
       return RewardedAdFlowResult.unavailable;
     }
+    if (!AdMobConsent.canRequestAds) {
+      return RewardedAdFlowResult.unavailable;
+    }
 
     await ensureInitialized();
     if (!_initialized) {
@@ -75,7 +80,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
 
     _sessionInFlight = true;
     try {
-      final ad = await _loadRewardedAd();
+      final ad = await _loadRewardedAd(purpose);
       if (ad == null) {
         return RewardedAdFlowResult.unavailable;
       }
@@ -131,7 +136,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
     }
   }
 
-  Future<RewardedAd?> _loadRewardedAd() async {
+  Future<RewardedAd?> _loadRewardedAd(RewardedAdPurpose purpose) async {
     final previous = _loadedAd;
     _loadedAd = null;
     if (previous != null) {
@@ -142,7 +147,7 @@ class RewardedAdCoordinator implements RewardedAdGateway {
 
     // Load is callback-driven; completion is awaited via [completer].
     unawaited(RewardedAd.load(
-      adUnitId: AdMobConfig.rewardedAdUnitId,
+      adUnitId: AdMobConfig.rewardedAdUnitId(purpose),
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {

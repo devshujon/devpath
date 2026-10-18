@@ -1,25 +1,37 @@
-# AdMob and monetization — DevPath v1.2.1 beta
+# AdMob and monetization — DevPath v1.2.1
 
-## Current status (code inspection, v1.2.1+14)
+## Configuration (PR: official DevPath units)
 
-| Item | Status |
-|------|--------|
-| `google_mobile_ads` in `pubspec.yaml` | Present |
-| `MobileAds`, `BannerAd`, `RewardedAd` in `lib/` | **Not used** |
-| Ad widgets in UI | **None** |
-| AndroidManifest `APPLICATION_ID` | **Google test ID** `ca-app-pub-3940256099942544~3347511713` |
-| `AD_ID` permission | Declared (dependency default) |
+| Item | Debug / profile | Release |
+|------|-----------------|---------|
+| Android **App ID** (manifest) | Google **test** `…~3347511713` (`src/debug/`) | Production `ca-app-pub-3995622198490756~4702943512` |
+| Rewarded (`questionTimerRetry` + other placements) | Google test unit | `…/6724892612` (DevPath_Quiz_Timer_Retry) |
+| Banner (Home dashboard footer) | Google test banner | `…/3876947009` (DevPath_Main_Banner) |
+| Interstitial (after lesson quiz navigation) | Google test interstitial | `…/4098729279` (DevPath_Lesson_Interstitial) |
 
-## Beta behavior
+Dart unit selection: `AdMobConfig.useProductionAdUnitIds` → `false` when `kDebugMode`, else `true`.  
+Override release QA: `--dart-define=ADMOB_FORCE_TEST_IDS=true`.
 
-- **No advertisements are displayed** to users in this build.
-- The test App ID must **not** be replaced with production IDs until ads are implemented and reviewed.
-- **Do not** enable production ad units for closed testing without implementing UI, error handling, and policy updates.
+**Never** put an ad **unit** ID in the manifest `APPLICATION_ID` field.
 
-## Consent (future)
+## Placements
 
-If ads are added for EEA/UK users, integrate Google’s User Messaging Platform (UMP) or equivalent consent flow before loading ads. Document the choice in an updated privacy policy.
+- **Rewarded:** Quiz timer retry, extra attempt, answer reveal, post-quiz continue — reward granted **only** after SDK `onUserEarnedReward` + dismiss path in `RewardedAdCoordinator`.
+- **Banner:** Home tab (`DashboardScreen`) footer only — not on Learn, quiz, or lesson detail.
+- **Interstitial:** After completed quiz when navigating to next lesson/roadmap (`_navigateAfterQuiz`), min **15 minutes** between shows.
 
-## Recommendation for beta
+## Consent / review status
 
-Safe to ship **without ad UI** for learning-focused closed testing. Before Play production with ads: implement ads, switch manifest ID, add consent where required, and re-audit.
+- **UMP (User Messaging Platform) is not integrated.** `AdMobConsent.prepareForAds()` logs a release reminder only.
+- **Do not claim** AdMob/Play ad approval or live production serving without console verification and device tests.
+- Privacy: `docs/legal/PRIVACY_POLICY.md` — update before production ads in EEA/UK.
+
+## SDK initialization
+
+Single init via `RewardedAdCoordinator.ensureInitialized()` → `MobileAds.instance.initialize()`. Banner/interstitial preload after that.
+
+## Physical QA still required
+
+- Test ads in **debug APK** (test App ID + test units).
+- Production unit fill on **release** build with real device + AdMob account linked to package `com.devpath.app`.
+- Timer retry: watch full rewarded ad → time restored; dismiss early → no retry.

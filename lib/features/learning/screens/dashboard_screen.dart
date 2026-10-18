@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/ads/banner_ad_widget.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../certificates/providers/certificates_provider.dart';
 import '../../certificates/widgets/certificates_card.dart';
@@ -135,7 +136,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      body: RefreshIndicator(
+      body: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
         onRefresh: () async {
           await context
               .read<LearningProgressProvider>()
@@ -274,6 +278,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 16),
           ],
         ),
+      ),
+          ),
+          const DevPathBannerAd(),
+        ],
       ),
     );
   }
