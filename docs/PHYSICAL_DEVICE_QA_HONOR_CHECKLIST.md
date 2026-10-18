@@ -1,7 +1,7 @@
-# DevPath PR #6 — Honor / Android physical QA checklist
+# DevPath — Honor / Android physical QA checklist
 
-**Build:** debug APK from `cursor/pro-mobile-editor-982f`  
-**Version:** 1.2.1+14  
+**Build:** debug APK from current release branch (e.g. `cursor/admob-official-config-982f`)  
+**Version:** 1.3.0+15  
 **Device evidence required:** screenshot or screen recording per section
 
 Mark each row: **PASS** / **FAIL** / **SKIP** + notes.

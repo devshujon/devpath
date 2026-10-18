@@ -1,6 +1,6 @@
-# DevPath v1.2.1+14 — Android beta manual QA checklist
+# DevPath v1.3.0+15 — Android beta manual QA checklist
 
-Use build **1.2.1+14** (`com.devpath.app` release or `com.devpath.app.debug` debug).
+Use build **1.3.0+15** (`com.devpath.app` release or `com.devpath.app.debug` debug).
 
 **Legend**
 
@@ -18,8 +18,8 @@ Use build **1.2.1+14** (`com.devpath.app` release or `com.devpath.app.debug` deb
 | # | Step | Tag | Pass |
 |---|------|-----|------|
 | 1 | Fresh install opens to dashboard | `[DEVICE]` | |
-| 2 | Upgrade from 1.2.1+13 keeps progress | `[DEVICE]` | |
-| 3 | About shows **v1.2.1+14** | `[DEVICE]` | |
+| 2 | Upgrade from 1.2.1+14 (or prior) keeps progress | `[DEVICE]` | |
+| 3 | About shows **v1.3.0+15** | `[DEVICE]` | |
 | 4 | Privacy policy opens in-app (no dead tap) | `[DEVICE]` | |
 
 ---
@@ -101,10 +101,20 @@ Use build **1.2.1+14** (`com.devpath.app` release or `com.devpath.app.debug` deb
 
 ---
 
+## Advertising (v1.3.0)
+
+| # | Step | Tag | Pass |
+|---|------|-----|------|
+| 33 | Home dashboard: test banner ad loads (debug APK) | `[DEVICE]` | See `docs/ADMOB_AND_MONETIZATION.md` |
+| 34 | Quiz timer rewarded retry: full watch grants retry; early dismiss does not | `[DEVICE]` | |
+| 35 | Interstitial only after quiz navigation (not mid-question) | `[DEVICE]` | |
+
+---
+
 ## Automated baseline (agent)
 
-- `[AUTO]` `flutter analyze`: clean  
-- `[AUTO]` `flutter test`: 89/89  
+- `[AUTO]` `flutter analyze`: see latest PR (pre-existing infos/warnings only)  
+- `[AUTO]` `flutter test`: 163/163 (at v1.3.0+15 handoff)  
 - `[AUTO]` Quiz catalog validation (H1=5, b01=3)  
 - `[AUTO]` Stale route tests (Linux; not Android WebView)
 
@@ -112,4 +122,4 @@ Use build **1.2.1+14** (`com.devpath.app` release or `com.devpath.app.debug` deb
 
 ## Physical device evidence on record
 
-- **Honor Android:** H1 quiz visible (user screenshot, **v1.2.1+13**). **+14** retest recommended for release sheet and privacy screen.
+- **Honor Android:** H1 quiz visible (user screenshot, **v1.2.1+13**). **v1.3.0+15** full retest recommended (ads, file open, quiz regression).

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.0 — AdMob integration & platform features
+
+### 1.3.0+15
+- App version **1.3.0+15** (`pubspec.yaml`, `lib/core/app_version.dart`).
+- Official AdMob App ID and ad units (rewarded, banner, interstitial) with **debug test IDs** vs **release production IDs** (`lib/core/ads/admob_config.dart`, debug manifest overlay).
+- Rewarded placements unchanged grant rules (`questionTimerRetry`, post-quiz continue, etc.).
+- Home dashboard footer banner; lesson-transition interstitial with frequency cap.
+- Android “Open with” for web file types (separate PR #9 on related branch).
+
+### Notes
+- UMP consent **not** integrated — see `docs/ADMOB_AND_MONETIZATION.md`.
+- Physical ad and quiz regression QA: `docs/BETA_QA_CHECKLIST.md`.
+
 ## 1.2.1 — Quiz reliability (Android)
 
 ### 1.2.1+6

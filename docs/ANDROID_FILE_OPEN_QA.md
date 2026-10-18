@@ -13,8 +13,8 @@
 | Git commit (handoff) | `7ef7cad` (feature logic in `9045cfe`) |
 | Working tree | Clean (no uncommitted changes at doc refresh) |
 | Package ID (debug) | `com.devpath.app.debug` |
-| Version (pubspec) | `1.2.1+14` |
-| Version name (debug APK) | `1.2.1-debug` (see `android/app/build.gradle` `versionNameSuffix`) |
+| Version (pubspec) | `1.3.0+15` |
+| Version name (debug APK) | `1.3.0-debug` (see `android/app/build.gradle` `versionNameSuffix`) |
 | APK path (repo build) | `build/app/outputs/flutter-apk/app-debug.apk` |
 | APK size | ~184 MB (debug; includes symbols — normal for Flutter debug) |
 | SHA-256 | `4f1e35bc79d2e8638a15747fb3937aa9bead7792e2eb4ee9eaa388e442be09b9` |
