@@ -2,9 +2,11 @@
 
 **Effective date:** 2026-10-14  
 **App:** DevPath — Learn Code & Earn  
-**Version:** 1.3.0 (beta)  
-**Last updated (ads disclosure):** 2026-10-18  
-**Contact:** Use the GitHub repository issue tracker for the DevPath project (no dedicated support email is configured in the app).
+**Version:** 1.3.1 (build 16)  
+**Android package (production):** `com.devpath.dev`  
+**Public web policy:** https://solverpros.com/devpath/privacy-policy/  
+**Last updated:** 2026-10-19  
+**Contact:** Add a Play-ready support email on the web policy before store submission. Optional: GitHub issues on the DevPath repository (no dedicated in-app email).
 
 This policy describes how the DevPath mobile application handles information when you use it on your device.
 
