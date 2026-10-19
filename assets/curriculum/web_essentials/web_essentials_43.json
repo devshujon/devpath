@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "advanced",
   "title": "Environment Configuration",
-  "summary": "Offline lesson 43 in the Web Essentials track (advanced).",
+  "summary": "Per-environment configuration via env vars keeps production credentials out of code.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Environment Configuration in practical web-development terms",
@@ -13,35 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Environment Configuration** — Offline lesson 43 in the Web Essentials track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Environment Configuration** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Pair with deployment lessons: inject config at release, not bake into artifacts."
     }
   ],
   "quickRecap": [

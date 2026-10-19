@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "advanced",
   "title": "Secret Management",
-  "summary": "Offline lesson 32 in the Web Essentials track (advanced).",
+  "summary": "Secrets never belong in Git, URLs, or client-delivered JavaScript.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Secret Management in practical web-development terms",
@@ -13,40 +13,9 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Secret Management** — Offline lesson 32 in the Web Essentials track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **Secret Management** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
       "type": "callout",
       "variant": "warning",
-      "md": "Never store plaintext passwords. Use modern hashing (e.g. `password_hash` in PHP) and protect secrets with environment configuration."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Rotate keys immediately if exposed in logs or repos."
     }
   ],
   "quickRecap": [

@@ -49,9 +49,11 @@
 
 ## Content quality (PR #11 hardening)
 
-**13 priority lessons** have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`:
+**32 priority lessons** (batch 1 + batch 2) have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`:
 
-`php_22`, `php_23`, `php_24`, `php_37`, `sql_17`–`sql_20`, `sql_36`, `typescript_09`, `typescript_10`, `web_essentials_23`, `web_essentials_28`.
+Batch 2 adds PHP auth/sessions/secrets/transactions, SQL ACID/indexes, TS interfaces/API typing, Python collections/functions/exceptions, Web Essentials auth/secrets/env — and moves secure-backend override to **`php_36`** (was incorrectly on `php_37`).
+
+See `priorityLessonIds` in `test/learning/priority_lesson_quality_test.dart` for the full list.
 
 Regenerate: `dart run tool/generate_learning_tracks.dart` (overrides merge into catalog + JSON).
 

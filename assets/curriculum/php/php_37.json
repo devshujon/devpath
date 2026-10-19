@@ -4,17 +4,17 @@
   "track": "php",
   "difficulty": "advanced",
   "title": "Testing PHP Applications",
-  "summary": "Secure backends combine transport security (HTTPS), validation, parameterized SQL, authentication, authorization, and least-privilege infrastructure.",
+  "summary": "Automated PHP tests guard auth, SQL, and API regressions — run on your computer, not in DevPath.",
   "estimatedMinutes": 12,
   "objectives": [
-    "List layers of defense for a small API",
-    "Apply least privilege to DB credentials",
-    "Handle errors without leaking secrets"
+    "Explain Testing PHP Applications in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
   ],
   "content": [
     {
       "type": "prose",
-      "md": "Treat every request as untrusted. Validate, authenticate, authorize, then access data with bound parameters under a DB user that cannot DROP SCHEMA."
+      "md": "Use isolated databases or transactions rolled back after tests. Never point tests at production data."
     }
   ],
   "quickRecap": [

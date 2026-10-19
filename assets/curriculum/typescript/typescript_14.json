@@ -4,7 +4,7 @@
   "track": "typescript",
   "difficulty": "advanced",
   "title": "API Response Types",
-  "summary": "Offline lesson 14 in the TypeScript track (advanced).",
+  "summary": "Validate at boundaries; use strong types inside the application core.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain API Response Types in practical web-development terms",
@@ -13,42 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**API Response Types** — Offline lesson 14 in the TypeScript track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **API Response Types** as part of TypeScript. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "code",
-      "lang": "typescript",
-      "runnable": false,
-      "caption": "Try this in the playground when runnable.",
-      "code": "// API Response Types\ntype ApiUser = { id: number; name: string };\nconst parseUser = (data: unknown): ApiUser | null => {\n  if (typeof data !== \"object\" || data === null) return null;\n  const o = data as Record<string, unknown>;\n  if (typeof o.id !== \"number\" || typeof o.name !== \"string\") return null;\n  return { id: o.id, name: o.name };\n};\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Parsers from unknown → domain types centralize security-relevant checks."
     }
   ],
   "quickRecap": [

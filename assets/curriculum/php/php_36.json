@@ -4,51 +4,17 @@
   "track": "php",
   "difficulty": "advanced",
   "title": "Secure Backend Architecture",
-  "summary": "Offline lesson 36 in the PHP track (advanced).",
+  "summary": "Secure backends combine transport security (HTTPS), validation, parameterized SQL, authentication, authorization, and least-privilege infrastructure.",
   "estimatedMinutes": 12,
   "objectives": [
-    "Explain Secure Backend Architecture in practical web-development terms",
-    "Recognize how PHP connects to HTML, CSS, and JavaScript",
-    "Apply safe habits and avoid common mistakes"
+    "List layers of defense for a small API",
+    "Apply least privilege to DB credentials",
+    "Handle errors without leaking secrets"
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Secure Backend Architecture** — Offline lesson 36 in the PHP track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Secure Backend Architecture** as part of PHP. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "code",
-      "lang": "php",
-      "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute php on device.",
-      "code": "<?php\n// Secure Backend Architecture\n$name = htmlspecialchars($_POST['name'] ?? '', ENT_QUOTES, 'UTF-8');\necho \"Hello, $name\";\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Treat every request as untrusted. Validate, authenticate, authorize, then access data with bound parameters under a DB user that cannot DROP SCHEMA."
     }
   ],
   "quickRecap": [

@@ -4,7 +4,7 @@
   "track": "php",
   "difficulty": "beginner",
   "title": "Input Validation",
-  "summary": "Offline lesson 13 in the PHP track (beginner).",
+  "summary": "Normalize and validate input on the server before SQL, files, or sessions.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Input Validation in practical web-development terms",
@@ -13,42 +13,9 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Input Validation** — Offline lesson 13 in the PHP track (beginner)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **Input Validation** as part of PHP. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "code",
-      "lang": "php",
-      "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute php on device.",
-      "code": "<?php\n// Input Validation\n$name = htmlspecialchars($_POST['name'] ?? '', ENT_QUOTES, 'UTF-8');\necho \"Hello, $name\";\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "type": "callout",
+      "variant": "info",
+      "md": "Browser `required` attributes improve UX only — they are not a security control."
     }
   ],
   "quickRecap": [

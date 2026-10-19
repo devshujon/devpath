@@ -4,7 +4,7 @@
   "track": "python",
   "difficulty": "beginner",
   "title": "Lists, Tuples, Sets, and Dictionaries",
-  "summary": "Offline lesson 5 in the Python track (beginner).",
+  "summary": "Lists, dicts, sets, and tuples structure data — practice scripts run outside the app.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Lists, Tuples, Sets, and Dictionaries in practical web-development terms",
@@ -13,42 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Lists, Tuples, Sets, and Dictionaries** — Offline lesson 5 in the Python track (beginner)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Lists, Tuples, Sets, and Dictionaries** as part of Python. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "code",
-      "lang": "python",
-      "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute python on device.",
-      "code": "# Lists, Tuples, Sets, and Dictionaries\n# Run on your computer — not in the DevPath app runtime.\ndef greet(name: str) -> str:\n    return f\"Hello, {name}\"\n\nif __name__ == \"__main__\":\n    print(greet(\"DevPath\"))\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Do not use eval() on untrusted input when automating files or APIs locally."
     }
   ],
   "quickRecap": [
