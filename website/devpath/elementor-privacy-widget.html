@@ -1,0 +1,157 @@
+<!-- DevPath Privacy Policy — paste entire snippet into one Elementor HTML widget -->
+<div id="devpath-privacy-root" style="box-sizing:border-box;width:100%;max-width:720px;margin:0 auto;padding:16px 20px 48px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.65;color:#e8eef4;background:linear-gradient(180deg,#0a0e14 0%,#0f1419 40%,#0d1218 100%);overflow-x:hidden;word-wrap:break-word;overflow-wrap:break-word;">
+<style>
+#devpath-privacy-root,#devpath-privacy-root *{box-sizing:border-box;}
+#devpath-privacy-root a{color:#0984e3;}
+#devpath-privacy-root a:focus-visible{outline:2px solid #0984e3;outline-offset:2px;}
+#devpath-privacy-root ul.devpath-policy-list{margin:0 0 1rem;padding-left:1.35rem;color:#d0dae4;}
+#devpath-privacy-root ul.devpath-policy-list li{margin-bottom:0.35rem;}
+#devpath-privacy-root code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:0.9em;background:#0a0e14;padding:2px 6px;border-radius:4px;color:#e8eef4;}
+@media (max-width:480px){#devpath-privacy-root{padding:12px 16px 40px;}}
+</style>
+
+<header id="devpath-privacy-header" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 20px;border-bottom:1px solid #2d3a4d;margin-bottom:24px;">
+  <a id="devpath-privacy-brand" href="https://devshujon.com/devpath/" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#e8eef4;font-weight:600;font-size:1.1rem;">
+    <span style="display:inline-flex;width:40px;height:40px;border-radius:10px;background:#0984e3;color:#fff;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;" aria-hidden="true">&lt;/&gt;</span>
+    <span>DevPath</span>
+  </a>
+  <nav aria-label="Primary" style="display:flex;flex-wrap:wrap;gap:16px;font-size:0.95rem;">
+    <a href="https://devshujon.com/devpath/" style="color:#9aa8b5;text-decoration:none;">Home</a>
+    <a href="https://devshujon.com/devpath/privacy-policy/" style="color:#e8eef4;font-weight:600;text-decoration:none;" aria-current="page">Privacy Policy</a>
+  </nav>
+</header>
+
+<main id="devpath-privacy-main">
+  <h1 style="margin:0 0 16px;font-size:clamp(1.75rem,5vw,2.25rem);line-height:1.2;color:#e8eef4;">Privacy Policy</h1>
+  <p id="devpath-policy-meta" style="margin:0 0 24px;padding:16px;background:#1a2332;border:1px solid #2d3a4d;border-radius:8px;font-size:0.95rem;color:#9aa8b5;line-height:1.7;">
+    <strong style="color:#e8eef4;">App:</strong> DevPath — Learn Code &amp; Earn<br>
+    <strong style="color:#e8eef4;">Android package (production):</strong> <code>com.devpath.dev</code><br>
+    <strong style="color:#e8eef4;">Effective date:</strong> 14 October 2026<br>
+    <strong style="color:#e8eef4;">Last updated:</strong> 19 October 2026<br>
+    <strong style="color:#e8eef4;">App version described:</strong> 1.3.1 (version code 16)
+  </p>
+
+  <div id="devpath-policy-summary" style="margin:0 0 28px;padding:16px 18px;background:#1e3a5f;border-left:4px solid #0984e3;border-radius:0 8px 8px 0;color:#d0dae4;font-size:0.98rem;">
+    <p style="margin:0;"><strong style="color:#e8eef4;">Summary:</strong> DevPath is built to work <strong>primarily offline</strong>. Most learning data stays <strong>on your device</strong>. DevPath does <strong>not</strong> operate a login or sync your progress to DevPath-operated servers in this version. <strong>Release builds may use Google AdMob</strong>, which can collect and process data under Google’s policies when ads are requested or shown. This app is <strong>not</strong> “child-safe” or “zero data collection” in the absolute sense—please read the sections below.</p>
+  </div>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">1. Who this policy applies to</h2>
+  <p style="margin:0 0 1rem;color:#d0dae4;">This policy describes the DevPath mobile application for Android published under the package name <code>com.devpath.dev</code>. Debug builds distributed outside Google Play may use the package <code>com.devpath.app.debug</code> and Google’s test AdMob identifiers; behavior described here focuses on production release builds unless noted.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">2. Information stored on your device</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">The app stores learning and app state locally, for example in SharedPreferences, app-private files, and (on startup) initialized Hive boxes. Depending on how you use DevPath, local data may include:</p>
+  <ul class="devpath-policy-list">
+    <li>Completed lesson IDs, XP, levels, streaks, and learning minutes</li>
+    <li>Badges, achievements, challenges, and certificate progress</li>
+    <li>Playground drafts and user-saved editor projects</li>
+    <li>Mobile code editor workspace index and file contents under app-private storage</li>
+    <li>Notification preferences (reminder on/off, scheduled time)</li>
+    <li>Code editor settings (font size, theme, wrap, auto-save)</li>
+    <li>Ad-related timing metadata used to limit interstitial frequency (for example, timestamp of last interstitial)</li>
+    <li>Battery-optimization prompt state</li>
+  </ul>
+  <p style="margin:0 0 1rem;color:#d0dae4;">This information is used to provide app functionality. DevPath’s application code does not upload this learning progress to DevPath-operated backend servers.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">3. What DevPath does not do (in application code)</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Based on the current open-source application code for version 1.3.1:</p>
+  <ul class="devpath-policy-list">
+    <li>No DevPath user account, registration, or password system</li>
+    <li>No DevPath-operated analytics SDK (such as Firebase Analytics) in app dependencies</li>
+    <li>No dedicated crash-reporting SDK (such as Firebase Crashlytics or Sentry) in app dependencies</li>
+    <li>No sale of your personal data by DevPath through in-app code paths</li>
+  </ul>
+  <p style="margin:0 0 1rem;color:#d0dae4;">Third-party libraries (especially ad networks) may still process data independently when their features run—see Section 8.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">4. Network access and offline use</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Android declares <code>INTERNET</code> and <code>ACCESS_NETWORK_STATE</code>. Bundled lessons and offline quizzes do not require network access. Network use may occur when:</p>
+  <ul class="devpath-policy-list">
+    <li><strong>Google Mobile Ads (AdMob)</strong> loads or serves advertisements in release builds</li>
+    <li>Embedded WebView components load <strong>local</strong> bundled assets for editor-related features; app code restricts navigation away from local/offline content in several WebView surfaces</li>
+  </ul>
+  <p style="margin:0 0 1rem;color:#d0dae4;">The app does not include a general-purpose HTTP client for syncing your learning data to DevPath.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">5. Google AdMob and advertising</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Release builds embed a production AdMob <strong>App ID</strong> in the Android manifest and may show:</p>
+  <ul class="devpath-policy-list">
+    <li><strong>Banner</strong> ads on the home dashboard</li>
+    <li><strong>Interstitial</strong> ads after certain quiz navigation (subject to a minimum interval stored locally)</li>
+    <li><strong>Rewarded</strong> ads in quiz flows (for example optional retries or continues)</li>
+  </ul>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Debug builds replace the production App ID with Google’s <strong>test</strong> App ID and test ad units.</p>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;"><strong>Advertising ID:</strong> The manifest declares <code>com.google.android.gms.permission.AD_ID</code> because the app depends on <code>google_mobile_ads</code>. Google may use the advertising ID or other device signals per Google’s policies and your device settings.</p>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;"><strong>Personalization &amp; consent:</strong> The app does <strong>not</strong> currently integrate Google’s User Messaging Platform (UMP) or another consent management platform. Ad requests use default <code>AdRequest</code> configuration in code. If you are in a region where consent is required for personalized ads (for example EEA/UK), the developer may need to implement consent before serving personalized ads at scale. You can limit ad personalization in your device’s advertising settings where Android provides them.</p>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;"><strong>Recipients:</strong> Ad-related data processing is performed by Google and its ad partners as described in <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google’s Privacy Policy</a> and <a href="https://support.google.com/admob/answer/6128543" rel="noopener noreferrer">AdMob documentation</a>.</p>
+  <p style="margin:0 0 1rem;color:#d0dae4;">DevPath has <strong>not</strong> verified ad serving, fill rates, or revenue in this document.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">6. Permissions and optional features</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Declared Android permissions include:</p>
+  <ul class="devpath-policy-list">
+    <li><strong>POST_NOTIFICATIONS</strong> — optional local learning reminders (Android 13+)</li>
+    <li><strong>RECEIVE_BOOT_COMPLETED</strong> — reschedule local notifications after reboot</li>
+    <li><strong>AD_ID</strong> — related to advertising as above</li>
+  </ul>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">The app may ask you to allow notifications or to disable battery optimization so reminders fire on time. These use system settings and do not send your choices to DevPath servers.</p>
+  <p style="margin:0 0 1rem;color:#d0dae4;"><strong>File open &amp; share:</strong> If you open or share files into DevPath, you choose the file via the system picker or intent. The app reads content you select for editing or preview. DevPath does not upload those files to DevPath servers in application code.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">7. Device backup</h2>
+  <p style="margin:0 0 1rem;color:#d0dae4;">Android backup may be enabled for the app (<code>allowBackup</code> with backup rules). Google or device manufacturer backup services may copy app-private data according to your system settings. DevPath does not control third-party backup providers.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">8. Third-party SDKs (dependencies)</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Key third-party components in the app include:</p>
+  <ul class="devpath-policy-list">
+    <li><strong>google_mobile_ads</strong> — advertising (see Section 5)</li>
+    <li><strong>webview_flutter</strong> — embedded web content for some editor/curriculum surfaces</li>
+    <li><strong>flutter_local_notifications</strong> — local scheduled notifications</li>
+    <li><strong>permission_handler</strong> — runtime permission requests</li>
+    <li><strong>file_picker</strong>, <strong>share_plus</strong>, <strong>path_provider</strong>, <strong>shared_preferences</strong>, <strong>hive</strong> — local storage and user-initiated sharing</li>
+  </ul>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;"><strong>Firebase:</strong> This project does not ship Firebase configuration (<code>google-services.json</code>) or Firebase SDKs in the current dependency set.</p>
+  <p style="margin:0 0 1rem;color:#d0dae4;">Third-party services may update their own data practices; refer to their documentation for retention and security.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">9. Retention</h2>
+  <ul class="devpath-policy-list">
+    <li><strong>On-device data</strong> remains until you clear app storage, uninstall, or restore from backup.</li>
+    <li><strong>Ad partners</strong> may retain data according to their policies; DevPath does not control Google’s retention schedules.</li>
+  </ul>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">10. Security</h2>
+  <p style="margin:0 0 1rem;color:#d0dae4;">Local data is protected by Android app sandboxing. DevPath does not operate a user-facing server API for your progress in this version. No method of storage or transmission is 100% secure; use device lock screens and avoid sharing unlocked devices if your projects are sensitive.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">11. Children’s privacy</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">DevPath is an educational coding app. It is <strong>not</strong> solely directed at children under 13, and the app does <strong>not</strong> provide a dedicated under-13 mode or parental gate in code. The app includes <strong>advertising</strong> in release builds, which may be subject to additional requirements for child-directed apps on Google Play and under laws such as COPPA (US) or similar regulations elsewhere.</p>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">Parents and guardians should supervise installation, permissions, backups, and ad exposure. If you believe a child provided personal information to a third-party ad service through the app, you may need to contact that provider (for example Google) as well as the developer using the contact methods in Section 13.</p>
+  <p style="margin:0 0 1rem;color:#d0dae4;">Your Google Play target audience and Families policy declarations are your responsibility as the publisher.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">12. Your choices</h2>
+  <ul class="devpath-policy-list">
+    <li>Clear app data in Android Settings to remove most local DevPath state</li>
+    <li>Uninstall the app to remove the app from the device (backup copies may remain per Section 7)</li>
+    <li>Deny notification permission to disable reminders</li>
+    <li>Adjust personalized ads in Android advertising settings where available</li>
+    <li>Use debug builds with test ads only when testing (not representative of production ad behavior)</li>
+  </ul>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">13. Contact &amp; data requests</h2>
+  <div id="devpath-policy-contact" style="margin:0 0 16px;padding:16px 18px;background:#1e3a5f;border-left:4px solid #0984e3;border-radius:0 8px 8px 0;color:#d0dae4;font-size:0.98rem;">
+    <p style="margin:0 0 12px;"><strong style="color:#e8eef4;">Developer contact (required for Play Console):</strong> A dedicated privacy or support email address is <strong>not published here yet</strong>. Before submitting <code>com.devpath.dev</code> to Google Play, the developer should add a reachable email address to this section and to the Play listing.</p>
+    <p style="margin:0 0 12px;"><strong style="color:#e8eef4;">Developer profile:</strong> <a href="https://profiles.wordpress.org/devshujon/">profiles.wordpress.org/devshujon</a></p>
+    <p style="margin:0 0 12px;">Optional channel (if the project repository is public): open an issue on the DevPath GitHub repository at <a href="https://github.com/devshujon/devpath/issues">github.com/devshujon/devpath/issues</a>. Issues may be visible to others; do not post sensitive personal data publicly.</p>
+    <p style="margin:0;">For data processed by Google Ads, you may also use Google’s ad settings and help resources. DevPath cannot delete Google-held ad data on your behalf.</p>
+  </div>
+  <p style="margin:0 0 1rem;color:#d0dae4;">No postal address or legal entity registration is listed in the app source code; add any required business identifiers here if your jurisdiction or Google Play requires them.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">14. Changes to this policy</h2>
+  <p style="margin:0 0 1rem;color:#d0dae4;">We may update this page when the app changes (for example new SDKs, ads, or data practices). The “Last updated” date at the top will change. The in-app copy bundled with your installed build may lag this web page until you update the app.</p>
+
+  <h2 style="margin:28px 0 12px;font-size:1.2rem;color:#e8eef4;">15. In-app access</h2>
+  <p style="margin:0 0 0.75rem;color:#d0dae4;">You can also open a summary privacy policy inside the app from <strong>Profile → Privacy policy</strong>. The canonical public URL for store listings is:</p>
+  <p style="margin:0 0 1rem;color:#d0dae4;"><a href="https://devshujon.com/devpath/privacy-policy/">https://devshujon.com/devpath/privacy-policy/</a></p>
+
+  <p style="margin-top:2rem;color:#9aa8b5;font-size:0.9rem;">This policy is provided for transparency about the app’s technical behavior. It is not legal advice.</p>
+</main>
+
+<footer id="devpath-privacy-footer" style="text-align:center;padding:32px 0 8px;border-top:1px solid #2d3a4d;color:#9aa8b5;font-size:0.9rem;">
+  <p style="margin:8px 0;"><a href="https://devshujon.com/devpath/">← Back to DevPath home</a></p>
+  <p style="margin:8px 0;">© 2026 DevPath · <a href="https://devshujon.com/devpath/">devshujon.com/devpath</a></p>
+</footer>
+</div>
