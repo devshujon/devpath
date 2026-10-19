@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_18",
+  "track": "sql",
+  "difficulty": "intermediate",
+  "title": "LEFT JOIN",
+  "summary": "LEFT JOIN keeps every row from the left table even when there is no match on the right (NULLs fill unmatched columns).",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain LEFT JOIN in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "sql",
+      "runnable": false,
+      "code": "SELECT u.email, COUNT(o.id) AS order_count\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id\nGROUP BY u.id;\n"
+    }
+  ],
+  "quickRecap": [
+    "LEFT JOIN",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

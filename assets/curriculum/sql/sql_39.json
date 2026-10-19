@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_39",
+  "track": "sql",
+  "difficulty": "advanced",
+  "title": "Relational Database Design for Real Projects",
+  "summary": "Production schemas combine normalization, indexes, migrations, backups, and least-privilege access.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Relational Database Design for Real Projects in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Align with sql_30 design basics — no live database runs inside DevPath."
+    }
+  ],
+  "quickRecap": [
+    "Relational Database Design for Real Projects",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

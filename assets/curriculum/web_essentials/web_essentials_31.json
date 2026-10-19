@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_31",
+  "track": "web_essentials",
+  "difficulty": "advanced",
+  "title": "Authentication vs Authorization",
+  "summary": "Authorization enforces what authenticated users may do — server-side on every request.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Authentication vs Authorization in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Complements authentication lessons in PHP and Web Essentials tracks."
+    }
+  ],
+  "quickRecap": [
+    "Authentication vs Authorization",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

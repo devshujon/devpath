@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "php_25",
+  "track": "php",
+  "difficulty": "intermediate",
+  "title": "Password Hashing and Verification",
+  "summary": "Use password_hash/password_verify — never store reversible or plaintext passwords.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Password Hashing and Verification in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "php",
+      "runnable": false,
+      "code": "$hash = password_hash($password, PASSWORD_DEFAULT);\n// store hash only\npassword_verify($password, $hash);"
+    }
+  ],
+  "quickRecap": [
+    "Password Hashing and Verification",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

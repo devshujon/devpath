@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "python_05",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "Lists, Tuples, Sets, and Dictionaries",
+  "summary": "Lists, dicts, sets, and tuples structure data — practice scripts run outside the app.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Lists, Tuples, Sets, and Dictionaries in practical web-development terms",
+    "Recognize how Python connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Do not use eval() on untrusted input when automating files or APIs locally."
+    }
+  ],
+  "quickRecap": [
+    "Lists, Tuples, Sets, and Dictionaries",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

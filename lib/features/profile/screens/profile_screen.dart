@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/app_version.dart';
+import '../../../core/constants/app_urls.dart';
 import '../../../core/services/battery_service.dart';
 import '../../../core/services/storage_service.dart';
 import 'privacy_policy_screen.dart';
@@ -61,6 +62,7 @@ class ProfileScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
             title: const Text('Privacy policy'),
+            subtitle: const Text(AppUrls.privacyPolicy),
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(

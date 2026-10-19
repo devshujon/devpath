@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "php_13",
+  "track": "php",
+  "difficulty": "beginner",
+  "title": "Input Validation",
+  "summary": "Normalize and validate input on the server before SQL, files, or sessions.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Input Validation in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "callout",
+      "variant": "info",
+      "md": "Browser `required` attributes improve UX only — they are not a security control."
+    }
+  ],
+  "quickRecap": [
+    "Input Validation",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

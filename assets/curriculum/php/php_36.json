@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "php_36",
+  "track": "php",
+  "difficulty": "advanced",
+  "title": "Secure Backend Architecture",
+  "summary": "Secure backends combine transport security (HTTPS), validation, parameterized SQL, authentication, authorization, and least-privilege infrastructure.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "List layers of defense for a small API",
+    "Apply least privilege to DB credentials",
+    "Handle errors without leaking secrets"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Treat every request as untrusted. Validate, authenticate, authorize, then access data with bound parameters under a DB user that cannot DROP SCHEMA."
+    }
+  ],
+  "quickRecap": [
+    "Secure Backend Architecture",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

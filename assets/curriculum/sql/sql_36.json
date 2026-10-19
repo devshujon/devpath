@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_36",
+  "track": "sql",
+  "difficulty": "advanced",
+  "title": "SQL Injection Prevention",
+  "summary": "SQL injection exploits dynamic string building. Parameterized queries and least-privilege DB users reduce risk.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain SQL Injection Prevention in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "Example attack input: `' OR '1'='1` in a concatenated login query — prepared statements neutralize this class of attack."
+    }
+  ],
+  "quickRecap": [
+    "SQL Injection Prevention",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

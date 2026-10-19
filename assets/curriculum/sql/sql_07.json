@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_07",
+  "track": "sql",
+  "difficulty": "beginner",
+  "title": "WHERE",
+  "summary": "WHERE filters rows; bind dynamic values via prepared statements in apps.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain WHERE in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Index columns used in frequent WHERE clauses when appropriate."
+    }
+  ],
+  "quickRecap": [
+    "WHERE",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

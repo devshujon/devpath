@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_23",
+  "track": "web_essentials",
+  "difficulty": "intermediate",
+  "title": "API Error Handling",
+  "summary": "Clients should branch on HTTP status, parse structured error bodies, and retry transient failures responsibly.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain API Error Handling in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Distinguish **4xx** (fix request) from **5xx** (server/transient). Use backoff for 503/timeouts; never log tokens in client console in production builds."
+    }
+  ],
+  "quickRecap": [
+    "API Error Handling",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "python_01",
+  "track": "python",
+  "difficulty": "beginner",
+  "title": "What Is Python?",
+  "summary": "Python scripts run on your machine — DevPath provides offline lessons and quizzes.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain What Is Python? in practical web-development terms",
+    "Recognize how Python connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Install Python 3 locally to try print() and automation examples."
+    }
+  ],
+  "quickRecap": [
+    "What Is Python?",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

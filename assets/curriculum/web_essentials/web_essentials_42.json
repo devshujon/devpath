@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_42",
+  "track": "web_essentials",
+  "difficulty": "advanced",
+  "title": "Static vs Server-Side Hosting",
+  "summary": "Static sites vs server-side apps — different hosting and threat models.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Static vs Server-Side Hosting in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "APIs still need auth, validation, and HTTPS even if front-end is static."
+    }
+  ],
+  "quickRecap": [
+    "Static vs Server-Side Hosting",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

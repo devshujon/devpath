@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "typescript_09",
+  "track": "typescript",
+  "difficulty": "intermediate",
+  "title": "Narrowing",
+  "summary": "Narrowing refines types after guards — essential before using API or JSON data safely in TypeScript.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Narrowing in practical web-development terms",
+    "Recognize how TypeScript connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "typescript",
+      "runnable": false,
+      "code": "function parseId(value: unknown): number | null {\n  if (typeof value !== \"number\" || !Number.isInteger(value)) return null;\n  return value;\n}\n"
+    }
+  ],
+  "quickRecap": [
+    "Narrowing",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

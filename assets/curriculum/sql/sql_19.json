@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_19",
+  "track": "sql",
+  "difficulty": "intermediate",
+  "title": "Relationships and Foreign Keys",
+  "summary": "Foreign keys document relationships and prevent orphan rows in MySQL/InnoDB.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Relationships and Foreign Keys in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "sql",
+      "runnable": false,
+      "code": "CREATE TABLE posts (\n  id INT PRIMARY KEY AUTO_INCREMENT,\n  author_id INT NOT NULL,\n  FOREIGN KEY (author_id) REFERENCES authors(id)\n);\n"
+    }
+  ],
+  "quickRecap": [
+    "Relationships and Foreign Keys",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

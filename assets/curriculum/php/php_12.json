@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "php_12",
+  "track": "php",
+  "difficulty": "beginner",
+  "title": "GET vs POST",
+  "summary": "$_GET and $_POST are untrusted input superglobals.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain GET vs POST in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "Never pass raw superglobals into SQL strings."
+    }
+  ],
+  "quickRecap": [
+    "GET vs POST",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

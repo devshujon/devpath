@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "typescript_10",
+  "track": "typescript",
+  "difficulty": "intermediate",
+  "title": "Generics",
+  "summary": "Generics let you reuse logic while keeping types precise — common in API clients and data stores.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Generics in practical web-development terms",
+    "Recognize how TypeScript connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "typescript",
+      "runnable": false,
+      "code": "type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string };\n\nasync function getJson<T>(url: string): Promise<ApiResult<T>> {\n  const res = await fetch(url);\n  if (!res.ok) return { ok: false, error: \"HTTP \" + res.status };\n  return { ok: true, data: (await res.json()) as T };\n}\n"
+    }
+  ],
+  "quickRecap": [
+    "Generics",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

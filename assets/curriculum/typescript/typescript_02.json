@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 2,
+  "id": "typescript_02",
+  "track": "typescript",
+  "difficulty": "beginner",
+  "title": "Type Annotations",
+  "summary": "Offline lesson 2 in the TypeScript track (beginner).",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Type Annotations in practical web-development terms",
+    "Recognize how TypeScript connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "summary",
+      "md": "**Type Annotations** — Offline lesson 2 in the TypeScript track (beginner)."
+    },
+    {
+      "type": "heading",
+      "text": "Core idea",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "This lesson covers **Type Annotations** as part of TypeScript. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
+    },
+    {
+      "type": "code",
+      "lang": "typescript",
+      "runnable": false,
+      "caption": "Try this in the playground when runnable.",
+      "code": "// Type Annotations\ntype ApiUser = { id: number; name: string };\nconst parseUser = (data: unknown): ApiUser | null => {\n  if (typeof data !== \"object\" || data === null) return null;\n  const o = data as Record<string, unknown>;\n  if (typeof o.id !== \"number\" || typeof o.name !== \"string\") return null;\n  return { id: o.id, name: o.name };\n};\n"
+    },
+    {
+      "type": "heading",
+      "text": "Best practices",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
+    },
+    {
+      "type": "heading",
+      "text": "Common mistakes",
+      "level": 2
+    },
+    {
+      "type": "prose",
+      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+    }
+  ],
+  "quickRecap": [
+    "Type Annotations",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

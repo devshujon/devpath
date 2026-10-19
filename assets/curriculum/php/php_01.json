@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "php_01",
+  "track": "php",
+  "difficulty": "beginner",
+  "title": "What Is PHP?",
+  "summary": "PHP generates dynamic server responses — study offline; execute on a server or local stack.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain What Is PHP? in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "DevPath playground: HTML/CSS/JS only."
+    }
+  ],
+  "quickRecap": [
+    "What Is PHP?",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

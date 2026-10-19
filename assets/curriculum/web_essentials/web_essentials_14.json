@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_14",
+  "track": "web_essentials",
+  "difficulty": "beginner",
+  "title": "HTTPS and TLS",
+  "summary": "HTTPS protects data in transit with TLS — required for login and APIs.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain HTTPS and TLS in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Use HSTS and valid certificates in production; fix mixed content."
+    }
+  ],
+  "quickRecap": [
+    "HTTPS and TLS",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

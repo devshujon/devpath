@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "php_37",
+  "track": "php",
+  "difficulty": "advanced",
+  "title": "Testing PHP Applications",
+  "summary": "Automated PHP tests guard auth, SQL, and API regressions — run on your computer, not in DevPath.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Testing PHP Applications in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Use isolated databases or transactions rolled back after tests. Never point tests at production data."
+    }
+  ],
+  "quickRecap": [
+    "Testing PHP Applications",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "typescript_13",
+  "track": "typescript",
+  "difficulty": "advanced",
+  "title": "Async/Await",
+  "summary": "async/await structures Promise-based I/O — compile and run TypeScript on your computer, not in DevPath.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Async/Await in practical web-development terms",
+    "Recognize how TypeScript connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Always pair await fetch() with status checks and safe JSON parsing (unknown → validated types)."
+    }
+  ],
+  "quickRecap": [
+    "Async/Await",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

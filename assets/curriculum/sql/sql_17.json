@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_17",
+  "track": "sql",
+  "difficulty": "intermediate",
+  "title": "INNER JOIN",
+  "summary": "INNER JOIN returns rows where the join condition matches in **both** tables — ideal for required relationships.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain INNER JOIN in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "sql",
+      "runnable": false,
+      "code": "-- MySQL\nSELECT o.id, u.email\nFROM orders o\nINNER JOIN users u ON u.id = o.user_id\nWHERE o.status = 'paid';\n"
+    }
+  ],
+  "quickRecap": [
+    "INNER JOIN",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

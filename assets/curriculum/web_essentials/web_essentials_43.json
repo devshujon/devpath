@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_43",
+  "track": "web_essentials",
+  "difficulty": "advanced",
+  "title": "Environment Configuration",
+  "summary": "Per-environment configuration via env vars keeps production credentials out of code.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Environment Configuration in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Pair with deployment lessons: inject config at release, not bake into artifacts."
+    }
+  ],
+  "quickRecap": [
+    "Environment Configuration",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

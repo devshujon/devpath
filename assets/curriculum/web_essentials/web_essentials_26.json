@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_26",
+  "track": "web_essentials",
+  "difficulty": "intermediate",
+  "title": "Cross-Site Scripting (XSS)",
+  "summary": "XSS injects script into pages users trust — encode output, CSP, and safe DOM APIs are layered defenses.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Cross-Site Scripting (XSS) in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "No single header or filter stops every XSS variant — combine encoding, CSP, and safe frameworks."
+    }
+  ],
+  "quickRecap": [
+    "Cross-Site Scripting (XSS)",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

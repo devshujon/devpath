@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_29",
+  "track": "web_essentials",
+  "difficulty": "intermediate",
+  "title": "Output Escaping",
+  "summary": "Escape for the sink: HTML text, attribute, URL, and JavaScript contexts differ.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Output Escaping in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Output encoding complements input validation — neither replaces parameterized SQL or CSRF tokens."
+    }
+  ],
+  "quickRecap": [
+    "Output Escaping",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

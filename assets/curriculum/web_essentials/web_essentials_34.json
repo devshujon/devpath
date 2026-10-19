@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "web_essentials_34",
+  "track": "web_essentials",
+  "difficulty": "advanced",
+  "title": "Reading Error Messages",
+  "summary": "Safe user-facing errors, detailed operator logs — never leak secrets or stack traces publicly.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Reading Error Messages in practical web-development terms",
+    "Recognize how Web Essentials connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Use DevTools during local debugging; production users see generic failure messages."
+    }
+  ],
+  "quickRecap": [
+    "Reading Error Messages",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

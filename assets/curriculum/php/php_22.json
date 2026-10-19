@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "php_22",
+  "track": "php",
+  "difficulty": "intermediate",
+  "title": "Building Simple API Endpoints",
+  "summary": "A minimal PHP endpoint validates input, talks to the database with PDO, and returns JSON plus the correct HTTP status.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Map HTTP methods to safe handlers",
+    "Return structured JSON errors",
+    "Keep secrets and SQL off the client"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Start with routing (even a single `api/posts.php`), set `Content-Type: application/json`, validate method, then use prepared statements. Use **400** for bad input, **404** for missing resources, **500** only for unexpected failures (log details server-side)."
+    }
+  ],
+  "quickRecap": [
+    "Building Simple API Endpoints",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

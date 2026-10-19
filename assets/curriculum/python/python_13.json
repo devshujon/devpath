@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "python_13",
+  "track": "python",
+  "difficulty": "intermediate",
+  "title": "JSON",
+  "summary": "Parse JSON safely in scripts you run locally — validate shapes before acting on data.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain JSON in practical web-development terms",
+    "Recognize how Python connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "DevPath does not execute Python; use venv + tests on your computer."
+    }
+  ],
+  "quickRecap": [
+    "JSON",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

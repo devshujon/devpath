@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_10",
+  "track": "sql",
+  "difficulty": "beginner",
+  "title": "INSERT",
+  "summary": "INSERT adds rows — respect UNIQUE/FK constraints.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain INSERT in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "sql",
+      "runnable": false,
+      "code": "INSERT INTO users (email) VALUES (?); -- bind in app code"
+    }
+  ],
+  "quickRecap": [
+    "INSERT",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_11",
+  "track": "sql",
+  "difficulty": "beginner",
+  "title": "UPDATE",
+  "summary": "Always constrain UPDATE/DELETE with WHERE; use transactions for multi-step changes.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain UPDATE in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "An UPDATE without WHERE can touch every row."
+    }
+  ],
+  "quickRecap": [
+    "UPDATE",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "php_35",
+  "track": "php",
+  "difficulty": "advanced",
+  "title": "Transactions",
+  "summary": "PDO transactions keep multi-step database changes consistent.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Transactions in practical web-development terms",
+    "Recognize how PHP connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "code",
+      "lang": "php",
+      "runnable": false,
+      "code": "$pdo->beginTransaction(); try { /* updates */ $pdo->commit(); } catch (Throwable $e) { $pdo->rollBack(); throw $e; }"
+    }
+  ],
+  "quickRecap": [
+    "Transactions",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

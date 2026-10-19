@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/routing/app_routes.dart';
 import '../models/lesson.dart';
+import '../widgets/track_filter_row.dart';
 import '../providers/learning_progress_provider.dart';
 import '../widgets/lesson_tile.dart';
 
@@ -31,7 +32,7 @@ class _RoadmapScreenState extends State<RoadmapScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _TrackFilterRow(
+          TrackFilterRow(
             selected: _filter,
             onChanged: (t) => setState(() => _filter = t),
           ),
@@ -82,88 +83,6 @@ class _RoadmapScreenState extends State<RoadmapScreen> {
       context,
       AppRoutes.lessonDetail,
       arguments: LessonDetailArguments(lessonId: lesson.id),
-    );
-  }
-}
-
-class _TrackFilterRow extends StatelessWidget {
-  final LessonTrack? selected;
-  final ValueChanged<LessonTrack?> onChanged;
-
-  const _TrackFilterRow({required this.selected, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _Chip(
-            label: 'All',
-            color: Theme.of(context).colorScheme.primary,
-            selected: selected == null,
-            onTap: () => onChanged(null),
-          ),
-          const SizedBox(width: 8),
-          _Chip(
-            label: 'HTML',
-            color: LessonTrack.html.color,
-            selected: selected == LessonTrack.html,
-            onTap: () => onChanged(LessonTrack.html),
-          ),
-          const SizedBox(width: 8),
-          _Chip(
-            label: 'CSS',
-            color: LessonTrack.css.color,
-            selected: selected == LessonTrack.css,
-            onTap: () => onChanged(LessonTrack.css),
-          ),
-          const SizedBox(width: 8),
-          _Chip(
-            label: 'JS',
-            color: LessonTrack.js.color,
-            selected: selected == LessonTrack.js,
-            onTap: () => onChanged(LessonTrack.js),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  final String label;
-  final Color color;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _Chip({
-    required this.label,
-    required this.color,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? color : color.withValues(alpha: 0.10),
-      borderRadius: BorderRadius.circular(20),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected ? Colors.white : color,
-              fontWeight: FontWeight.w700,
-              fontSize: 13,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

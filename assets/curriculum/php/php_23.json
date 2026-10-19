@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "id": "php_23",
+  "track": "php",
+  "difficulty": "intermediate",
+  "title": "PDO Database Connections",
+  "summary": "PDO connects PHP to MySQL (and other databases) through one API. Use it with exceptions in development and **never** embed credentials in source control.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Create a PDO instance with a DSN",
+    "Set safe error handling modes",
+    "Understand why credentials belong in environment config"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "PDO separates **connection** from **queries**. A DSN like `mysql:host=127.0.0.1;dbname=app;charset=utf8mb4` selects the driver and database. User/password come from environment variables loaded on the server."
+    },
+    {
+      "type": "code",
+      "lang": "php",
+      "runnable": false,
+      "caption": "Study offline — run on your computer, not in DevPath.",
+      "code": "<?php\n$dsn = 'mysql:host=127.0.0.1;dbname=shop;charset=utf8mb4';\n$user = getenv('DB_USER');\n$pass = getenv('DB_PASS');\n$pdo = new PDO($dsn, $user, $pass, [\n  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,\n]);\n"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "Do **not** commit real passwords. Use `.env` locally (gitignored) and secret managers in production."
+    }
+  ],
+  "quickRecap": [
+    "PDO Database Connections",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

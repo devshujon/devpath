@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "id": "php_24",
+  "track": "php",
+  "difficulty": "intermediate",
+  "title": "Prepared Statements",
+  "summary": "Prepared statements send SQL structure and data separately so user input cannot change query meaning — the core defense against SQL injection in PHP.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Prepare once, execute many with bound values",
+    "Contrast safe binding with string concatenation",
+    "Pair with server-side validation"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "An attacker should not be able to turn a login lookup into `OR 1=1`. Placeholders (`?` or `:email`) keep their input in the **data channel** only."
+    },
+    {
+      "type": "code",
+      "lang": "php",
+      "runnable": false,
+      "code": "<?php\n$stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');\n$stmt->execute([$email]);\n$user = $stmt->fetch();\n"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "md": "Never concatenate: \"SELECT ... WHERE id = \" . $_GET[\"id\"]. Always bind parameters."
+    }
+  ],
+  "quickRecap": [
+    "Prepared Statements",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

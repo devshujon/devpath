@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "typescript_15",
+  "track": "typescript",
+  "difficulty": "advanced",
+  "title": "Type-Safe Application Design",
+  "summary": "Validate at boundaries; use strong types inside the application core.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Type-Safe Application Design in practical web-development terms",
+    "Recognize how TypeScript connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Parsers from unknown → domain types centralize security-relevant checks."
+    }
+  ],
+  "quickRecap": [
+    "Type-Safe Application Design",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

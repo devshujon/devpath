@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "python_12",
+  "track": "python",
+  "difficulty": "intermediate",
+  "title": "Exceptions",
+  "summary": "Handle specific exceptions and pair with input validation for safe automation.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Exceptions in practical web-development terms",
+    "Recognize how Python connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Log errors without leaking secrets; fail closed on unknown failures."
+    }
+  ],
+  "quickRecap": [
+    "Exceptions",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

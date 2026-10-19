@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "typescript_14",
+  "track": "typescript",
+  "difficulty": "advanced",
+  "title": "API Response Types",
+  "summary": "Model API payloads with generics; handle HTTP errors before trusting parsed data.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain API Response Types in practical web-development terms",
+    "Recognize how TypeScript connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Compile TypeScript on your computer — DevPath playground runs HTML/CSS/JS only."
+    }
+  ],
+  "quickRecap": [
+    "API Response Types",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}

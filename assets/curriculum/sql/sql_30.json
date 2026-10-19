@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "sql_30",
+  "track": "sql",
+  "difficulty": "intermediate",
+  "title": "Database Design",
+  "summary": "Model entities, relationships, and keys before indexing — MySQL InnoDB FKs enforce integrity.",
+  "estimatedMinutes": 12,
+  "objectives": [
+    "Explain Database Design in practical web-development terms",
+    "Recognize how SQL connects to HTML, CSS, and JavaScript",
+    "Apply safe habits and avoid common mistakes"
+  ],
+  "content": [
+    {
+      "type": "prose",
+      "md": "Sketch ER diagrams on paper; validate with normalized tables and realistic queries."
+    }
+  ],
+  "quickRecap": [
+    "Database Design",
+    "Practice with the quiz — execution on device is limited to HTML/CSS/JS in the playground."
+  ],
+  "exercise": {
+    "prompt": "Review the example, then open the playground only when the lesson uses HTML/CSS/JS starter code. Complete the quiz to earn XP.",
+    "starterCode": {
+      "html": "",
+      "css": "",
+      "js": ""
+    },
+    "checks": []
+  }
+}
