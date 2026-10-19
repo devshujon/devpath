@@ -4,7 +4,7 @@
   "track": "typescript",
   "difficulty": "advanced",
   "title": "Async/Await",
-  "summary": "Model API payloads with generics; handle HTTP errors before trusting parsed data.",
+  "summary": "async/await structures Promise-based I/O — compile and run TypeScript on your computer, not in DevPath.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Async/Await in practical web-development terms",
@@ -14,7 +14,7 @@
   "content": [
     {
       "type": "prose",
-      "md": "Compile TypeScript on your computer — DevPath playground runs HTML/CSS/JS only."
+      "md": "Always pair await fetch() with status checks and safe JSON parsing (unknown → validated types)."
     }
   ],
   "quickRecap": [

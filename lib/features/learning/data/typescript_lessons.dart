@@ -386,6 +386,37 @@ const List<Lesson> typescriptLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
+        question: 'async/await in TypeScript primarily helps you…',
+        options: ['Write asynchronous code that reads like sequential logic', 'Remove the need for HTTP status checks', 'Execute PHP on Android', 'Disable JSON parsing'],
+        correctIndex: 0,
+        explanation: 'await pauses within an async function until a Promise settles — still handle errors.',
+      ),
+      QuizQuestion(
+        question: 'When awaiting fetch(), you should still…',
+        options: ['Check res.ok and handle network failures', 'Assume the body is always valid JSON', 'Insert HTML with innerHTML without escaping', 'Skip HTTPS in production'],
+        correctIndex: 0,
+        explanation: 'async/await does not replace HTTP or validation logic.',
+      ),
+      QuizQuestion(
+        question: 'An async function always returns…',
+        options: ['A Promise (even if you return a plain value)', 'A synchronous SQL result set', 'A PHP session array', 'Nothing — async forbids return'],
+        correctIndex: 0,
+        explanation: 'Async functions wrap return values in Promises; use try/catch for rejected awaits.',
+      ),
+    ],
+  ),
+  Lesson(
+    id: 'typescript_14',
+    title: 'API Response Types',
+    description: 'Offline lesson 14 in the TypeScript track (advanced).',
+    module: 'TypeScript',
+    difficulty: Difficulty.advanced,
+    track: LessonTrack.typescript,
+    estimatedMinutes: 12,
+    xpReward: 50,
+    starterCode: const {'html': '', 'css': '', 'js': ''},
+    quizQuestions: [
+      QuizQuestion(
         question: 'Typing an API response as ApiResult<User> helps…',
         options: ['Document expected JSON fields where the response is consumed', 'Guarantee the server is honest', 'Remove need for HTTP status codes', 'Run SQL safely without binding'],
         correctIndex: 0,
@@ -406,9 +437,9 @@ const List<Lesson> typescriptLessons = [
     ],
   ),
   Lesson(
-    id: 'typescript_14',
-    title: 'API Response Types',
-    description: 'Offline lesson 14 in the TypeScript track (advanced).',
+    id: 'typescript_15',
+    title: 'Type-Safe Application Design',
+    description: 'Offline lesson 15 in the TypeScript track (advanced).',
     module: 'TypeScript',
     difficulty: Difficulty.advanced,
     track: LessonTrack.typescript,
@@ -429,42 +460,17 @@ const List<Lesson> typescriptLessons = [
         explanation: 'Parsers encode validation rules once and reuse them.',
       ),
       QuizQuestion(
-        question: 'Discriminated unions like { kind: "ok"; data: T } | { kind: "err"; msg: string } help…',
+        question: 'Discriminated unions like success vs error results help…',
         options: ['Exhaustive switch handling of success vs failure', 'Remove HTTP', 'Disable TypeScript strict mode', 'Avoid error messages'],
         correctIndex: 0,
         explanation: 'Tagged unions make control-flow narrowing explicit and safer.',
       ),
-    ],
-  ),
-  Lesson(
-    id: 'typescript_15',
-    title: 'Type-Safe Application Design',
-    description: 'Offline lesson 15 in the TypeScript track (advanced).',
-    module: 'TypeScript',
-    difficulty: Difficulty.advanced,
-    track: LessonTrack.typescript,
-    estimatedMinutes: 12,
-    xpReward: 50,
-    starterCode: const {'html': '', 'css': '', 'js': ''},
-    quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Type-Safe Application Design”?',
-        options: ['A unrelated desktop-only topic', 'Type-Safe Application Design', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'Type-Safe Application Design is the subject of this lesson.',
+        question: 'Compile TypeScript for production on…',
+        options: ['Your computer or CI — DevPath playground runs HTML/CSS/JS only', 'Inside DevPath PHP runtime', 'MySQL server directly', 'Without any type checking'],
+        correctIndex: 0,
+        explanation: 'Offline lesson examples are studied in-app; TS tooling runs outside DevPath.',
       ),
-      QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
-      ),
-      QuizQuestion(
-        question: 'Can DevPath execute TypeScript code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for TypeScript runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
-        correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
     ],
   ),
   Lesson(

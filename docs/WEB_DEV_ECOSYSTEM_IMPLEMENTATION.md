@@ -49,9 +49,9 @@
 
 ## Content quality (PR #11 hardening)
 
-**32 priority lessons** (batch 1 + batch 2) have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`:
+**45 priority lessons** (batches 1–3) have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`.
 
-Batch 2 adds PHP auth/sessions/secrets/transactions, SQL ACID/indexes, TS interfaces/API typing, Python collections/functions/exceptions, Web Essentials auth/secrets/env — and moves secure-backend override to **`php_36`** (was incorrectly on `php_37`).
+Batch 3: Web XSS/CSRF/escaping (`web_essentials_26`, `27`, `29`) plus secure files, safe errors, DevTools (`33`–`35`); PHP uploads + REST; SQL design; TS **`typescript_15`** type-safe design (with **`typescript_13`**/**`14`** realigned to Async/Await + API Response Types); Python JSON/HTTP.
 
 See `priorityLessonIds` in `test/learning/priority_lesson_quality_test.dart` for the full list.
 

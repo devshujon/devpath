@@ -980,6 +980,44 @@ final priorityLessonOverrides = <String, PriorityLessonOverride>{
   'typescript_13': PriorityLessonOverride(
     quizzes: [
       PriorityQuiz(
+        question: 'async/await in TypeScript primarily helps you…',
+        options: [
+          'Write asynchronous code that reads like sequential logic',
+          'Remove the need for HTTP status checks',
+          'Execute PHP on Android',
+          'Disable JSON parsing',
+        ],
+        correctIndex: 0,
+        explanation: 'await pauses within an async function until a Promise settles — still handle errors.',
+      ),
+      PriorityQuiz(
+        question: 'When awaiting fetch(), you should still…',
+        options: [
+          'Check res.ok and handle network failures',
+          'Assume the body is always valid JSON',
+          'Insert HTML with innerHTML without escaping',
+          'Skip HTTPS in production',
+        ],
+        correctIndex: 0,
+        explanation: 'async/await does not replace HTTP or validation logic.',
+      ),
+      PriorityQuiz(
+        question: 'An async function always returns…',
+        options: [
+          'A Promise (even if you return a plain value)',
+          'A synchronous SQL result set',
+          'A PHP session array',
+          'Nothing — async forbids return',
+        ],
+        correctIndex: 0,
+        explanation: 'Async functions wrap return values in Promises; use try/catch for rejected awaits.',
+      ),
+    ],
+    curriculum: _tsAsyncCurriculum,
+  ),
+  'typescript_14': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
         question: 'Typing an API response as ApiResult<User> helps…',
         options: [
           'Document expected JSON fields where the response is consumed',
@@ -1015,7 +1053,7 @@ final priorityLessonOverrides = <String, PriorityLessonOverride>{
     ],
     curriculum: _tsApiResponseCurriculum,
   ),
-  'typescript_14': PriorityLessonOverride(
+  'typescript_15': PriorityLessonOverride(
     quizzes: [
       PriorityQuiz(
         question: 'Type-safe application design means…',
@@ -1040,7 +1078,7 @@ final priorityLessonOverrides = <String, PriorityLessonOverride>{
         explanation: 'Parsers encode validation rules once and reuse them.',
       ),
       PriorityQuiz(
-        question: 'Discriminated unions like { kind: "ok"; data: T } | { kind: "err"; msg: string } help…',
+        question: 'Discriminated unions like success vs error results help…',
         options: [
           'Exhaustive switch handling of success vs failure',
           'Remove HTTP',
@@ -1049,6 +1087,17 @@ final priorityLessonOverrides = <String, PriorityLessonOverride>{
         ],
         correctIndex: 0,
         explanation: 'Tagged unions make control-flow narrowing explicit and safer.',
+      ),
+      PriorityQuiz(
+        question: 'Compile TypeScript for production on…',
+        options: [
+          'Your computer or CI — DevPath playground runs HTML/CSS/JS only',
+          'Inside DevPath PHP runtime',
+          'MySQL server directly',
+          'Without any type checking',
+        ],
+        correctIndex: 0,
+        explanation: 'Offline lesson examples are studied in-app; TS tooling runs outside DevPath.',
       ),
     ],
     curriculum: _tsTypeSafeCurriculum,
@@ -1313,6 +1362,506 @@ final priorityLessonOverrides = <String, PriorityLessonOverride>{
       ),
     ],
     curriculum: _webEnvConfigCurriculum,
+  ),
+  'web_essentials_26': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Stored XSS persists because…',
+        options: [
+          'Malicious script is saved on the server and served to other users',
+          'It only affects the attacker\'s browser once',
+          'HTTPS disables all script execution',
+          'Prepared statements prevent XSS',
+        ],
+        correctIndex: 0,
+        explanation: 'Stored XSS hits every viewer of tainted data — escaping on output is required.',
+      ),
+      PriorityQuiz(
+        question: 'Reflected XSS typically needs…',
+        options: [
+          'A victim to open a crafted link containing injected script',
+          'A database migration',
+          'CSRF tokens only',
+          'SQL JOIN syntax',
+        ],
+        correctIndex: 0,
+        explanation: 'Reflected payloads echo immediately in the response — still validate and encode output.',
+      ),
+      PriorityQuiz(
+        question: 'Content Security Policy (CSP) can reduce XSS impact by…',
+        options: [
+          'Restricting which script sources may execute',
+          'Replacing all input validation',
+          'Eliminating the need for HTTPS',
+          'Hashing passwords in HTML',
+        ],
+        correctIndex: 0,
+        explanation: 'CSP is defense in depth — it does not replace encoding or sanitization.',
+      ),
+      PriorityQuiz(
+        question: 'Inserting untrusted JSON into innerHTML is unsafe because…',
+        options: [
+          'HTML parsing can execute embedded scripts in many contexts',
+          'JSON is always plain text',
+          'CSS cannot style JSON',
+          'It speeds up SQL queries',
+        ],
+        correctIndex: 0,
+        explanation: 'Prefer textContent or framework-safe bindings; encode for HTML context.',
+      ),
+    ],
+    curriculum: _webXssCurriculum,
+  ),
+  'web_essentials_27': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'CSRF tricks a victim\'s browser into…',
+        options: [
+          'Sending an authenticated request the user did not intend',
+          'Running SQL inside MySQL without login',
+          'Disabling TLS certificates',
+          'Replacing Git history',
+        ],
+        correctIndex: 0,
+        explanation: 'The browser attaches cookies automatically — the server must verify intent.',
+      ),
+      PriorityQuiz(
+        question: 'A synchronizer CSRF token should be…',
+        options: [
+          'Unpredictable, tied to the session, and validated server-side on state-changing requests',
+          'Hard-coded in JavaScript for all users',
+          'Sent only in URLs for sharing',
+          'Omitted when using HTTPS',
+        ],
+        correctIndex: 0,
+        explanation: 'Tokens prove the form/post originated from your app — not a third-party site.',
+      ),
+      PriorityQuiz(
+        question: 'SameSite=Lax or Strict on cookies helps mitigate CSRF by…',
+        options: [
+          'Limiting when cookies are sent on cross-site requests',
+          'Encrypting password hashes',
+          'Preventing all XSS',
+          'Replacing authorization checks',
+        ],
+        correctIndex: 0,
+        explanation: 'SameSite is helpful but not a solo fix — use tokens and proper HTTP methods too.',
+      ),
+      PriorityQuiz(
+        question: 'GET requests that change server state…',
+        options: [
+          'Are unsafe and should not perform mutations',
+          'Are ideal for CSRF protection alone',
+          'Replace POST entirely for logins',
+          'Disable session cookies',
+        ],
+        correctIndex: 0,
+        explanation: 'Use POST/PUT/PATCH/DELETE with CSRF protection for state changes.',
+      ),
+    ],
+    curriculum: _webCsrfCurriculum,
+  ),
+  'web_essentials_29': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Context-aware escaping means…',
+        options: [
+          'Encode output differently for HTML, attribute, URL, and JavaScript contexts',
+          'Use one generic escape for every layer',
+          'Skip encoding when using HTTPS',
+          'Only escape CSS colors',
+        ],
+        correctIndex: 0,
+        explanation: 'HTML escaping does not protect inside script URLs or JS string literals.',
+      ),
+      PriorityQuiz(
+        question: 'In HTML text nodes, user nicknames should be inserted via…',
+        options: [
+          'textContent or escaped templates — not raw innerHTML',
+          'Unescaped innerHTML for speed',
+          'SQL concatenation',
+          'Plaintext password fields',
+        ],
+        correctIndex: 0,
+        explanation: 'textContent treats input as text, not markup.',
+      ),
+      PriorityQuiz(
+        question: 'htmlspecialchars() in PHP is appropriate when…',
+        options: [
+          'Emitting dynamic strings into HTML body/attributes (with correct flags/encoding)',
+          'Building SQL WHERE clauses',
+          'Hashing passwords',
+          'Replacing CSRF tokens',
+        ],
+        correctIndex: 0,
+        explanation: 'Use the right encoder for the sink — HTML, URL, JS each differ.',
+      ),
+      PriorityQuiz(
+        question: 'Output encoding alone…',
+        options: [
+          'Does not stop SQL injection or CSRF by itself',
+          'Solves every web vulnerability',
+          'Removes need for prepared statements',
+          'Eliminates authentication',
+        ],
+        correctIndex: 0,
+        explanation: 'Layer defenses: validate input, encode output, CSRF tokens, parameterized SQL.',
+      ),
+    ],
+    curriculum: _webEscapingCurriculum,
+  ),
+  'web_essentials_33': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'User-uploaded files should be stored…',
+        options: [
+          'Outside the web root with controlled download endpoints',
+          'Directly in public_html with original attacker-chosen names',
+          'Inside SQL VARCHAR columns as executable PHP',
+          'In JavaScript localStorage',
+        ],
+        correctIndex: 0,
+        explanation: 'Prevents direct URL execution of uploaded scripts.',
+      ),
+      PriorityQuiz(
+        question: 'Validating uploads requires server checks on…',
+        options: [
+          'Size limits, allowed types, and safe filenames — not client extension alone',
+          'Only the browser accept attribute',
+          'CSS color contrast',
+          'Git branch names',
+        ],
+        correctIndex: 0,
+        explanation: 'Attackers forge Content-Type and extensions — verify server-side.',
+      ),
+      PriorityQuiz(
+        question: 'Path traversal (../) in filenames should be blocked by…',
+        options: [
+          'Stripping/normalizing paths and using basenames before storage',
+          'Trusting user input paths',
+          'Disabling HTTPS',
+          'Using MD5 for passwords only',
+        ],
+        correctIndex: 0,
+        explanation: 'Never concatenate raw filenames onto base directories.',
+      ),
+    ],
+    curriculum: _webSecureFilesCurriculum,
+  ),
+  'web_essentials_34': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Production error pages shown to users should…',
+        options: [
+          'Be generic while detailed diagnostics go to secure logs',
+          'Include stack traces and SQL queries',
+          'Print database passwords for debugging',
+          'Disable all logging',
+        ],
+        correctIndex: 0,
+        explanation: 'Verbose errors aid attackers — log internally, respond safely.',
+      ),
+      PriorityQuiz(
+        question: 'When debugging XSS, error messages in the console…',
+        options: [
+          'May reveal script paths — fix the root encoding issue, do not expose secrets to users',
+          'Should include API keys for convenience',
+          'Replace CSRF tokens',
+          'Prove SQL injection succeeded',
+        ],
+        correctIndex: 0,
+        explanation: 'Use devtools locally; never ship secret values in client-visible errors.',
+      ),
+      PriorityQuiz(
+        question: 'HTTP 500 responses to clients should…',
+        options: [
+          'Avoid leaking implementation details while operators investigate logs',
+          'Always include raw PDO connection strings',
+          'Return full phpinfo() output',
+          'Skip authentication',
+        ],
+        correctIndex: 0,
+        explanation: 'Pair safe user messages with operator observability.',
+      ),
+    ],
+    curriculum: _webErrorMessagesCurriculum,
+  ),
+  'web_essentials_35': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Browser DevTools Network tab helps you inspect…',
+        options: [
+          'Request methods, headers, cookies, and response status for API debugging',
+          'MySQL query plans inside InnoDB',
+          'PHP opcache on the server disk',
+          'Git remotes without HTTP',
+        ],
+        correctIndex: 0,
+        explanation: 'See what the browser actually sent — useful for CSRF/cookie issues (local testing).',
+      ),
+      PriorityQuiz(
+        question: 'When reproducing XSS locally, DevTools Elements panel shows…',
+        options: [
+          'Whether untrusted input became live DOM/script context',
+          'Prepared statement bindings',
+          'Database foreign keys',
+          'Composer autoload maps',
+        ],
+        correctIndex: 0,
+        explanation: 'Inspect sinks where encoding failed — fix before production.',
+      ),
+      PriorityQuiz(
+        question: 'DevTools should never be used to…',
+        options: [
+          'Justify skipping server-side validation because you can tamper with client requests',
+          'View response JSON during development',
+          'Check Content-Type headers',
+          'Measure page load timing',
+        ],
+        correctIndex: 0,
+        explanation: 'Anything you change in DevTools is attacker-equivalent — server must enforce rules.',
+      ),
+    ],
+    curriculum: _webDevtoolsCurriculum,
+  ),
+  'php_20': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'move_uploaded_file() should target…',
+        options: [
+          'A non-executable directory outside public web roots when possible',
+          'The same folder as index.php with .php extension preserved',
+          'A SQL table as binary always',
+          'Client localStorage',
+        ],
+        correctIndex: 0,
+        explanation: 'Uploaded content must not become runnable code via URL.',
+      ),
+      PriorityQuiz(
+        question: r'Checking $_FILES upload error codes ensures…',
+        options: [
+          'PHP reports a successful upload before you process the temp file',
+          'The file is virus-free automatically',
+          'SQL injection is impossible',
+          'CSRF cannot occur',
+        ],
+        correctIndex: 0,
+        explanation: 'Handle upload errors explicitly; still validate type/size/content server-side.',
+      ),
+      PriorityQuiz(
+        question: 'MIME type sent by the browser…',
+        options: [
+          'Can be spoofed — verify with server-side checks (size, extension allow-list, content sniffing cautiously)',
+          'Is always trustworthy',
+          'Replaces password_hash',
+          'Disables sessions',
+        ],
+        correctIndex: 0,
+        explanation: 'Never trust client metadata alone for security decisions.',
+      ),
+    ],
+    curriculum: _phpUploadCurriculum,
+  ),
+  'php_34': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'RESTful design typically maps GET to…',
+        options: [
+          'Safe, read-only retrieval without side effects',
+          'Password changes without auth',
+          'Deleting all database rows',
+          'Uploading executables anonymously',
+        ],
+        correctIndex: 0,
+        explanation: 'GET must not mutate state; use POST/PUT/PATCH/DELETE with auth for changes.',
+      ),
+      PriorityQuiz(
+        question: 'Versioned paths like /api/v1/users help…',
+        options: [
+          'Evolve APIs without breaking existing clients abruptly',
+          'Remove need for HTTPS',
+          'Store secrets in URLs',
+          'Skip JSON encoding',
+        ],
+        correctIndex: 0,
+        explanation: 'Contract clarity — still validate input and authorize every route.',
+      ),
+      PriorityQuiz(
+        question: 'An API returning 201 Created should…',
+        options: [
+          'Include Location or body identifying the new resource when appropriate',
+          'Return plaintext passwords',
+          'Disable CSRF for all browsers globally',
+          'Echo raw SQL errors to clients',
+        ],
+        correctIndex: 0,
+        explanation: 'Use meaningful status codes and structured JSON — log details server-side.',
+      ),
+      PriorityQuiz(
+        question: 'Rate limiting login APIs helps mitigate…',
+        options: [
+          'Credential stuffing and brute force attempts',
+          'All XSS attacks automatically',
+          'DNS propagation delay',
+          'Foreign key violations',
+        ],
+        correctIndex: 0,
+        explanation: 'Combine with lockouts/MFA — rate limits are one layer, not a complete fix.',
+      ),
+    ],
+    curriculum: _phpRestCurriculum,
+  ),
+  'sql_30': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Normalizing to 3NF generally reduces…',
+        options: [
+          'Redundant duplicated data and update anomalies',
+          'Need for any indexes',
+          'Requirement for primary keys',
+          'Use of HTTPS',
+        ],
+        correctIndex: 0,
+        explanation: 'Normalization improves integrity; denormalize selectively for measured performance needs.',
+      ),
+      PriorityQuiz(
+        question: 'A junction table resolves…',
+        options: [
+          'Many-to-many relationships with composite keys to two entity tables',
+          'XSS in HTML forms',
+          'PHP session fixation',
+          'Git merge conflicts',
+        ],
+        correctIndex: 0,
+        explanation: 'Example: students_courses links students and courses with FKs.',
+      ),
+      PriorityQuiz(
+        question: 'Choosing primary keys that are stable and meaningful to the business…',
+        options: [
+          'Simplifies joins and referential integrity',
+          'Eliminates need for prepared statements',
+          'Allows DELETE without WHERE',
+          'Disables transactions',
+        ],
+        correctIndex: 0,
+        explanation: 'Surrogate keys (AUTO_INCREMENT) are common — document relationships clearly.',
+      ),
+    ],
+    curriculum: _sqlDesignCurriculum,
+  ),
+  'sql_39': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'In a blog schema, posts.author_id referencing users.id is…',
+        options: [
+          'A foreign key enforcing valid authors',
+          'A CSS selector',
+          'A CSRF token',
+          'A PHP session name',
+        ],
+        correctIndex: 0,
+        explanation: 'Model real projects with explicit FKs and indexes on join columns.',
+      ),
+      PriorityQuiz(
+        question: 'Soft deletes (deleted_at column) require…',
+        options: [
+          'Queries that filter active rows and indexes that match access patterns',
+          'Removing all WHERE clauses',
+          'Plaintext password columns',
+          'Storing uploads in SQL strings',
+        ],
+        correctIndex: 0,
+        explanation: 'Design queries consciously — partial indexes/filters may help at scale.',
+      ),
+      PriorityQuiz(
+        question: 'Before production launch you should…',
+        options: [
+          'Review schema, backups, least-privilege DB users, and migration plan',
+          'Grant root to the web app for convenience',
+          'Disable foreign keys permanently',
+          'Commit production passwords to Git',
+        ],
+        correctIndex: 0,
+        explanation: 'Design + operations together — DevPath studies schemas offline.',
+      ),
+    ],
+    curriculum: _sqlRealProjectCurriculum,
+  ),
+  'python_13': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'json.loads() on untrusted strings should be followed by…',
+        options: [
+          'Schema validation before using fields — run scripts on your computer, not in DevPath',
+          'eval() for convenience',
+          'Storing results in innerHTML',
+          'Skipping type checks',
+        ],
+        correctIndex: 0,
+        explanation: 'JSON can be malformed or maliciously large — validate and limit input.',
+      ),
+      PriorityQuiz(
+        question: 'json.dumps() with ensure_ascii=False…',
+        options: [
+          'Emits Unicode characters — still treat output as untrusted when embedding in HTML',
+          'Encrypts passwords',
+          'Prevents SQL injection in MySQL',
+          'Disables HTTP',
+        ],
+        correctIndex: 0,
+        explanation: 'Serialization ≠ sanitization for web contexts.',
+      ),
+      PriorityQuiz(
+        question: 'Reading JSON config files for automation scripts…',
+        options: [
+          'Should use explicit paths and never execute code embedded in JSON',
+          'Should use pickle for unknown files',
+          'Should run as root always',
+          'Should ignore file size limits',
+        ],
+        correctIndex: 0,
+        explanation: 'Treat config as data; practice offline on a trusted machine.',
+      ),
+    ],
+    curriculum: _pythonJsonCurriculum,
+  ),
+  'python_14': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'The requests library over HTTPS should…',
+        options: [
+          'Verify TLS certificates (default) and check response status codes',
+          'Disable certificate verification in production',
+          'Send passwords in query strings for caching',
+          'Trust any redirect to file:// URLs',
+        ],
+        correctIndex: 0,
+        explanation: 'Run HTTP examples on your computer — DevPath does not execute Python network code.',
+      ),
+      PriorityQuiz(
+        question: 'Hard-coded API secrets in Python scripts should be…',
+        options: [
+          'Loaded from environment variables, not committed to Git',
+          'Embedded in JSON sent to browsers',
+          'Logged on every request',
+          'Shared in chat for debugging forever',
+        ],
+        correctIndex: 0,
+        explanation: 'Same secret hygiene as PHP/Web Essentials lessons.',
+      ),
+      PriorityQuiz(
+        question: 'When calling external APIs, timeouts prevent…',
+        options: [
+          'Hung automation jobs from blocking forever',
+          'All CSRF attacks',
+          'Need for JSON parsing',
+          'Use of virtual environments',
+        ],
+        correctIndex: 0,
+        explanation: 'Set timeouts/retries thoughtfully; validate response payloads.',
+      ),
+    ],
+    curriculum: _pythonHttpCurriculum,
   ),
 };
 
@@ -1749,6 +2298,101 @@ final _webEnvConfigCurriculum = {
   'summary': 'Per-environment configuration via env vars keeps production credentials out of code.',
   'content': [
     {'type': 'prose', 'md': 'Pair with deployment lessons: inject config at release, not bake into artifacts.'},
+  ],
+};
+
+final _tsAsyncCurriculum = {
+  'summary': 'async/await structures Promise-based I/O — compile and run TypeScript on your computer, not in DevPath.',
+  'content': [
+    {'type': 'prose', 'md': 'Always pair await fetch() with status checks and safe JSON parsing (unknown → validated types).'},
+  ],
+};
+
+final _webXssCurriculum = {
+  'summary': 'XSS injects script into pages users trust — encode output, CSP, and safe DOM APIs are layered defenses.',
+  'content': [
+    {
+      'type': 'callout',
+      'variant': 'warning',
+      'md': 'No single header or filter stops every XSS variant — combine encoding, CSP, and safe frameworks.',
+    },
+  ],
+};
+
+final _webCsrfCurriculum = {
+  'summary': 'CSRF abuses automatic cookie sending — use tokens, SameSite cookies, and correct HTTP verbs together.',
+  'content': [
+    {'type': 'prose', 'md': 'HTTPS alone does not stop CSRF; verify intent on every state-changing request.'},
+  ],
+};
+
+final _webEscapingCurriculum = {
+  'summary': 'Escape for the sink: HTML text, attribute, URL, and JavaScript contexts differ.',
+  'content': [
+    {'type': 'prose', 'md': 'Output encoding complements input validation — neither replaces parameterized SQL or CSRF tokens.'},
+  ],
+};
+
+final _webSecureFilesCurriculum = {
+  'summary': 'Treat uploads as untrusted files — storage location and validation matter as much as MIME checks.',
+  'content': [
+    {'type': 'prose', 'md': 'Connects to PHP upload lessons; study offline — DevPath does not accept uploads in lessons.'},
+  ],
+};
+
+final _webErrorMessagesCurriculum = {
+  'summary': 'Safe user-facing errors, detailed operator logs — never leak secrets or stack traces publicly.',
+  'content': [
+    {'type': 'prose', 'md': 'Use DevTools during local debugging; production users see generic failure messages.'},
+  ],
+};
+
+final _webDevtoolsCurriculum = {
+  'summary': 'DevTools help inspect requests and DOM sinks during development on your machine or device browser.',
+  'content': [
+    {'type': 'prose', 'md': 'Tampering in DevTools mimics attackers — server rules must hold regardless.'},
+  ],
+};
+
+final _phpUploadCurriculum = {
+  'summary': 'Secure uploads: validate, rename, store outside web root, and never execute user content.',
+  'content': [
+    {'type': 'code', 'lang': 'php', 'runnable': false, 'code': r'// Study offline — is_uploaded_file() + move_uploaded_file() to a safe path'},
+  ],
+};
+
+final _phpRestCurriculum = {
+  'summary': 'REST maps HTTP methods to resources with consistent JSON and status codes — authorize every route.',
+  'content': [
+    {'type': 'prose', 'md': 'Design idempotent PUT/PATCH where appropriate; never expose secrets in URLs or error JSON.'},
+  ],
+};
+
+final _sqlDesignCurriculum = {
+  'summary': 'Model entities, relationships, and keys before indexing — MySQL InnoDB FKs enforce integrity.',
+  'content': [
+    {'type': 'prose', 'md': 'Sketch ER diagrams on paper; validate with normalized tables and realistic queries.'},
+  ],
+};
+
+final _sqlRealProjectCurriculum = {
+  'summary': 'Production schemas combine normalization, indexes, migrations, backups, and least-privilege access.',
+  'content': [
+    {'type': 'prose', 'md': 'Align with sql_30 design basics — no live database runs inside DevPath.'},
+  ],
+};
+
+final _pythonJsonCurriculum = {
+  'summary': 'Parse JSON safely in scripts you run locally — validate shapes before acting on data.',
+  'content': [
+    {'type': 'prose', 'md': 'DevPath does not execute Python; use venv + tests on your computer.'},
+  ],
+};
+
+final _pythonHttpCurriculum = {
+  'summary': 'HTTP client scripts need TLS verification, timeouts, and secret hygiene — practice offline.',
+  'content': [
+    {'type': 'prose', 'md': 'Never disable certificate checks in production automation.'},
   ],
 };
 

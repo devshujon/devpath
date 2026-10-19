@@ -913,23 +913,23 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Database Design”?',
-        options: ['A unrelated desktop-only topic', 'Database Design', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'Database Design is the subject of this lesson.',
+        question: 'Normalizing to 3NF generally reduces…',
+        options: ['Redundant duplicated data and update anomalies', 'Need for any indexes', 'Requirement for primary keys', 'Use of HTTPS'],
+        correctIndex: 0,
+        explanation: 'Normalization improves integrity; denormalize selectively for measured performance needs.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'A junction table resolves…',
+        options: ['Many-to-many relationships with composite keys to two entity tables', 'XSS in HTML forms', 'PHP session fixation', 'Git merge conflicts'],
+        correctIndex: 0,
+        explanation: 'Example: students_courses links students and courses with FKs.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
-        correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        question: 'Choosing primary keys that are stable and meaningful to the business…',
+        options: ['Simplifies joins and referential integrity', 'Eliminates need for prepared statements', 'Allows DELETE without WHERE', 'Disables transactions'],
+        correctIndex: 0,
+        explanation: 'Surrogate keys (AUTO_INCREMENT) are common — document relationships clearly.',
+      ),
     ],
   ),
   Lesson(
@@ -1198,23 +1198,23 @@ const List<Lesson> sqlLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “Relational Database Design for Real Projects”?',
-        options: ['A unrelated desktop-only topic', 'Relational Database Design for Real Projects', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'Relational Database Design for Real Projects is the subject of this lesson.',
+        question: 'In a blog schema, posts.author_id referencing users.id is…',
+        options: ['A foreign key enforcing valid authors', 'A CSS selector', 'A CSRF token', 'A PHP session name'],
+        correctIndex: 0,
+        explanation: 'Model real projects with explicit FKs and indexes on join columns.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'Soft deletes (deleted_at column) require…',
+        options: ['Queries that filter active rows and indexes that match access patterns', 'Removing all WHERE clauses', 'Plaintext password columns', 'Storing uploads in SQL strings'],
+        correctIndex: 0,
+        explanation: 'Design queries consciously — partial indexes/filters may help at scale.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute SQL code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for SQL runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
-        correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        question: 'Before production launch you should…',
+        options: ['Review schema, backups, least-privilege DB users, and migration plan', 'Grant root to the web app for convenience', 'Disable foreign keys permanently', 'Commit production passwords to Git'],
+        correctIndex: 0,
+        explanation: 'Design + operations together — DevPath studies schemas offline.',
+      ),
     ],
   ),
   Lesson(

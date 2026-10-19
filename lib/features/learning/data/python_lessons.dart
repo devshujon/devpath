@@ -386,23 +386,23 @@ const List<Lesson> pythonLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “JSON”?',
-        options: ['A unrelated desktop-only topic', 'JSON', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'JSON is the subject of this lesson.',
+        question: 'json.loads() on untrusted strings should be followed by…',
+        options: ['Schema validation before using fields — run scripts on your computer, not in DevPath', 'eval() for convenience', 'Storing results in innerHTML', 'Skipping type checks'],
+        correctIndex: 0,
+        explanation: 'JSON can be malformed or maliciously large — validate and limit input.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'json.dumps() with ensure_ascii=False…',
+        options: ['Emits Unicode characters — still treat output as untrusted when embedding in HTML', 'Encrypts passwords', 'Prevents SQL injection in MySQL', 'Disables HTTP'],
+        correctIndex: 0,
+        explanation: 'Serialization ≠ sanitization for web contexts.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute Python code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for Python runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
-        correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        question: 'Reading JSON config files for automation scripts…',
+        options: ['Should use explicit paths and never execute code embedded in JSON', 'Should use pickle for unknown files', 'Should run as root always', 'Should ignore file size limits'],
+        correctIndex: 0,
+        explanation: 'Treat config as data; practice offline on a trusted machine.',
+      ),
     ],
   ),
   Lesson(
@@ -417,23 +417,23 @@ const List<Lesson> pythonLessons = [
     starterCode: const {'html': '', 'css': '', 'js': ''},
     quizQuestions: [
       QuizQuestion(
-        question: 'What is the main focus of “HTTP Requests”?',
-        options: ['A unrelated desktop-only topic', 'HTTP Requests', 'Replacing all HTML with PHP', 'Disabling HTTPS everywhere'],
-        correctIndex: 1,
-        explanation: 'HTTP Requests is the subject of this lesson.',
+        question: 'The requests library over HTTPS should…',
+        options: ['Verify TLS certificates (default) and check response status codes', 'Disable certificate verification in production', 'Send passwords in query strings for caching', 'Trust any redirect to file:// URLs'],
+        correctIndex: 0,
+        explanation: 'Run HTTP examples on your computer — DevPath does not execute Python network code.',
       ),
       QuizQuestion(
-        question: 'Where should you validate untrusted user input for a production web app?',
-        options: ['Only in CSS', 'Only in the browser', 'On the server (and optionally in the browser for UX)', 'In a comment block'],
-        correctIndex: 2,
-        explanation: 'Client-side checks help UX; server-side validation is required for security.',
+        question: 'Hard-coded API secrets in Python scripts should be…',
+        options: ['Loaded from environment variables, not committed to Git', 'Embedded in JSON sent to browsers', 'Logged on every request', 'Shared in chat for debugging forever'],
+        correctIndex: 0,
+        explanation: 'Same secret hygiene as PHP/Web Essentials lessons.',
       ),
       QuizQuestion(
-        question: 'Can DevPath execute Python code on your phone for this lesson?',
-        options: ['Yes, full production runtime is built in', 'No — study examples offline; use a computer for Python runtimes unless the playground supports HTML/CSS/JS', 'Only on iOS', 'Only with internet'],
-        correctIndex: 1,
-        explanation: 'Offline-first: quizzes and reading work offline; runtimes are limited on device.',
-      )
+        question: 'When calling external APIs, timeouts prevent…',
+        options: ['Hung automation jobs from blocking forever', 'All CSRF attacks', 'Need for JSON parsing', 'Use of virtual environments'],
+        correctIndex: 0,
+        explanation: 'Set timeouts/retries thoughtfully; validate response payloads.',
+      ),
     ],
   ),
   Lesson(

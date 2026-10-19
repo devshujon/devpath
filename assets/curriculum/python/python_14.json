@@ -4,7 +4,7 @@
   "track": "python",
   "difficulty": "intermediate",
   "title": "HTTP Requests",
-  "summary": "Offline lesson 14 in the Python track (intermediate).",
+  "summary": "HTTP client scripts need TLS verification, timeouts, and secret hygiene — practice offline.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain HTTP Requests in practical web-development terms",
@@ -13,42 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**HTTP Requests** — Offline lesson 14 in the Python track (intermediate)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **HTTP Requests** as part of Python. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "code",
-      "lang": "python",
-      "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute python on device.",
-      "code": "# HTTP Requests\n# Run on your computer — not in the DevPath app runtime.\ndef greet(name: str) -> str:\n    return f\"Hello, {name}\"\n\nif __name__ == \"__main__\":\n    print(greet(\"DevPath\"))\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Never disable certificate checks in production automation."
     }
   ],
   "quickRecap": [

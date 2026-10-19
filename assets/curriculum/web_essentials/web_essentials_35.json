@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "advanced",
   "title": "Browser Developer Tools",
-  "summary": "Offline lesson 35 in the Web Essentials track (advanced).",
+  "summary": "DevTools help inspect requests and DOM sinks during development on your machine or device browser.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Browser Developer Tools in practical web-development terms",
@@ -13,35 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Browser Developer Tools** — Offline lesson 35 in the Web Essentials track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Browser Developer Tools** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Tampering in DevTools mimics attackers — server rules must hold regardless."
     }
   ],
   "quickRecap": [

@@ -41,6 +41,20 @@ const priorityLessonIds = {
   'web_essentials_31',
   'web_essentials_32',
   'web_essentials_43',
+  // Batch 3
+  'web_essentials_26',
+  'web_essentials_27',
+  'web_essentials_29',
+  'web_essentials_33',
+  'web_essentials_34',
+  'web_essentials_35',
+  'php_20',
+  'php_34',
+  'sql_30',
+  'sql_39',
+  'typescript_15',
+  'python_13',
+  'python_14',
 };
 
 void main() {
@@ -79,6 +93,46 @@ void main() {
     );
     expect(
       testing.quizQuestions.first.question.contains('PHPUnit'),
+      isTrue,
+    );
+  });
+
+  test('typescript overrides align with catalog titles', () {
+    expect(LessonsCatalog.byId('typescript_13')!.title, 'Async/Await');
+    expect(LessonsCatalog.byId('typescript_14')!.title, 'API Response Types');
+    expect(
+      LessonsCatalog.byId('typescript_15')!.title,
+      'Type-Safe Application Design',
+    );
+    expect(
+      LessonsCatalog.byId('typescript_13')!
+          .quizQuestions
+          .first
+          .question
+          .contains('async'),
+      isTrue,
+    );
+    expect(
+      LessonsCatalog.byId('typescript_14')!
+          .quizQuestions
+          .first
+          .question
+          .contains('ApiResult'),
+      isTrue,
+    );
+  });
+
+  test('web security lessons cover XSS and CSRF without one-size-fits-all claims', () {
+    final xss = LessonsCatalog.byId('web_essentials_26')!;
+    final csrf = LessonsCatalog.byId('web_essentials_27')!;
+    final blob = [
+      ...xss.quizQuestions.expand((q) => [q.question, q.explanation ?? '']),
+      ...csrf.quizQuestions.expand((q) => [q.question, q.explanation ?? '']),
+    ].join(' ');
+    expect(blob.toLowerCase(), contains('xss'));
+    expect(blob.toLowerCase(), contains('csrf'));
+    expect(
+      blob.contains('does not replace') || blob.contains('does not stop') || blob.contains('not a solo'),
       isTrue,
     );
   });

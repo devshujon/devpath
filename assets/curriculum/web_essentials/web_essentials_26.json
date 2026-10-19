@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "intermediate",
   "title": "Cross-Site Scripting (XSS)",
-  "summary": "Offline lesson 26 in the Web Essentials track (intermediate).",
+  "summary": "XSS injects script into pages users trust — encode output, CSP, and safe DOM APIs are layered defenses.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Cross-Site Scripting (XSS) in practical web-development terms",
@@ -13,40 +13,9 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Cross-Site Scripting (XSS)** — Offline lesson 26 in the Web Essentials track (intermediate)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **Cross-Site Scripting (XSS)** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
       "type": "callout",
       "variant": "warning",
-      "md": "Treat all dynamic output as untrusted until escaped for the correct context (HTML, URL, JS)."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "No single header or filter stops every XSS variant — combine encoding, CSP, and safe frameworks."
     }
   ],
   "quickRecap": [

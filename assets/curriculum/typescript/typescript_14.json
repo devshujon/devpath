@@ -4,7 +4,7 @@
   "track": "typescript",
   "difficulty": "advanced",
   "title": "API Response Types",
-  "summary": "Validate at boundaries; use strong types inside the application core.",
+  "summary": "Model API payloads with generics; handle HTTP errors before trusting parsed data.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain API Response Types in practical web-development terms",
@@ -14,7 +14,7 @@
   "content": [
     {
       "type": "prose",
-      "md": "Parsers from unknown → domain types centralize security-relevant checks."
+      "md": "Compile TypeScript on your computer — DevPath playground runs HTML/CSS/JS only."
     }
   ],
   "quickRecap": [

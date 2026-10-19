@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "advanced",
   "title": "Secure File Handling",
-  "summary": "Offline lesson 33 in the Web Essentials track (advanced).",
+  "summary": "Treat uploads as untrusted files — storage location and validation matter as much as MIME checks.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Secure File Handling in practical web-development terms",
@@ -13,40 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Secure File Handling** — Offline lesson 33 in the Web Essentials track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Secure File Handling** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "callout",
-      "variant": "warning",
-      "md": "Validate file type and size on the server, store uploads outside the web root, and never trust client-provided paths."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Connects to PHP upload lessons; study offline — DevPath does not accept uploads in lessons."
     }
   ],
   "quickRecap": [

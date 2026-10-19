@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "intermediate",
   "title": "Output Escaping",
-  "summary": "Offline lesson 29 in the Web Essentials track (intermediate).",
+  "summary": "Escape for the sink: HTML text, attribute, URL, and JavaScript contexts differ.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Output Escaping in practical web-development terms",
@@ -13,40 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Output Escaping** — Offline lesson 29 in the Web Essentials track (intermediate)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Output Escaping** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "callout",
-      "variant": "warning",
-      "md": "Treat all dynamic output as untrusted until escaped for the correct context (HTML, URL, JS)."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "Output encoding complements input validation — neither replaces parameterized SQL or CSRF tokens."
     }
   ],
   "quickRecap": [
