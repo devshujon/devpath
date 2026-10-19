@@ -4,7 +4,7 @@
   "track": "python",
   "difficulty": "beginner",
   "title": "Loops",
-  "summary": "Offline lesson 8 in the Python track (beginner).",
+  "summary": "Loops automate iteration in scripts you run outside the app.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Loops in practical web-development terms",
@@ -13,42 +13,10 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Loops** — Offline lesson 8 in the Python track (beginner)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **Loops** as part of Python. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
       "type": "code",
       "lang": "python",
       "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute python on device.",
-      "code": "# Loops\n# Run on your computer — not in the DevPath app runtime.\ndef greet(name: str) -> str:\n    return f\"Hello, {name}\"\n\nif __name__ == \"__main__\":\n    print(greet(\"DevPath\"))\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "code": "for line in open(\"data.txt\", encoding=\"utf-8\"):\n    process(line.strip())\n# run locally only"
     }
   ],
   "quickRecap": [

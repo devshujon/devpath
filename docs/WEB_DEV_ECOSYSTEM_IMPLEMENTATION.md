@@ -49,9 +49,11 @@
 
 ## Content quality (PR #11 hardening)
 
-**45 priority lessons** (batches 1–3) have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`.
+**64 priority lessons** (batches 1–4) have hand-authored quizzes + richer curriculum via `tool/learning_tracks/priority_lesson_overrides.dart`.
 
-Batch 3: Web XSS/CSRF/escaping (`web_essentials_26`, `27`, `29`) plus secure files, safe errors, DevTools (`33`–`35`); PHP uploads + REST; SQL design; TS **`typescript_15`** type-safe design (with **`typescript_13`**/**`14`** realigned to Async/Await + API Response Types); Python JSON/HTTP.
+Batch 4: PHP beginner (`php_01`–`03`, `10`–`12`); SQL beginner queries (`sql_01`, `06`, `07`, `10`, `11`); Python intro/runtime/loops; Web HTTPS + hosting/deployment/backups (`web_essentials_14`, `41`, `42`, `44`, `45`).
+
+Critical-path QA worksheet: `docs/PHYSICAL_QA_PR11_CRITICAL_PATH_WORKSHEET.md`.
 
 See `priorityLessonIds` in `test/learning/priority_lesson_quality_test.dart` for the full list.
 

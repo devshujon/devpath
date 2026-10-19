@@ -4,7 +4,7 @@
   "track": "sql",
   "difficulty": "beginner",
   "title": "UPDATE",
-  "summary": "Offline lesson 11 in the SQL track (beginner).",
+  "summary": "Always constrain UPDATE/DELETE with WHERE; use transactions for multi-step changes.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain UPDATE in practical web-development terms",
@@ -13,42 +13,9 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**UPDATE** — Offline lesson 11 in the SQL track (beginner)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "This lesson covers **UPDATE** as part of SQL. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "code",
-      "lang": "sql",
-      "runnable": false,
-      "caption": "Study this example offline. DevPath does not execute sql on device.",
-      "code": "-- UPDATE\n-- MySQL example\nSELECT id, title FROM posts WHERE status = 'published' ORDER BY created_at DESC LIMIT 10;\n"
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "type": "callout",
+      "variant": "warning",
+      "md": "An UPDATE without WHERE can touch every row."
     }
   ],
   "quickRecap": [

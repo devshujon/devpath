@@ -4,6 +4,8 @@
 **Version under test:** `1.3.0+15` debug APK  
 **Branch:** `cursor/web-dev-ecosystem-982f`
 
+**Critical-path worksheet (shorter):** `docs/PHYSICAL_QA_PR11_CRITICAL_PATH_WORKSHEET.md`
+
 Record device model, Android version, screen width (dp), date, and tester initials for each section.
 
 ## Layout — filter chips (360 / 390 / 430 dp)

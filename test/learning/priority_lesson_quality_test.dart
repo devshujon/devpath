@@ -55,6 +55,26 @@ const priorityLessonIds = {
   'typescript_15',
   'python_13',
   'python_14',
+  // Batch 4
+  'php_01',
+  'php_02',
+  'php_03',
+  'php_10',
+  'php_11',
+  'php_12',
+  'sql_01',
+  'sql_06',
+  'sql_07',
+  'sql_10',
+  'sql_11',
+  'python_01',
+  'python_02',
+  'python_08',
+  'web_essentials_14',
+  'web_essentials_41',
+  'web_essentials_42',
+  'web_essentials_44',
+  'web_essentials_45',
 };
 
 void main() {

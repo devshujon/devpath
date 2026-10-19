@@ -4,7 +4,7 @@
   "track": "web_essentials",
   "difficulty": "advanced",
   "title": "Static vs Server-Side Hosting",
-  "summary": "Offline lesson 42 in the Web Essentials track (advanced).",
+  "summary": "Static sites vs server-side apps — different hosting and threat models.",
   "estimatedMinutes": 12,
   "objectives": [
     "Explain Static vs Server-Side Hosting in practical web-development terms",
@@ -13,35 +13,8 @@
   ],
   "content": [
     {
-      "type": "summary",
-      "md": "**Static vs Server-Side Hosting** — Offline lesson 42 in the Web Essentials track (advanced)."
-    },
-    {
-      "type": "heading",
-      "text": "Core idea",
-      "level": 2
-    },
-    {
       "type": "prose",
-      "md": "This lesson covers **Static vs Server-Side Hosting** as part of Web Essentials. DevPath bundles the reading and quiz offline; run server-side PHP, SQL engines, or Python only on your computer when a lesson says to practice locally."
-    },
-    {
-      "type": "heading",
-      "text": "Best practices",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "- Prefer clarity and small steps over clever shortcuts.\n- Validate on the **server** for anything security-sensitive (even when you also validate in the browser).\n- Keep secrets out of source control and client-side code."
-    },
-    {
-      "type": "heading",
-      "text": "Common mistakes",
-      "level": 2
-    },
-    {
-      "type": "prose",
-      "md": "Skipping validation, copying outdated examples, or assuming every SQL dialect behaves exactly like MySQL."
+      "md": "APIs still need auth, validation, and HTTPS even if front-end is static."
     }
   ],
   "quickRecap": [

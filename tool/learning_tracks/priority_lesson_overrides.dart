@@ -1863,6 +1863,714 @@ final priorityLessonOverrides = <String, PriorityLessonOverride>{
     ],
     curriculum: _pythonHttpCurriculum,
   ),
+  // ── Batch 4: PHP/SQL/Python beginner + web deployment ──
+  'php_01': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'PHP primarily runs…',
+        options: [
+          'On the server, generating HTML/JSON before the response reaches the browser',
+          'Only inside the mobile GPU',
+          'As a replacement for DNS',
+          'Only in CSS files',
+        ],
+        correctIndex: 0,
+        explanation: 'PHP is server-side; browsers receive output — DevPath shows PHP offline only.',
+      ),
+      PriorityQuiz(
+        question: 'A .php file on a web server is…',
+        options: [
+          'Executed by the PHP engine, not sent as raw source to clients',
+          'Downloaded verbatim like a static image always',
+          'A TypeScript module',
+          'A MySQL index',
+        ],
+        correctIndex: 0,
+        explanation: 'Server interprets PHP; users see rendered output, not your source secrets.',
+      ),
+      PriorityQuiz(
+        question: 'Can DevPath execute PHP on your phone?',
+        options: [
+          'No — study examples offline; run PHP on a computer or hosting',
+          'Yes, full production PHP-FPM is built in',
+          'Only for SQL',
+          'Only when offline',
+        ],
+        correctIndex: 0,
+        explanation: 'Playground runs HTML/CSS/JS; PHP is read-and-quiz in-app.',
+      ),
+    ],
+    curriculum: _phpIntroCurriculum,
+  ),
+  'php_02': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'In request/response cycle, PHP typically…',
+        options: [
+          'Runs after the server receives the HTTP request and before the response is sent',
+          'Runs only in the user\'s GPU before DNS',
+          'Replaces TLS handshakes',
+          'Executes inside innerHTML',
+        ],
+        correctIndex: 0,
+        explanation: 'Browser requests → web server → PHP → HTML/JSON response.',
+      ),
+      PriorityQuiz(
+        question: 'Apache or nginx in front of PHP often…',
+        options: [
+          'Routes matching URLs to PHP via FastCGI/php-fpm or module',
+          'Compiles TypeScript to WASM in the phone',
+          'Stores passwords in cookies automatically',
+          'Eliminates need for validation',
+        ],
+        correctIndex: 0,
+        explanation: 'Stack varies by host — concept: server invokes PHP for dynamic pages.',
+      ),
+      PriorityQuiz(
+        question: 'View-source in a browser shows…',
+        options: [
+          'Rendered HTML output, not your secret PHP source on a correctly configured server',
+          'Always raw .php source with DB passwords',
+          'SQL execution plans',
+          'Git commit hashes',
+        ],
+        correctIndex: 0,
+        explanation: 'Misconfiguration can leak source — secure deployment matters (see Web Essentials).',
+      ),
+    ],
+    curriculum: _phpServerSideCurriculum,
+  ),
+  'php_03': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'PHP short echo tag for output is…',
+        options: [r'<?= $variable ?>', '<script>', '{json}', '#comment only'],
+        correctIndex: 0,
+        explanation: 'Tags delimit PHP; short echo prints escaped output when used with care.',
+      ),
+      PriorityQuiz(
+        question: 'Statements in PHP end with…',
+        options: ['Semicolon ;', 'Only periods', 'HTML closing tags only', 'SQL GO keyword'],
+        correctIndex: 0,
+        explanation: 'Basic syntax — run on server; practice offline in DevPath.',
+      ),
+      PriorityQuiz(
+        question: 'Mixing PHP and HTML in one file…',
+        options: [
+          'Is common in legacy apps — keep logic separated in larger projects',
+          'Forbids any HTML',
+          'Requires Node.js',
+          'Disables HTTPS',
+        ],
+        correctIndex: 0,
+        explanation: 'Templates exist; modern apps may use routers/templates instead of large mixed files.',
+      ),
+    ],
+    curriculum: _phpSyntaxCurriculum,
+  ),
+  'php_10': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'A PHP function helps you…',
+        options: [
+          'Reuse logic with parameters and return values',
+          'Store passwords in plaintext',
+          'Concatenate SQL safely without binding',
+          'Disable sessions',
+        ],
+        correctIndex: 0,
+        explanation: 'Functions organize code — still validate inputs inside them.',
+      ),
+      PriorityQuiz(
+        question: 'return in a PHP function…',
+        options: [
+          'Sends a value back to the caller',
+          'Commits a SQL transaction automatically',
+          'Starts HTTPS',
+          'Echoes HTML only',
+        ],
+        correctIndex: 0,
+        explanation: 'Use return for results; use echo for output when appropriate.',
+      ),
+      PriorityQuiz(
+        question: 'User input passed to a function should…',
+        options: [
+          'Be validated before use in SQL, files, or system calls',
+          'Be trusted because it came from a form',
+          'Skip validation if HTTPS is on',
+          'Be logged publicly',
+        ],
+        correctIndex: 0,
+        explanation: 'Functions do not imply safety — validate at boundaries.',
+      ),
+    ],
+    curriculum: _phpFunctionsCurriculum,
+  ),
+  'php_11': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'HTML form method="post" is appropriate when…',
+        options: [
+          'Submitting data that changes state or contains sensitive fields',
+          'Only for static images',
+          'Replacing HTTPS',
+          'Caching CDN assets',
+        ],
+        correctIndex: 0,
+        explanation: 'POST bodies are not for bookmarkable reads — use GET for safe idempotent reads.',
+      ),
+      PriorityQuiz(
+        question: 'The action attribute on <form>…',
+        options: [
+          'Points to the server URL that receives the submission',
+          'Sets CSS colors',
+          'Defines SQL PRIMARY KEY',
+          'Enables CSRF automatically',
+        ],
+        correctIndex: 0,
+        explanation: 'Server endpoint must validate and authorize the submission.',
+      ),
+      PriorityQuiz(
+        question: 'Client-side required on inputs…',
+        options: [
+          'Does not replace server validation',
+          'Is enough for security alone',
+          'Hashes passwords',
+          'Prevents SQL injection alone',
+        ],
+        correctIndex: 0,
+        explanation: 'Always re-validate on the server (see php_13).',
+      ),
+    ],
+    curriculum: _phpFormsCurriculum,
+  ),
+  'php_12': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: r'$_GET in PHP contains…',
+        options: [
+          'Query string parameters from the URL',
+          'Uploaded file binaries always',
+          'Hashed passwords',
+          'CSS variables',
+        ],
+        correctIndex: 0,
+        explanation: r'Treat $_GET as untrusted — validate before SQL or shell use.',
+      ),
+      PriorityQuiz(
+        question: r'$_POST typically holds…',
+        options: [
+          'Body fields from an application/x-www-form-urlencoded or multipart form POST',
+          'TLS certificate chains',
+          'Git objects',
+          'MySQL indexes',
+        ],
+        correctIndex: 0,
+        explanation: r'Never trust $_POST — sanitize, validate, use prepared statements.',
+      ),
+      PriorityQuiz(
+        question: r'Displaying raw $_GET values in HTML without encoding risks…',
+        options: ['XSS', 'Faster SQL indexes', 'DNSSEC', 'Git merge conflicts'],
+        correctIndex: 0,
+        explanation: 'Escape output for HTML context or use text nodes safely.',
+      ),
+    ],
+    curriculum: _phpGetPostCurriculum,
+  ),
+  'sql_01': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'A relational database stores data in…',
+        options: [
+          'Tables with rows and columns linked by keys',
+          'Only flat text files on CDN',
+          'GPU shaders',
+          'HTML templates only',
+        ],
+        correctIndex: 0,
+        explanation: 'Foundation for SQL lessons — no live DB in DevPath.',
+      ),
+      PriorityQuiz(
+        question: 'MySQL is…',
+        options: [
+          'A popular relational database often used with PHP web apps',
+          'A CSS framework',
+          'A browser DevTools panel',
+          'A TypeScript compiler',
+        ],
+        correctIndex: 0,
+        explanation: 'Syntax here targets MySQL/InnoDB unless noted otherwise.',
+      ),
+      PriorityQuiz(
+        question: 'Running SQL in DevPath…',
+        options: [
+          'Is not supported — study queries offline; run on a computer',
+          'Executes against production automatically',
+          'Replaces PHP',
+          'Requires AdMob',
+        ],
+        correctIndex: 0,
+        explanation: 'Read examples and quizzes; practice in local MySQL/MariaDB.',
+      ),
+    ],
+    curriculum: _sqlIntroDbCurriculum,
+  ),
+  'sql_06': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'SELECT * FROM users retrieves…',
+        options: [
+          'All columns for every row in users (use cautiously in production)',
+          'Only primary keys automatically encrypted',
+          'PHP session files',
+          'DNS records',
+        ],
+        correctIndex: 0,
+        explanation: 'Prefer listing needed columns — less data exposure and I/O.',
+      ),
+      PriorityQuiz(
+        question: 'SELECT is…',
+        options: [
+          'Read-only when used alone (no INSERT/UPDATE/DELETE)',
+          'Always destructive',
+          'A CSRF token',
+          'An HTTPS cipher',
+        ],
+        correctIndex: 0,
+        explanation: 'Still authorize who may read sensitive columns at the app layer.',
+      ),
+      PriorityQuiz(
+        question: 'Example SELECT with WHERE limits…',
+        options: [
+          'Which rows are returned',
+          'Which TLS version is used',
+          'Which Git branch merges',
+          'Which cookies are HttpOnly',
+        ],
+        correctIndex: 0,
+        explanation: 'Combine with WHERE, ORDER BY, LIMIT for precise queries.',
+      ),
+    ],
+    curriculum: _sqlSelectCurriculum,
+  ),
+  'sql_07': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'WHERE status = \'active\' filters…',
+        options: [
+          'Rows matching the predicate before projection/sort',
+          'Columns out of the table',
+          'PHP errors',
+          'XSS payloads in CSS',
+        ],
+        correctIndex: 0,
+        explanation: 'Use indexed columns in WHERE when possible for performance.',
+      ),
+      PriorityQuiz(
+        question: 'Binding user input in WHERE should use…',
+        options: [
+          'Prepared parameters, not string concatenation',
+          'HTML escaping only',
+          'MD5 of passwords',
+          'Public Git commits',
+        ],
+        correctIndex: 0,
+        explanation: 'See sql_36 / php_24 — injection happens in dynamic SQL strings.',
+      ),
+      PriorityQuiz(
+        question: 'WHERE 1=1 in tutorials sometimes…',
+        options: [
+          'Is a placeholder pattern — replace with real predicates in production',
+          'Proves SQL injection is safe',
+          'Disables indexes forever',
+          'Encrypts the database',
+        ],
+        correctIndex: 0,
+        explanation: 'Build dynamic filters carefully with bound parameters.',
+      ),
+    ],
+    curriculum: _sqlWhereCurriculum,
+  ),
+  'sql_10': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'INSERT INTO adds…',
+        options: [
+          'New rows to a table',
+          'New CSS classes',
+          'TLS certificates',
+          'Git tags only',
+        ],
+        correctIndex: 0,
+        explanation: 'Match column list to VALUES or INSERT…SELECT; respect constraints.',
+      ),
+      PriorityQuiz(
+        question: 'A failed INSERT due to UNIQUE constraint means…',
+        options: [
+          'Duplicate key — handle conflict in application logic',
+          'Success with zero rows',
+          'HTTPS expired',
+          'CSRF token valid',
+        ],
+        correctIndex: 0,
+        explanation: 'Constraints protect data — design keys intentionally.',
+      ),
+      PriorityQuiz(
+        question: 'INSERT statements in apps should use…',
+        options: [
+          'Prepared statements with bound values',
+          r'Raw concatenation of $_POST',
+          'innerHTML',
+          'eval in Python',
+        ],
+        correctIndex: 0,
+        explanation: 'Same safety model as SELECT/UPDATE.',
+      ),
+    ],
+    curriculum: _sqlInsertCurriculum,
+  ),
+  'sql_11': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'UPDATE without WHERE…',
+        options: [
+          'Can change every row — dangerous in production',
+          'Is always recommended',
+          'Creates indexes automatically',
+          'Enables HTTPS',
+        ],
+        correctIndex: 0,
+        explanation: 'Always scope UPDATE/DELETE with WHERE and transactions when needed.',
+      ),
+      PriorityQuiz(
+        question: 'UPDATE users SET last_login = NOW() WHERE id = ? uses…',
+        options: [
+          'A bound parameter for the specific row',
+          'Public password storage',
+          'CSS flexbox',
+          'DNS ANY queries',
+        ],
+        correctIndex: 0,
+        explanation: 'Target one row by primary key when possible.',
+      ),
+      PriorityQuiz(
+        question: 'After UPDATE you should verify…',
+        options: [
+          'Affected row count matches expectation',
+          'All passwords are plaintext',
+          'SQL injection succeeded',
+          'Git history rewritten',
+        ],
+        correctIndex: 0,
+        explanation: 'Use transactions for multi-step changes.',
+      ),
+    ],
+    curriculum: _sqlUpdateCurriculum,
+  ),
+  'python_01': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Python is often used for…',
+        options: [
+          'Scripting, automation, data work, and backend services',
+          'Styling web pages with selectors only',
+          'Replacing MySQL entirely in the browser',
+          'Running inside DevPath playground WebView as PHP',
+        ],
+        correctIndex: 0,
+        explanation: 'General-purpose language — run scripts on your computer, not in DevPath.',
+      ),
+      PriorityQuiz(
+        question: 'A .py source file…',
+        options: [
+          'Is interpreted/executed by a Python runtime you install locally',
+          'Is the same as an Android APK',
+          'Automatically validates SQL',
+          'Is required for HTML5',
+        ],
+        correctIndex: 0,
+        explanation: 'Install Python 3.x locally to try examples from lessons.',
+      ),
+      PriorityQuiz(
+        question: 'DevPath Python lessons are…',
+        options: [
+          'Offline reading + quizzes — no on-device Python engine',
+          'Full Jupyter on phone',
+          'Production hosting',
+          'MySQL admin panels',
+        ],
+        correctIndex: 0,
+        explanation: 'Study here; execute on a trusted machine.',
+      ),
+    ],
+    curriculum: _pythonIntroCurriculum,
+  ),
+  'python_02': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'A Python virtual environment helps…',
+        options: [
+          'Isolate project dependencies from the system Python',
+          'Run PHP faster',
+          'Disable HTTPS',
+          'Merge Git branches',
+        ],
+        correctIndex: 0,
+        explanation: 'Use venv/uv locally — not available inside DevPath app runtime.',
+      ),
+      PriorityQuiz(
+        question: 'python3 --version on your computer shows…',
+        options: [
+          'Which interpreter version is installed',
+          'MySQL query plans',
+          'AdMob unit IDs',
+          'Android dp width',
+        ],
+        correctIndex: 0,
+        explanation: 'Match tutorial syntax to your installed major version.',
+      ),
+      PriorityQuiz(
+        question: 'REPL (interactive Python shell)…',
+        options: [
+          'Is a local learning tool — not embedded in DevPath',
+          'Executes SQL on Honor phones',
+          'Replaces TypeScript',
+          'Stores sessions in cookies',
+        ],
+        correctIndex: 0,
+        explanation: 'Try snippets on laptop; app remains offline content.',
+      ),
+    ],
+    curriculum: _pythonRuntimeCurriculum,
+  ),
+  'python_08': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'for item in items: in Python…',
+        options: [
+          'Iterates each element in a sequence or iterable',
+          'Defines a SQL JOIN',
+          'Configures TLS ciphers',
+          'Compiles Dart to APK',
+        ],
+        correctIndex: 0,
+        explanation: 'Loops automate repetition — validate items if they are user-controlled.',
+      ),
+      PriorityQuiz(
+        question: 'range(5) produces…',
+        options: [
+          '0,1,2,3,4 in the loop',
+          'Infinite HTTPS redirects',
+          'MySQL rows automatically',
+          'Git commits',
+        ],
+        correctIndex: 0,
+        explanation: 'Common pattern for counted loops in scripts you run locally.',
+      ),
+      PriorityQuiz(
+        question: 'break inside a loop…',
+        options: [
+          'Exits the loop early when a condition is met',
+          'Deletes the database',
+          'Disables CSRF tokens',
+          'Runs PHP',
+        ],
+        correctIndex: 0,
+        explanation: 'Use break/continue intentionally for readable control flow.',
+      ),
+    ],
+    curriculum: _pythonLoopsCurriculum,
+  ),
+  'web_essentials_14': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'HTTPS adds…',
+        options: [
+          'TLS encryption and server identity verification on top of HTTP',
+          'Automatic SQL injection protection',
+          'Free PHP hosting',
+          'Removal of all cookies',
+        ],
+        correctIndex: 0,
+        explanation: 'Encrypts traffic in transit — still need app-level auth and validation.',
+      ),
+      PriorityQuiz(
+        question: 'Mixed content (HTTP assets on HTTPS pages)…',
+        options: [
+          'Is blocked or weakened by browsers — serve all assets over HTTPS',
+          'Is recommended for secrets',
+          'Replaces DNS',
+          'Hashes passwords',
+        ],
+        correctIndex: 0,
+        explanation: 'Use HTTPS everywhere for login and API pages.',
+      ),
+      PriorityQuiz(
+        question: 'Certificate warnings in the browser mean…',
+        options: [
+          'Do not proceed for real users until the cert trust issue is fixed',
+          'Ignore and enter passwords anyway',
+          'Disable HSTS',
+          'Store API keys in URL',
+        ],
+        correctIndex: 0,
+        explanation: 'Fix chain, hostname, and expiry on the server.',
+      ),
+    ],
+    curriculum: _webHttpsCurriculum,
+  ),
+  'web_essentials_41': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Shared hosting typically provides…',
+        options: [
+          'Managed web/PHP stack with limited configuration',
+          'Unlimited root on bare metal always',
+          'Free production secrets in Git',
+          'On-device MySQL in DevPath',
+        ],
+        correctIndex: 0,
+        explanation: 'Know provider limits — backups, TLS, and PHP version matter.',
+      ),
+      PriorityQuiz(
+        question: 'Before go-live you should…',
+        options: [
+          'Enable HTTPS, set env secrets, and test backups/restores',
+          'Commit .env.production to GitHub',
+          'Disable all logging',
+          'Run as database root',
+        ],
+        correctIndex: 0,
+        explanation: 'Hosting is more than uploading files — operations and security count.',
+      ),
+      PriorityQuiz(
+        question: 'Staging environment should…',
+        options: [
+          'Mirror production config without using real user PII when possible',
+          'Share production DB passwords in chat',
+          'Skip HTTPS to save time forever',
+          'Use debug display_errors on public URLs',
+        ],
+        correctIndex: 0,
+        explanation: 'Test deployments safely before promoting to production.',
+      ),
+    ],
+    curriculum: _webHostingCurriculum,
+  ),
+  'web_essentials_42': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Static hosting (HTML/CSS/JS only)…',
+        options: [
+          'Serves files without server-side PHP/SQL execution on that host',
+          'Runs MySQL inside CDN edge nodes for you automatically',
+          'Eliminates need for HTTPS',
+          'Stores passwords in localStorage securely by default',
+        ],
+        correctIndex: 0,
+        explanation: 'APIs/backend still need server or serverless elsewhere.',
+      ),
+      PriorityQuiz(
+        question: 'Server-side hosting is needed when…',
+        options: [
+          'You require PHP/SQL sessions, secrets, or dynamic auth on the server',
+          'You only serve a README.md',
+          'You never handle user data',
+          'You disable TLS',
+        ],
+        correctIndex: 0,
+        explanation: 'Match architecture to app needs — static vs dynamic.',
+      ),
+      PriorityQuiz(
+        question: 'Jamstack often combines…',
+        options: [
+          'Static front-end with serverless/API backends',
+          'Plaintext password APIs',
+          'SQL concatenation in the browser',
+          'Skipping CSRF everywhere',
+        ],
+        correctIndex: 0,
+        explanation: 'Backends still need auth, validation, and secret management.',
+      ),
+    ],
+    curriculum: _webStaticVsServerCurriculum,
+  ),
+  'web_essentials_44': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'A deployment workflow should include…',
+        options: [
+          'Build, test, migrate DB, deploy artifact, smoke test, monitor',
+          'Copy untested code straight to production on Friday with no rollback',
+          'Publish secrets in the APK',
+          'Skip backups',
+        ],
+        correctIndex: 0,
+        explanation: 'Repeatable pipelines reduce downtime and misconfigurations.',
+      ),
+      PriorityQuiz(
+        question: 'Database migrations during deploy…',
+        options: [
+          'Should be planned, reversible when possible, and backed up first',
+          'Should never be tested',
+          'Replace HTTPS certificates',
+          'Disable foreign keys permanently',
+        ],
+        correctIndex: 0,
+        explanation: 'Schema changes are high risk — coordinate with app versions.',
+      ),
+      PriorityQuiz(
+        question: 'Rollback strategy means…',
+        options: [
+          'Knowing how to revert code and schema if a release fails',
+          'Deleting all user data',
+          'Turning off auth',
+          'Using GET for deletes',
+        ],
+        correctIndex: 0,
+        explanation: 'Pair with web_essentials_45 backups.',
+      ),
+    ],
+    curriculum: _webDeployWorkflowCurriculum,
+  ),
+  'web_essentials_45': PriorityLessonOverride(
+    quizzes: [
+      PriorityQuiz(
+        question: 'Database backups should be…',
+        options: [
+          'Automated, encrypted, stored off-site, and restored in drills',
+          'Only on the same disk as production',
+          'Committed to Git',
+          'Skipped for small projects always',
+        ],
+        correctIndex: 0,
+        explanation: 'Untested backups are not backups — practice restore.',
+      ),
+      PriorityQuiz(
+        question: 'Basic monitoring alerts on…',
+        options: [
+          'Error rates, latency, disk, and failed background jobs',
+          'Employee lunch schedules only',
+          'Git star counts only',
+          'CSS color contrast only',
+        ],
+        correctIndex: 0,
+        explanation: 'Ops visibility catches outages and attacks early.',
+      ),
+      PriorityQuiz(
+        question: 'After deployment, logs should…',
+        options: [
+          'Avoid leaking secrets/PII while giving operators actionable detail',
+          'Include all Authorization headers publicly',
+          'Disable retention entirely',
+          'Print stack traces to every user',
+        ],
+        correctIndex: 0,
+        explanation: 'Connects to safe error handling lessons.',
+      ),
+    ],
+    curriculum: _webBackupsMonitoringCurriculum,
+  ),
 };
 
 List<PriorityQuiz> _sqlJoinQuizzes(String joinName, String behavior) => [
@@ -2393,6 +3101,121 @@ final _pythonHttpCurriculum = {
   'summary': 'HTTP client scripts need TLS verification, timeouts, and secret hygiene — practice offline.',
   'content': [
     {'type': 'prose', 'md': 'Never disable certificate checks in production automation.'},
+  ],
+};
+
+final _phpIntroCurriculum = {
+  'summary': 'PHP generates dynamic server responses — study offline; execute on a server or local stack.',
+  'content': [
+    {'type': 'prose', 'md': 'DevPath playground: HTML/CSS/JS only.'},
+  ],
+};
+final _phpServerSideCurriculum = {
+  'summary': 'Request in, PHP logic, response out — secrets stay on the server.',
+  'content': [
+    {'type': 'prose', 'md': 'Diagram mentally: browser → web server → PHP → database (optional).'},
+  ],
+};
+final _phpSyntaxCurriculum = {
+  'summary': 'PHP blocks embed in HTML; statements end with semicolons.',
+  'content': [
+    {'type': 'code', 'lang': 'php', 'runnable': false, 'code': r'<?php echo htmlspecialchars($title, ENT_QUOTES, "UTF-8"); ?>'},
+  ],
+};
+final _phpFunctionsCurriculum = {
+  'summary': 'Functions encapsulate logic — validate parameters at trust boundaries.',
+  'content': [
+    {'type': 'prose', 'md': 'Run PHP examples on your computer, not inside DevPath.'},
+  ],
+};
+final _phpFormsCurriculum = {
+  'summary': 'Forms POST data to server endpoints that must validate and authorize.',
+  'content': [
+    {'type': 'prose', 'md': 'Playground can demo HTML forms; server processing is conceptual here.'},
+  ],
+};
+final _phpGetPostCurriculum = {
+  'summary': r'$_GET and $_POST are untrusted input superglobals.',
+  'content': [
+    {'type': 'callout', 'variant': 'warning', 'md': 'Never pass raw superglobals into SQL strings.'},
+  ],
+};
+final _sqlIntroDbCurriculum = {
+  'summary': 'Relational databases use tables and keys — practice SQL locally.',
+  'content': [
+    {'type': 'prose', 'md': 'MySQL examples in lessons; DevPath does not run a SQL engine.'},
+  ],
+};
+final _sqlSelectCurriculum = {
+  'summary': 'SELECT reads rows — specify columns and use WHERE to limit scope.',
+  'content': [
+    {'type': 'code', 'lang': 'sql', 'runnable': false, 'code': 'SELECT id, email FROM users WHERE status = \'active\' LIMIT 50;'},
+  ],
+};
+final _sqlWhereCurriculum = {
+  'summary': 'WHERE filters rows; bind dynamic values via prepared statements in apps.',
+  'content': [
+    {'type': 'prose', 'md': 'Index columns used in frequent WHERE clauses when appropriate.'},
+  ],
+};
+final _sqlInsertCurriculum = {
+  'summary': 'INSERT adds rows — respect UNIQUE/FK constraints.',
+  'content': [
+    {'type': 'code', 'lang': 'sql', 'runnable': false, 'code': 'INSERT INTO users (email) VALUES (?); -- bind in app code'},
+  ],
+};
+final _sqlUpdateCurriculum = {
+  'summary': 'Always constrain UPDATE/DELETE with WHERE; use transactions for multi-step changes.',
+  'content': [
+    {'type': 'callout', 'variant': 'warning', 'md': 'An UPDATE without WHERE can touch every row.'},
+  ],
+};
+final _pythonIntroCurriculum = {
+  'summary': 'Python scripts run on your machine — DevPath provides offline lessons and quizzes.',
+  'content': [
+    {'type': 'prose', 'md': 'Install Python 3 locally to try print() and automation examples.'},
+  ],
+};
+final _pythonRuntimeCurriculum = {
+  'summary': 'Virtual environments isolate dependencies for projects on your computer.',
+  'content': [
+    {'type': 'prose', 'md': 'Not executed in the DevPath Android app.'},
+  ],
+};
+final _pythonLoopsCurriculum = {
+  'summary': 'Loops automate iteration in scripts you run outside the app.',
+  'content': [
+    {'type': 'code', 'lang': 'python', 'runnable': false, 'code': 'for line in open("data.txt", encoding="utf-8"):\n    process(line.strip())\n# run locally only'},
+  ],
+};
+final _webHttpsCurriculum = {
+  'summary': 'HTTPS protects data in transit with TLS — required for login and APIs.',
+  'content': [
+    {'type': 'prose', 'md': 'Use HSTS and valid certificates in production; fix mixed content.'},
+  ],
+};
+final _webHostingCurriculum = {
+  'summary': 'Choose hosting that matches stack (static vs PHP/SQL) and operational needs.',
+  'content': [
+    {'type': 'prose', 'md': 'Pair with environment configuration (web_essentials_43) and deployment workflow.'},
+  ],
+};
+final _webStaticVsServerCurriculum = {
+  'summary': 'Static sites vs server-side apps — different hosting and threat models.',
+  'content': [
+    {'type': 'prose', 'md': 'APIs still need auth, validation, and HTTPS even if front-end is static.'},
+  ],
+};
+final _webDeployWorkflowCurriculum = {
+  'summary': 'Deploy with tests, migrations, smoke checks, and rollback plans.',
+  'content': [
+    {'type': 'prose', 'md': 'Never ship untested schema changes without backups.'},
+  ],
+};
+final _webBackupsMonitoringCurriculum = {
+  'summary': 'Backups plus basic monitoring reduce downtime and data-loss risk.',
+  'content': [
+    {'type': 'prose', 'md': 'Restore drills prove backups work — schedule them.'},
   ],
 };
 
